@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方王媽媽堅果饅頭｜線上訂購</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream:       #F7F0E2;
+            --cream-dark:  #EDE0C4;
+            --cream-card:  #FBF6ED;
+            --border:      #DDD0B4;
+            --brown:       #7A5230;
+            --brown-dark:  #5C3A1E;
+            --brown-light: #A07848;
+            --gold:        #C9A870;
+            --gold-light:  #E5C88A;
+            --text:        #3E2A14;
+            --text-muted:  #8A7260;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: var(--cream); color: var(--text); }
+
+        /* ── Header ── */
+        header {
+            background: var(--cream-dark);
+            border-bottom: 1.5px solid var(--border);
+            padding: 0 32px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            box-shadow: 0 2px 12px rgba(90,60,30,0.10);
+        }
+        .logo-text { font-size: 1.2rem; font-weight: 700; color: var(--brown-dark); letter-spacing: 1px; }
+        .header-phone { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(160deg, #EDE0C4 0%, #D9C49A 50%, #C9AE7E 100%);
+            color: var(--brown-dark);
+            text-align: center;
+            padding: 90px 24px 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238B6040' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(90,60,20,0.12);
+            border: 1px solid rgba(90,60,20,0.25);
+            border-radius: 50px;
+            padding: 6px 20px;
+            font-size: 0.85rem;
+            margin-bottom: 22px;
+            letter-spacing: 2px;
+            color: var(--brown);
+        }
+        .hero h1 { font-size: 2.8rem; font-weight: 700; margin-bottom: 14px; color: var(--brown-dark); }
+        .hero p { font-size: 1.1rem; color: var(--brown); margin-bottom: 40px; line-height: 1.9; }
+        .btn-cta {
+            background: var(--brown-dark);
+            color: #FBF6ED;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1.05rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.25s;
+            font-family: inherit;
+            letter-spacing: 1px;
+        }
+        .btn-cta:hover { background: var(--brown); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(90,60,20,0.25); }
+
+        /* ── Section ── */
+        .section { padding: 64px 20px; max-width: 980px; margin: 0 auto; }
+        .sec-title {
+            text-align: center; font-size: 1.7rem; font-weight: 700;
+            color: var(--brown-dark); margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .sec-title::after {
+            content: ''; display: block;
+            width: 48px; height: 3px;
+            background: var(--gold); border-radius: 2px;
+            margin: 10px auto 0;
+        }
+        .sec-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 0.95rem; margin-top: 12px; }
+
+        /* ── Product Grid ── */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            padding: 0;
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(90,60,20,0.15); }
+        .prod-img {
+            width: 100%; height: 200px; object-fit: cover;
+            display: block; margin-bottom: 0;
+            border-radius: 0;
+            background: var(--cream-dark);
+        }
+        .prod-img.no-photo {
+            object-fit: contain; padding: 20px;
+            background: var(--cream);
+        }
+        .prod-body { padding: 18px 20px 20px; }
+        .prod-name { font-size: 1.1rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 6px; }
+        .prod-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+        .prod-divider { height: 1px; background: var(--border); margin-bottom: 14px; }
+        .prod-price { display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; }
+        .price-now { font-size: 1.35rem; font-weight: 700; color: #B8391C; }
+        .price-ori { font-size: 0.85rem; color: #C0AB95; text-decoration: line-through; }
+        .price-unit { font-size: 0.82rem; color: #C0AB95; }
+
+        /* Qty control */
+        .qty-row { display: flex; align-items: center; gap: 14px; }
+        .qty-btn {
+            width: 36px; height: 36px; border-radius: 4px;
+            border: 1.5px solid var(--gold); background: white; color: var(--brown);
+            font-size: 1.3rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; transition: all 0.18s; line-height: 1;
+        }
+        .qty-btn:hover { background: var(--gold); color: white; }
+        .qty-num { font-size: 1.2rem; font-weight: 700; min-width: 28px; text-align: center; color: var(--brown-dark); }
+
+        /* ── Sticky bar ── */
+        .sticky-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--brown-dark); color: white;
+            padding: 14px 24px;
+            display: flex; justify-content: center; align-items: center;
+            gap: 32px;
+            z-index: 150;
+            transform: translateY(110%);
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 -4px 20px rgba(60,30,10,0.35);
+            border-top: 2px solid var(--gold);
+        }
+        .sticky-bar.show { transform: translateY(0); }
+        .bar-info { text-align: center; }
+        .bar-label { font-size: 0.82rem; opacity: 0.7; margin-bottom: 2px; letter-spacing: 1px; }
+        .bar-total { font-size: 1.6rem; font-weight: 700; color: var(--gold-light); }
+        .bar-shipping { font-size: 0.8rem; margin-top: 3px; opacity: 0.9; }
+        .bar-shipping.free { color: #90EEB0; }
+        .bar-shipping.paid { color: var(--gold-light); }
+        .btn-next {
+            background: var(--gold); color: var(--brown-dark);
+            border: none; padding: 13px 36px;
+            border-radius: 4px; font-size: 1rem;
+            font-weight: 700; cursor: pointer; font-family: inherit;
+            transition: background 0.2s, transform 0.2s;
+            white-space: nowrap; letter-spacing: 1px;
+        }
+        .btn-next:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+        /* ── Form ── */
+        #formSection { display: none; }
+        .form-card {
+            background: white; border-radius: 8px;
+            padding: 40px; border: 1.5px solid var(--border);
+        }
+        .order-review {
+            background: var(--cream-card); border-radius: 6px;
+            padding: 20px; margin-bottom: 28px;
+            border: 1px solid var(--border);
+        }
+        .review-title { font-weight: 700; color: var(--brown-dark); margin-bottom: 14px; font-size: 0.95rem; letter-spacing: 1px; }
+        .review-item {
+            display: flex; justify-content: space-between;
+            font-size: 0.92rem; padding: 6px 0; color: var(--text-muted);
+        }
+        .review-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+        .review-total {
+            display: flex; justify-content: space-between;
+            font-weight: 700; color: var(--brown-dark); font-size: 1.05rem;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block; font-weight: 600; color: var(--brown-dark);
+            margin-bottom: 8px; font-size: 0.95rem; letter-spacing: 0.5px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%; border: 1.5px solid var(--border);
+            border-radius: 6px; padding: 13px 16px;
+            font-size: 1rem; font-family: inherit;
+            outline: none; transition: border-color 0.2s;
+            background: var(--cream-card);
+            color: var(--text);
+        }
+        .form-group input:focus,
+        .form-group textarea:focus { border-color: var(--gold); background: white; }
+        .btn-submit {
+            width: 100%; background: var(--brown-dark); color: white;
+            border: none; padding: 16px; border-radius: 6px;
+            font-size: 1.05rem; font-weight: 700; cursor: pointer;
+            font-family: inherit; transition: background 0.2s;
+            margin-top: 8px; letter-spacing: 2px;
+        }
+        .btn-submit:hover { background: var(--brown); }
+        .btn-submit:disabled { background: #C0B09A; cursor: not-allowed; }
+
+        /* ── Payment ── */
+        #paySection { display: none; }
+        .pay-card {
+            background: white; border-radius: 8px;
+            padding: 48px 40px; text-align: center;
+            border: 1.5px solid var(--border);
+        }
+        .pay-check { font-size: 4rem; margin-bottom: 14px; }
+        .pay-title { font-size: 1.5rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 6px; }
+        .pay-sub { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 24px; }
+        .pay-amount {
+            font-size: 2.8rem; font-weight: 700; color: #B8391C;
+            background: #FBF2EF; border-radius: 8px;
+            padding: 14px 28px; display: inline-block;
+            margin-bottom: 28px; border: 1px solid #E8C8BB;
+        }
+        .bank-box {
+            background: var(--cream-card); border-radius: 8px;
+            padding: 20px; text-align: left;
+            border: 1px solid var(--border); margin-bottom: 20px;
+        }
+        .bank-row {
+            display: flex; align-items: center; padding: 10px 0;
+            border-bottom: 1px solid var(--border); font-size: 0.95rem;
+        }
+        .bank-row:last-child { border-bottom: none; }
+        .bank-lbl { color: var(--text-muted); width: 100px; flex-shrink: 0; font-size: 0.9rem; }
+        .bank-val { font-weight: 700; color: var(--brown-dark); letter-spacing: 0.5px; font-size: 1rem; }
+        .pay-notice {
+            background: #FDFAE8; border: 1px solid #DDD08A;
+            border-radius: 8px; padding: 20px;
+            text-align: left; font-size: 0.95rem; color: #6A5800;
+            line-height: 1.8;
+        }
+        .pay-notice strong { color: #4A3E00; }
+        .line-add-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: #06C755; color: white;
+            border: none; border-radius: 50px;
+            padding: 15px 32px; font-size: 1rem; font-weight: 700;
+            cursor: pointer; text-decoration: none;
+            margin: 24px auto 0; width: fit-content;
+            font-family: inherit;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 14px rgba(6,199,85,0.3);
+        }
+        .line-add-btn:hover { background: #05b34b; transform: translateY(-2px); }
+        .line-add-btn svg { width: 24px; height: 24px; flex-shrink: 0; }
+
+        /* ── 配送方式選擇 ── */
+        .delivery-toggle { display: flex; gap: 12px; margin-bottom: 24px; }
+        .delivery-opt {
+            flex: 1; padding: 16px 10px;
+            border: 1.5px solid var(--border); border-radius: 6px;
+            background: var(--cream-card); cursor: pointer;
+            text-align: center; transition: all 0.2s;
+            font-family: inherit;
+        }
+        .delivery-opt .opt-icon  { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+        .delivery-opt .opt-label { font-size: 0.95rem; font-weight: 700; color: var(--brown-dark); display: block; }
+        .delivery-opt .opt-note  { font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 3px; }
+        .delivery-opt.active {
+            border-color: var(--gold); background: white;
+            box-shadow: 0 0 0 3px rgba(201,168,112,0.2);
+        }
+        .delivery-opt.active .opt-label { color: var(--brown); }
+
+        .pickup-notice {
+            background: #EEF7EE; border: 1.5px solid #A5D6A7;
+            border-radius: 8px; padding: 18px 20px;
+            margin-bottom: 20px; font-size: 0.95rem;
+            color: #2E7D32; line-height: 1.7;
+        }
+        .pickup-notice strong { color: #1B5E20; }
+        .pickup-line-btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: #06C755; color: white;
+            border-radius: 50px; padding: 10px 22px;
+            font-size: 0.92rem; font-weight: 700;
+            text-decoration: none; margin-top: 12px;
+            transition: background 0.2s;
+        }
+        .pickup-line-btn:hover { background: #05b34b; }
+
+        /* ── 購買方式 ── */
+        .channel-section {
+            padding: 48px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .channel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .channel-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px 22px 18px;
+            border: 1.5px solid var(--border);
+            display: flex; flex-direction: column; gap: 0;
+            transition: box-shadow 0.2s;
+        }
+        .channel-card:hover { box-shadow: 0 6px 20px rgba(90,60,20,0.12); }
+        .channel-badge {
+            display: inline-block;
+            font-size: 0.88rem; font-weight: 700;
+            padding: 4px 12px; border-radius: 2px;
+            margin-bottom: 12px; letter-spacing: 0.5px;
+        }
+        .badge-family { background: #E8F5E9; color: #2E7D32; }
+        .badge-seven  { background: #FFF3E0; color: #C45000; }
+        .channel-logo {
+            font-size: 1.9rem; font-weight: 900;
+            margin-bottom: 10px; letter-spacing: -1px;
+        }
+        .logo-family { color: #00933B; }
+        .logo-seven  { color: #EE1C25; }
+        .channel-sub {
+            font-size: 1rem; color: var(--text-muted);
+            line-height: 1.7; margin-bottom: 14px;
+            flex: 1;
+        }
+        .channel-sub strong { color: var(--text); }
+        .channel-fee {
+            display: inline-block;
+            background: var(--cream); border-radius: 4px;
+            padding: 8px 14px; font-size: 1.05rem;
+            font-weight: 700; color: var(--brown-dark);
+            margin-bottom: 16px; border: 1px solid var(--border);
+        }
+        .channel-links { display: flex; flex-direction: column; gap: 10px; }
+        .channel-link {
+            display: block; text-align: center;
+            padding: 13px 16px; border-radius: 4px;
+            font-size: 1.05rem; font-weight: 600;
+            text-decoration: none; transition: all 0.2s;
+            letter-spacing: 0.5px;
+        }
+        .link-primary-family { background: #00933B; color: white; }
+        .link-primary-family:hover { background: #007A30; }
+        .link-primary-seven { background: #EE1C25; color: white; }
+        .link-primary-seven:hover { background: #C8101A; }
+        .link-secondary {
+            background: var(--cream-card); color: var(--brown-dark);
+            border: 1.5px solid var(--border);
+        }
+        .link-secondary:hover { background: var(--cream-dark); }
+
+        /* ── LINE 歡迎彈窗 ── */
+        .line-overlay {
+            position: fixed; inset: 0;
+            background: rgba(40,20,0,0.55);
+            z-index: 999;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.35s;
+        }
+        .line-overlay.show { opacity: 1; pointer-events: all; }
+        .line-popup {
+            background: white;
+            border-radius: 12px;
+            padding: 40px 32px 32px;
+            max-width: 340px; width: 100%;
+            text-align: center;
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            position: relative;
+            border: 1.5px solid var(--border);
+        }
+        .line-overlay.show .line-popup { transform: translateY(0) scale(1); }
+        .line-popup-close {
+            position: absolute; top: 14px; right: 18px;
+            font-size: 1.3rem; color: #C0AB95; cursor: pointer;
+            border: none; background: none; line-height: 1;
+        }
+        .line-popup-close:hover { color: #888; }
+        .line-popup-logo {
+            width: 68px; height: 68px; border-radius: 16px;
+            background: #06C755;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 18px;
+        }
+        .line-popup-logo svg { width: 42px; height: 42px; }
+        .line-popup h3 { font-size: 1.1rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 8px; }
+        .line-popup p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+        .line-popup-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: #06C755; color: white;
+            border: none; border-radius: 50px;
+            padding: 14px 28px; font-size: 1rem; font-weight: 700;
+            cursor: pointer; text-decoration: none;
+            width: 100%; font-family: inherit;
+            transition: background 0.2s;
+            box-shadow: 0 4px 14px rgba(6,199,85,0.3);
+            margin-bottom: 12px;
+        }
+        .line-popup-btn:hover { background: #05b34b; }
+        .line-popup-later {
+            background: none; border: none; color: #C0AB95;
+            font-size: 0.85rem; cursor: pointer; font-family: inherit;
+            padding: 4px 8px;
+        }
+        .line-popup-later:hover { color: #888; }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--cream-dark);
+            border-top: 1.5px solid var(--border);
+            color: var(--brown-dark);
+            text-align: center; padding: 48px 24px;
+            margin-top: 60px;
+        }
+        footer .f-logo { font-size: 1.1rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 10px; letter-spacing: 2px; }
+        footer p { color: var(--text-muted); font-size: 0.88rem; line-height: 2; }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .form-card, .pay-card { padding: 24px 18px; }
+            .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .pay-amount { font-size: 2rem; }
+            .prod-img { height: 150px; }
+            .channel-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+
+
+<!-- LINE 歡迎彈窗 -->
+<div class="line-overlay" id="lineOverlay">
+    <div class="line-popup">
+        <button class="line-popup-close" onclick="closeLinePopup()">✕</button>
+        <div class="line-popup-logo">
+            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+            </svg>
+        </div>
+        <h3>加入我們的 LINE 官方帳號</h3>
+        <p>加入好友，掌握最新優惠、新品資訊，<br>訂購後也能直接與我們聯繫！</p>
+        <a class="line-popup-btn" id="linePopupBtn" href="#" target="_blank">
+            立即加入好友
+        </a>
+        <button class="line-popup-later" onclick="closeLinePopup()">稍後再說</button>
+    </div>
+</div>
+
+<!-- Banner -->
+<div style="line-height:0;">
+    <img src="photos/line_oa_chat_260423_170052.jpg"
+         alt="方王媽媽堅果饅頭"
+         style="width:100%; display:block;">
+</div>
+
+<!-- 購買方式 -->
+<div class="channel-section">
+    <h2 class="sec-title">購買方式</h2>
+    <p class="sec-sub">可選擇超商取貨或官網宅配到府</p>
+    <div class="channel-grid">
+
+        <!-- 全家好賣+ -->
+        <div class="channel-card">
+            <span class="channel-badge badge-family">全家便利店</span>
+            <div class="channel-logo logo-family">好賣＋</div>
+            <div class="channel-sub">
+                <strong>全家取貨付款</strong>，3-4 天到貨，4 天內取貨<br><br>
+                🧊 冷凍商品滿 2,500 元免運（未滿運費 99 元）<br>
+                🌡 常溫商品滿 1,500 元免運（未滿運費 38 元）<br>
+                📌 近期好賣+ 結帳區有免運券可領取
+            </div>
+            <div class="channel-fee">🚚 運費 NT$99</div>
+            <div class="channel-links">
+                <a class="channel-link link-primary-family" href="https://famistore.famiport.com.tw/users/240902" target="_blank">
+                    好賣＋ 購買平台 →
+                </a>
+                <a class="channel-link link-secondary" href="https://www.a22255663.com.tw" target="_blank">
+                    宅配請進官網選購 →
+                </a>
+            </div>
+        </div>
+
+        <!-- 7-11 賣貨便 -->
+        <div class="channel-card">
+            <span class="channel-badge badge-seven">7-11 賣貨便</span>
+            <div class="channel-logo logo-seven">賣貨便</div>
+            <div class="channel-sub">
+                <strong>7-11 取貨付款</strong>，3-4 天到貨，4 天內取貨<br><br>
+                🧊 冷凍商品滿 3,000 元免運（未滿運費 129 元）<br>
+                🌡 常溫商品滿 1,500 元免運（未滿運費 38 元）
+            </div>
+            <div class="channel-fee">🚚 運費 NT$129</div>
+            <div class="channel-links">
+                <a class="channel-link link-primary-seven" href="https://myship.7-11.com.tw/general/detail/GM2304147275126" target="_blank">
+                    賣貨便 購買平台 →
+                </a>
+                <a class="channel-link link-secondary" href="https://www.a22255663.com.tw" target="_blank">
+                    宅配請進官網選購 →
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Products -->
+<div class="section" id="products">
+    <h2 class="sec-title">選擇品項</h2>
+    <p class="sec-sub">官網優惠價・每包 5 顆入（迷你綜合 10 顆）</p>
+    <div class="product-grid" id="productGrid"></div>
+</div>
+
+<!-- Order Form -->
+<div class="section" id="formSection">
+    <h2 class="sec-title">填寫訂購資訊</h2>
+    <p class="sec-sub">請確認訂單內容後填寫聯絡資料</p>
+    <div class="form-card">
+        <div class="order-review">
+            <div class="review-title">📦 您的訂單</div>
+            <div id="reviewItems"></div>
+            <hr class="review-divider">
+            <div class="review-item" id="reviewShipping">
+                <span>🚚 冷凍宅配運費</span>
+                <span id="reviewShippingFee">$200</span>
+            </div>
+            <hr class="review-divider">
+            <div class="review-total">
+                <span>總計（含運）</span>
+                <span id="reviewTotal">$0</span>
+            </div>
+        </div>
+
+        <!-- 配送方式 -->
+        <div class="form-group">
+            <label>配送方式 *</label>
+            <div class="delivery-toggle">
+                <button class="delivery-opt active" id="optDelivery" onclick="setDelivery('delivery')">
+                    <span class="opt-icon">🚚</span>
+                    <span class="opt-label">冷凍宅配</span>
+                    <span class="opt-note">滿 3,500 免運</span>
+                </button>
+                <button class="delivery-opt" id="optPickup" onclick="setDelivery('pickup')">
+                    <span class="opt-icon">🏠</span>
+                    <span class="opt-label">自取</span>
+                    <span class="opt-note">免運費</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 自取提示 -->
+        <div id="pickupNotice" style="display:none;">
+            <div class="pickup-notice">
+                📍 <strong>自取請加入 LINE 官方帳號</strong>與我們確認取貨時間。<br>
+                加入後請告知姓名、品項及希望取貨的日期時間，我們會儘快回覆確認。<br><br>
+                <a class="pickup-line-btn" id="pickupLineBtn" href="#" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+                    立即加入 LINE 官方帳號
+                </a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>姓名 *</label>
+            <input id="fName" type="text" placeholder="請輸入您的姓名">
+        </div>
+        <div class="form-group">
+            <label>電話 *</label>
+            <input id="fPhone" type="tel" placeholder="09XX-XXX-XXX">
+        </div>
+        <div class="form-group" id="addressGroup">
+            <label>收件地址 *</label>
+            <input id="fAddress" type="text" placeholder="請輸入完整收件地址（含縣市區里）">
+        </div>
+        <div class="form-group" id="pickupTimeGroup" style="display:none;">
+            <label>希望取貨時間 *</label>
+            <input id="fPickupTime" type="text" placeholder="例：5/10（六）上午 10:00 ~ 12:00">
+        </div>
+        <div class="form-group">
+            <label>備註</label>
+            <textarea id="fNote" rows="3" placeholder="如有特殊需求請在此說明"></textarea>
+        </div>
+
+        <button class="btn-submit" id="btnSubmit" onclick="submitOrder()">確認訂購</button>
+    </div>
+</div>
+
+<!-- Payment -->
+<div class="section" id="paySection">
+    <div class="pay-card">
+        <div class="pay-check">✅</div>
+        <div class="pay-title">訂單送出成功！</div>
+        <div class="pay-sub">請於 <strong>24 小時內</strong> 完成匯款，逾時訂單將自動取消</div>
+        <div class="pay-amount" id="payAmount">$0</div>
+
+        <div class="bank-box">
+            <div class="bank-row"><span class="bank-lbl">銀行代號</span><span class="bank-val">008</span></div>
+            <div class="bank-row"><span class="bank-lbl">銀行名稱</span><span class="bank-val">華南商業銀行 積穗分行</span></div>
+            <div class="bank-row"><span class="bank-lbl">帳號</span><span class="bank-val" style="font-size:1.05rem;letter-spacing:2px;">180-20-039358-8</span></div>
+            <div class="bank-row"><span class="bank-lbl">戶名</span><span class="bank-val">方王寶珠</span></div>
+        </div>
+
+        <div class="pay-notice">
+            ⚠️ 匯款完成後，請加入我們的 LINE 官方帳號並傳送：<br><br>
+            1️⃣ <strong>帳號末 5 碼</strong><br>
+            2️⃣ <strong>匯款金額</strong>
+        </div>
+
+        <a class="line-add-btn" id="lineAddBtn" href="#" target="_blank">
+            <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+            </svg>
+            加入 LINE 官方帳號
+        </a>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+
+    <div class="f-logo">🥟 方王媽媽堅果饅頭</div>
+<p style="font-size: 1.2rem;">
+    官方 LINE：@a22255663　　訂購電話：02-2225-5663
+</p>
+    <p style="font-size: 1.2rem;">地址：新北市中和區立德街 98 巷 72 號</p>
+    <p>天然食材・手工製作・新鮮直送<br>
+
+    © 2026 方王媽媽堅果饅頭 版權所有</p>
+
+
+
+</footer>
+</footer>
+
+<!-- Sticky Bar -->
+<div class="sticky-bar" id="stickyBar">
+    <div class="bar-info">
+        <div class="bar-label">已選商品金額</div>
+        <div class="bar-total" id="barTotal">$0</div>
+        <div class="bar-shipping" id="barShipping"></div>
+    </div>
+    <button class="btn-next" onclick="goToForm()">填寫資料 →</button>
+</div>
+
+<script>
+// ── 商品資料 ──────────────────────────────
+const PRODUCTS = [
+    { id:'zp',   name:'招牌饅頭',     desc:'內含六種堅果、葡萄乾、煙燻乳酪', price:300, ori:325, img:'招牌饅頭.jpeg' },
+    { id:'yj',   name:'芋堅饅頭',     desc:'芋頭控推薦',                       price:300, ori:325, img:'芋堅饅頭.jpeg' },
+    { id:'rc',   name:'乳酪饅頭',     desc:'雙倍乳酪，愛乳酪者首選',           price:300, ori:325, img:'乳酪饅頭.jpeg' },
+    { id:'hm',   name:'紅莓饅頭',     desc:'酸甜紅莓風味',                     price:300, ori:325, img:'紅莓饅頭.jpeg' },
+    { id:'yghm', name:'優格紅莓饅頭', desc:'優格乳酪與蔓越莓結合',             price:300, ori:325, img:'優格饅頭.jpeg' },
+    { id:'jg',   name:'堅果饅頭',     desc:'純堅果風味（不含乳酪）',           price:275, ori:300, img:'堅果饅頭.jpeg' },
+    { id:'hmjg', name:'紅莓堅果饅頭', desc:'蔓越莓加堅果',                     price:275, ori:300, img:'紅莓堅果饅頭.jpeg' },
+    { id:'dg',   name:'地瓜饅頭',     desc:'碳烤地瓜與核桃、黃金豆',           price:275, ori:300, img:'地瓜饅頭.jpeg' },
+    { id:'mini', name:'迷你綜合饅頭', desc:'10 顆入（每顆約 75g）',            price:449, ori:500, img:'迷你綜合饅頭.jpeg' },
+    { id:'flt',  name:'蜂梨糖',       desc:'500g 裝，香甜酥脆',                price:280, ori:300, img:'蜂梨糖.jpeg' },
+    { id:'bean', name:'黑糖辣Q豆乾',  desc:'250g 裝，Q彈入味',                 price:100, ori:150, img:'黑糖辣Q豆乾.jpeg' },
+    { id:'sw',   name:'炭烤地瓜',     desc:'500g 裝，天然炭烤香甜',            price:110, ori:125, img:'炭烤地瓜.jpeg' },
+    { id:'lotus',name:'蓮子雪耳露',   desc:'600g 裝，養顏滋潤',               price:110, ori:125, img:'蓮子雪耳露.jpeg' },
+    { id:'raisin',name:'葡萄乾',      desc:'200g 裝',                          price:110, ori:150, img:'葡萄乾.jpeg' },
+    { id:'cran',  name:'蔓越莓乾',    desc:'200g 裝',                          price:180, ori:230, img:'蔓越莓乾.jpeg' },
+    { id:'chs',   name:'乳酪原絲',    desc:'200g 裝，濃郁乳酪風味',            price:350, ori:400, img:'乳酪原絲.jpeg' },
+    { id:'mush',  name:'香菇原蹄',    desc:'200g 裝，香脆下飯',                price:110, ori:150, img:'香菇原蹄.jpeg' },
+    { id:'flt35', name:'蜂梨糖(小)',  desc:'50g 裝，隨身享用',                 price: 35, ori: 40, img:'蜂梨糖（小）.jpeg' },
+];
+
+// ── 請在這裡填入設定 ──────────────────────
+const SCRIPT_URL          = 'https://script.google.com/macros/s/AKfycbxQK7qmgvTWXd8FzlPKudn-kuKGbFvGkDB3oJeH2RmUWF-WfoGKQzGPpQ535SFEGYE/exec';
+const LINE_ID             = '@a22255663';
+const FREE_SHIPPING_LIMIT = 3500;   // 滿此金額免運
+const SHIPPING_FEE        = 200;    // 冷凍宅配運費
+// ──────────────────────────────────────────
+
+const qty = {};
+PRODUCTS.forEach(p => qty[p.id] = 0);
+
+const lineUrl = 'https://line.me/R/ti/p/' + encodeURIComponent(LINE_ID);
+document.getElementById('lineAddBtn').href    = lineUrl;
+document.getElementById('linePopupBtn').href  = lineUrl;
+document.getElementById('pickupLineBtn').href = lineUrl;
+
+// 進站彈窗（只顯示一次／每次開新分頁都顯示）
+function closeLinePopup() {
+    document.getElementById('lineOverlay').classList.remove('show');
+}
+setTimeout(function() {
+    document.getElementById('lineOverlay').classList.add('show');
+}, 1500);
+
+// 渲染商品
+function renderProducts() {
+    document.getElementById('productGrid').innerHTML = PRODUCTS.map(p => `
+        <div class="product-card">
+            <img class="prod-img" src="photos/${p.img}" alt="${p.name}"
+                 onerror="this.style.visibility='hidden';this.parentElement.querySelector('.prod-img-placeholder').style.display='flex';this.onerror=null;">
+            <div class="prod-img-placeholder" style="display:none;width:100%;height:200px;background:var(--cream-dark);align-items:center;justify-content:center;font-size:2.5rem;">🥐</div>
+            <div class="prod-body">
+                <div class="prod-name">${p.name}</div>
+                <div class="prod-desc">${p.desc}</div>
+                <div class="prod-divider"></div>
+                <div class="prod-price">
+                    <span class="price-now">$${p.price}</span>
+                    <span class="price-ori">$${p.ori}</span>
+                    <span class="price-unit">/ 包</span>
+                </div>
+                <div class="qty-row">
+                    <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
+                    <span class="qty-num" id="q-${p.id}">0</span>
+                    <button class="qty-btn" onclick="changeQty('${p.id}',1)">＋</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function changeQty(id, d) {
+    qty[id] = Math.max(0, qty[id] + d);
+    document.getElementById('q-' + id).textContent = qty[id];
+    updateBar();
+}
+
+function getSubtotal() {
+    return PRODUCTS.reduce((s, p) => s + qty[p.id] * p.price, 0);
+}
+
+let deliveryMode = 'delivery'; // 'delivery' | 'pickup'
+
+function setDelivery(mode) {
+    deliveryMode = mode;
+    document.getElementById('optDelivery').classList.toggle('active', mode === 'delivery');
+    document.getElementById('optPickup').classList.toggle('active',   mode === 'pickup');
+    document.getElementById('addressGroup').style.display    = mode === 'delivery' ? '' : 'none';
+    document.getElementById('pickupTimeGroup').style.display = mode === 'pickup'   ? '' : 'none';
+    document.getElementById('pickupNotice').style.display    = mode === 'pickup'   ? '' : 'none';
+    updateBar();
+}
+
+function getShipping(subtotal) {
+    if (deliveryMode === 'pickup') return 0;
+    return subtotal >= FREE_SHIPPING_LIMIT ? 0 : SHIPPING_FEE;
+}
+
+function getFinalTotal() {
+    const sub = getSubtotal();
+    return sub + getShipping(sub);
+}
+
+function getSelected() {
+    return PRODUCTS.filter(p => qty[p.id] > 0);
+}
+
+function updateBar() {
+    const sub      = getSubtotal();
+    const shipping = getShipping(sub);
+    const remain   = FREE_SHIPPING_LIMIT - sub;
+
+    document.getElementById('barTotal').textContent = '$' + sub.toLocaleString();
+
+    const hint = document.getElementById('barShipping');
+    if (sub === 0) {
+        hint.textContent = '';
+        hint.className = 'bar-shipping';
+    } else if (shipping === 0) {
+        hint.textContent = '🎉 已達免運！';
+        hint.className = 'bar-shipping free';
+    } else {
+        hint.textContent = `🚚 運費 $${shipping}｜再加 $${remain.toLocaleString()} 免運`;
+        hint.className = 'bar-shipping paid';
+    }
+
+    const bar = document.getElementById('stickyBar');
+    sub > 0 ? bar.classList.add('show') : bar.classList.remove('show');
+}
+
+function goToForm() {
+    const sel      = getSelected();
+    if (!sel.length) return;
+    const sub      = getSubtotal();
+    const shipping = getShipping(sub);
+
+    document.getElementById('reviewItems').innerHTML = sel.map(p =>
+        `<div class="review-item"><span>${p.name} × ${qty[p.id]}</span><span>$${(p.price*qty[p.id]).toLocaleString()}</span></div>`
+    ).join('');
+
+    const shippingRow  = document.getElementById('reviewShipping');
+    const shippingFee  = document.getElementById('reviewShippingFee');
+    const shippingLabel = shippingRow.querySelector('span');
+    if (deliveryMode === 'pickup') {
+        shippingLabel.textContent   = '🏠 自取';
+        shippingFee.textContent     = '免運費 🎉';
+        shippingFee.style.color     = '#27ae60';
+        shippingRow.style.color     = '#27ae60';
+    } else if (shipping === 0) {
+        shippingLabel.textContent   = '🚚 冷凍宅配運費';
+        shippingFee.textContent     = '免運 🎉';
+        shippingFee.style.color     = '#27ae60';
+        shippingRow.style.color     = '#27ae60';
+    } else {
+        shippingLabel.textContent   = '🚚 冷凍宅配運費';
+        shippingFee.textContent     = '$' + shipping.toLocaleString();
+        shippingFee.style.color     = '';
+        shippingRow.style.color     = '';
+    }
+
+    document.getElementById('reviewTotal').textContent = '$' + getFinalTotal().toLocaleString();
+
+    const fs = document.getElementById('formSection');
+    fs.style.display = 'block';
+    setTimeout(() => fs.scrollIntoView({ behavior: 'smooth' }), 80);
+}
+
+async function submitOrder() {
+    const name       = document.getElementById('fName').value.trim();
+    const phone      = document.getElementById('fPhone').value.trim();
+    const address    = deliveryMode === 'pickup'
+                         ? '【自取】' + (document.getElementById('fPickupTime').value.trim() || '')
+                         : document.getElementById('fAddress').value.trim();
+    const note       = document.getElementById('fNote').value.trim();
+    const pickupTime = document.getElementById('fPickupTime').value.trim();
+
+    if (!name || !phone) {
+        alert('請填寫姓名與電話！');
+        return;
+    }
+    if (deliveryMode === 'delivery' && !document.getElementById('fAddress').value.trim()) {
+        alert('請填寫收件地址！');
+        return;
+    }
+    if (deliveryMode === 'pickup' && !pickupTime) {
+        alert('請填寫希望取貨時間！');
+        return;
+    }
+
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.textContent = '送出中…';
+
+    const sub      = getSubtotal();
+    const shipping = getShipping(sub);
+    const orderData = {
+        timestamp: new Date().toLocaleString('zh-TW'),
+        name, phone, address, note,
+        items: getSelected().map(p => `${p.name}×${qty[p.id]}`).join('、'),
+        total: getFinalTotal(),
+        shipping
+    };
+
+    try {
+        if (SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+            const params = new URLSearchParams({
+                name:      orderData.name,
+                phone:     orderData.phone,
+                address:   orderData.address,
+                items:     orderData.items,
+                total:     orderData.total,
+                shipping:  orderData.shipping,
+                note:      orderData.note || '',
+                timestamp: orderData.timestamp
+            });
+            await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
+        }
+    } catch(e) { console.log(e); }
+
+    // 顯示付款頁
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('stickyBar').classList.remove('show');
+    document.getElementById('payAmount').textContent = '$' + orderData.total.toLocaleString()
+        + (orderData.shipping > 0 ? `（含運費 $${orderData.shipping}）` : '（已免運費）');
+
+    const pay = document.getElementById('paySection');
+    pay.style.display = 'block';
+    setTimeout(() => pay.scrollIntoView({ behavior: 'smooth' }), 80);
+
+    btn.disabled = false;
+    btn.textContent = '確認訂購';
+}
+
+function scrollTo(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+
+renderProducts();
+</script>
+</body>
+</html>
