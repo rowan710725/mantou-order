@@ -207,12 +207,48 @@
         footer { background: var(--cream-dark); border-top: 1.5px solid var(--border); color: var(--brown-dark); text-align: center; padding: 48px 24px; margin-top: 60px; }
         footer .f-logo { font-size: 1.1rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 10px; letter-spacing: 2px; }
         footer p { color: var(--text-muted); font-size: 0.88rem; line-height: 2; }
+        /* ── 購買清單 ── */
+        .cart-outer { padding: 0 20px 40px; max-width: 700px; margin: 0 auto; }
+        .cart-title { text-align:center; font-size:1.5rem; font-weight:700; color:var(--brown-dark); margin-bottom:22px; letter-spacing:1px; }
+        .cart-title::after { content:''; display:block; width:40px; height:3px; background:var(--gold); border-radius:2px; margin:10px auto 0; }
+        .cart-wrapper { background:white; border-radius:12px; border:1.5px solid var(--border); overflow:hidden; box-shadow:0 4px 20px rgba(90,60,20,0.08); }
+        .cart-item { display:flex; align-items:center; gap:14px; padding:16px 18px; border-bottom:1px solid var(--border); }
+        .cart-del { width:36px; height:36px; border-radius:50%; border:1.5px solid #E0D0BC; background:white; color:#B8A080; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1rem; transition:all 0.2s; }
+        .cart-del:hover { background:#FFF0E8; border-color:#C05030; color:#C05030; }
+        .cart-img { width:80px; height:80px; object-fit:cover; border-radius:8px; flex-shrink:0; background:var(--cream-dark); }
+        .cart-body { flex:1; min-width:0; }
+        .cart-name { font-size:0.98rem; font-weight:700; color:var(--brown-dark); margin-bottom:4px; }
+        .cart-prices { display:flex; align-items:baseline; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+        .cart-ori { font-size:0.8rem; color:#C0AB95; text-decoration:line-through; }
+        .cart-now { font-size:1rem; font-weight:700; color:#B8391C; }
+        .cart-xqty { font-size:0.82rem; color:var(--text-muted); }
+        .cart-qty { display:flex; align-items:center; gap:8px; }
+        .cart-qbtn { width:28px; height:28px; border-radius:4px; border:1.5px solid var(--gold); background:white; color:var(--brown); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:700; transition:all 0.18s; }
+        .cart-qbtn:hover { background:var(--gold); color:white; }
+        .cart-qnum { font-size:0.95rem; font-weight:700; min-width:20px; text-align:center; }
+        .cart-linetotal { font-size:1rem; font-weight:700; color:var(--brown-dark); white-space:nowrap; text-align:right; min-width:72px; }
+        .cart-promo { background:#FEFCF6; border-bottom:1px solid var(--border); padding:14px 18px; }
+        .cart-promo-hd { font-size:0.78rem; color:var(--text-muted); font-weight:700; letter-spacing:1px; margin-bottom:10px; }
+        .cart-promo-row { display:flex; align-items:flex-start; gap:10px; padding:5px 0; font-size:0.86rem; line-height:1.5; }
+        .ptag { font-size:0.72rem; font-weight:700; padding:3px 8px; border-radius:3px; white-space:nowrap; flex-shrink:0; margin-top:2px; }
+        .ptag-ship { background:#E8F5E9; color:#2E7D32; }
+        .ptag-gift { background:#FFF3E0; color:#E65100; }
+        .promo-txt { color:var(--text-muted); flex:1; }
+        .promo-link { color:#B8391C; font-weight:700; white-space:nowrap; cursor:default; }
+        .cart-foot { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; }
+        .cart-sub-lbl { font-size:0.95rem; color:var(--text-muted); }
+        .cart-sub-amt { font-size:1.45rem; font-weight:700; color:var(--brown-dark); }
+        .btn-checkout { width:100%; background:var(--brown-dark); color:white; border:none; padding:18px; font-size:1.05rem; font-weight:700; cursor:pointer; font-family:inherit; transition:background 0.2s; letter-spacing:2px; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-checkout:hover { background:var(--brown); }
+
         @media (max-width: 640px) {
             .form-card, .pay-card { padding: 24px 18px; }
             .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
             .pay-amount { font-size: 2rem; }
             .prod-img { height: 150px; }
             .channel-grid { grid-template-columns: 1fr; }
+            .cart-img { width:64px; height:64px; }
+            .cart-item { gap:10px; padding:14px 14px; }
         }
     </style>
 </head>
@@ -318,6 +354,25 @@
     <h2 class="sec-title">選擇品項</h2>
     <p class="sec-sub">官網優惠價・每包 5 顆入（迷你綜合 10 顆）</p>
     <div class="product-grid" id="productGrid"></div>
+</div>
+
+<!-- Cart Section -->
+<div id="cartSection" style="display:none;">
+    <div class="cart-outer">
+        <div class="cart-title">目前已經選購</div>
+        <div class="cart-wrapper">
+            <div id="cartItemsList"></div>
+            <div class="cart-promo" id="cartPromoBox">
+                <div class="cart-promo-hd">未使用優惠</div>
+                <div id="cartPromoRows"></div>
+            </div>
+            <div class="cart-foot">
+                <span class="cart-sub-lbl">小計</span>
+                <span class="cart-sub-amt" id="cartSubAmt">NT$ 0</span>
+            </div>
+            <button class="btn-checkout" onclick="goToForm()">🛒 立即結帳</button>
+        </div>
+    </div>
 </div>
 
 <!-- Order Form -->
@@ -489,7 +544,44 @@ function renderProducts() {
         </div>
     `).join('');
 }
-function changeQty(id, d) { qty[id] = Math.max(0, qty[id] + d); document.getElementById('q-' + id).textContent = qty[id]; updateBar(); }
+function changeQty(id, d) { qty[id] = Math.max(0, qty[id] + d); document.getElementById('q-' + id).textContent = qty[id]; updateBar(); renderCart(); }
+function removeItem(id) { qty[id] = 0; document.getElementById('q-' + id).textContent = '0'; updateBar(); renderCart(); }
+function renderCart() {
+    const sel = getSelected();
+    const cs = document.getElementById('cartSection');
+    if (!sel.length) { cs.style.display = 'none'; return; }
+    cs.style.display = '';
+    const sub = getSubtotal();
+    const remain = FREE_SHIPPING_LIMIT - sub;
+    document.getElementById('cartItemsList').innerHTML = sel.map(p => `
+        <div class="cart-item">
+            <button class="cart-del" onclick="removeItem('${p.id}')" title="移除">🗑</button>
+            <img class="cart-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='0';this.onerror=null;">
+            <div class="cart-body">
+                <div class="cart-name">${p.name}</div>
+                <div class="cart-prices">
+                    <span class="cart-ori">NT$ ${p.ori}</span>
+                    <span class="cart-now">NT$ ${p.price}</span>
+                    <span class="cart-xqty">* ${qty[p.id]}</span>
+                </div>
+                <div class="cart-qty">
+                    <button class="cart-qbtn" onclick="changeQty('${p.id}',-1)">−</button>
+                    <span class="cart-qnum">${qty[p.id]}</span>
+                    <button class="cart-qbtn" onclick="changeQty('${p.id}',1)">＋</button>
+                </div>
+            </div>
+            <div class="cart-linetotal">NT$ ${(p.price * qty[p.id]).toLocaleString()}</div>
+        </div>
+    `).join('');
+    let promoHTML = '';
+    if (remain > 0) {
+        promoHTML += `<div class="cart-promo-row"><span class="ptag ptag-ship">滿額免運</span><span class="promo-txt">冷凍宅配滿 3,500 免運費！再買 <strong>NT$ ${remain.toLocaleString()}</strong> 即可享有</span><span class="promo-link">免運優惠</span></div>`;
+    } else {
+        promoHTML += `<div class="cart-promo-row"><span class="ptag ptag-ship">滿額免運</span><span class="promo-txt">🎉 已達免運門檻！宅配免運費</span></div>`;
+    }
+    document.getElementById('cartPromoRows').innerHTML = promoHTML;
+    document.getElementById('cartSubAmt').textContent = 'NT$ ' + sub.toLocaleString();
+}
 function getSubtotal() { return PRODUCTS.reduce((s, p) => s + qty[p.id] * p.price, 0); }
 const COD_FEE = 30;
 let deliveryMode = 'delivery';
