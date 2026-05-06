@@ -511,6 +511,17 @@ function setPayment(mode) {
     document.getElementById('optBank').classList.toggle('active', mode === 'bank');
     document.getElementById('optCOD').classList.toggle('active', mode === 'cod');
     updateBar();
+    // 即時更新訂單摘要的代收費與總計
+    const codRow = document.getElementById('reviewCODRow');
+    if (codRow) {
+        if (getCODFee() > 0) {
+            codRow.innerHTML = `<span>💵 貨到付款代收費</span><span>$${COD_FEE}</span>`;
+            codRow.style.display = '';
+        } else {
+            codRow.style.display = 'none';
+        }
+        document.getElementById('reviewTotal').textContent = '$' + getFinalTotal().toLocaleString();
+    }
 }
 function getShipping(s) { if (deliveryMode === 'pickup') return 0; return s >= FREE_SHIPPING_LIMIT ? 0 : SHIPPING_FEE; }
 function getCODFee()    { return (deliveryMode !== 'pickup' && paymentMode === 'cod') ? COD_FEE : 0; }
