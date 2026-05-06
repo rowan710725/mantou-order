@@ -346,6 +346,21 @@
                 </button>
             </div>
         </div>
+        <div class="form-group" id="paymentGroup">
+            <label>付款方式 *</label>
+            <div class="delivery-toggle">
+                <button class="delivery-opt active" id="optBank" onclick="setPayment('bank')">
+                    <span class="opt-icon">🏦</span>
+                    <span class="opt-label">銀行匯款</span>
+                    <span class="opt-note">下單後24小時內</span>
+                </button>
+                <button class="delivery-opt" id="optCOD" onclick="setPayment('cod')">
+                    <span class="opt-icon">💵</span>
+                    <span class="opt-label">貨到付款</span>
+                    <span class="opt-note">送達時付款</span>
+                </button>
+            </div>
+        </div>
         <div id="pickupNotice" style="display:none;">
             <div class="pickup-notice">
                 📍 <strong>自取請加入 LINE 官方帳號</strong>與我們確認取貨時間。<br>
@@ -372,15 +387,25 @@
     <div class="pay-card">
         <div class="pay-check">✅</div>
         <div class="pay-title">訂單送出成功！</div>
-        <div class="pay-sub">請於 <strong>24 小時內</strong> 完成匯款，逾時訂單將自動取消</div>
+        <div class="pay-sub" id="paySub">請於 <strong>24 小時內</strong> 完成匯款，逾時訂單將自動取消</div>
         <div class="pay-amount" id="payAmount">$0</div>
-        <div class="bank-box">
-            <div class="bank-row"><span class="bank-lbl">銀行代號</span><span class="bank-val">008</span></div>
-            <div class="bank-row"><span class="bank-lbl">銀行名稱</span><span class="bank-val">華南商業銀行 積穗分行</span></div>
-            <div class="bank-row"><span class="bank-lbl">帳號</span><span class="bank-val" style="font-size:1.05rem;letter-spacing:2px;">180-20-039358-8</span></div>
-            <div class="bank-row"><span class="bank-lbl">戶名</span><span class="bank-val">方王寶珠</span></div>
+        <div id="payBankSection">
+            <div class="bank-box">
+                <div class="bank-row"><span class="bank-lbl">銀行代號</span><span class="bank-val">008</span></div>
+                <div class="bank-row"><span class="bank-lbl">銀行名稱</span><span class="bank-val">華南商業銀行 積穗分行</span></div>
+                <div class="bank-row"><span class="bank-lbl">帳號</span><span class="bank-val" style="font-size:1.05rem;letter-spacing:2px;">180-20-039358-8</span></div>
+                <div class="bank-row"><span class="bank-lbl">戶名</span><span class="bank-val">方王寶珠</span></div>
+            </div>
+            <div class="pay-notice">⚠️ 匯款完成後，請加入我們的 LINE 官方帳號並傳送：<br><br>1️⃣ <strong>帳號末 5 碼</strong><br>2️⃣ <strong>匯款金額</strong></div>
         </div>
-        <div class="pay-notice">⚠️ 匯款完成後，請加入我們的 LINE 官方帳號並傳送：<br><br>1️⃣ <strong>帳號末 5 碼</strong><br>2️⃣ <strong>匯款金額</strong></div>
+        <div id="payCODSection" style="display:none;">
+            <div class="pay-notice" style="background:#E8F5E9;border:1px solid #86EFAC;color:#2E7D32;line-height:2;">
+                💵 <strong>貨到付款</strong><br>
+                商品送達時，請準備現金交給配送員即可。<br>
+                代收服務費 <strong>$30</strong> 已含在訂單總金額內。<br>
+                如有問題請聯繫我們的 LINE 官方帳號。
+            </div>
+        </div>
         <a class="line-add-btn" id="lineAddBtn" href="#" target="_blank">
             <svg viewBox="0 0 24 24" fill="white"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
             加入 LINE 官方帳號
@@ -466,7 +491,9 @@ function renderProducts() {
 }
 function changeQty(id, d) { qty[id] = Math.max(0, qty[id] + d); document.getElementById('q-' + id).textContent = qty[id]; updateBar(); }
 function getSubtotal() { return PRODUCTS.reduce((s, p) => s + qty[p.id] * p.price, 0); }
+const COD_FEE = 30;
 let deliveryMode = 'delivery';
+let paymentMode  = 'bank';
 function setDelivery(mode) {
     deliveryMode = mode;
     document.getElementById('optDelivery').classList.toggle('active', mode === 'delivery');
@@ -474,10 +501,20 @@ function setDelivery(mode) {
     document.getElementById('addressGroup').style.display    = mode === 'delivery' ? '' : 'none';
     document.getElementById('pickupTimeGroup').style.display = mode === 'pickup'   ? '' : 'none';
     document.getElementById('pickupNotice').style.display    = mode === 'pickup'   ? '' : 'none';
+    // 自取不需貨到付款
+    if (mode === 'pickup') { setPayment('bank'); document.getElementById('paymentGroup').style.display = 'none'; }
+    else { document.getElementById('paymentGroup').style.display = ''; }
+    updateBar();
+}
+function setPayment(mode) {
+    paymentMode = mode;
+    document.getElementById('optBank').classList.toggle('active', mode === 'bank');
+    document.getElementById('optCOD').classList.toggle('active', mode === 'cod');
     updateBar();
 }
 function getShipping(s) { if (deliveryMode === 'pickup') return 0; return s >= FREE_SHIPPING_LIMIT ? 0 : SHIPPING_FEE; }
-function getFinalTotal() { const s = getSubtotal(); return s + getShipping(s); }
+function getCODFee()    { return (deliveryMode !== 'pickup' && paymentMode === 'cod') ? COD_FEE : 0; }
+function getFinalTotal() { const s = getSubtotal(); return s + getShipping(s) + getCODFee(); }
 function getSelected() { return PRODUCTS.filter(p => qty[p.id] > 0); }
 function updateBar() {
     const sub = getSubtotal(), shipping = getShipping(sub), remain = FREE_SHIPPING_LIMIT - sub;
@@ -564,6 +601,16 @@ function _fillForm() {
     if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費 🎉'; shippingFee.style.color = '#27ae60'; }
     else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運 🎉'; shippingFee.style.color = '#27ae60'; }
     else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString(); shippingFee.style.color = ''; }
+    // 貨到付款代收費
+    let codRow = document.getElementById('reviewCODRow');
+    if (!codRow) {
+        codRow = document.createElement('div');
+        codRow.id = 'reviewCODRow';
+        codRow.className = 'review-item';
+        document.getElementById('reviewShipping').after(codRow);
+    }
+    if (getCODFee() > 0) { codRow.innerHTML = `<span>💵 貨到付款代收費</span><span>$${COD_FEE}</span>`; codRow.style.display = ''; }
+    else { codRow.style.display = 'none'; }
     document.getElementById('reviewTotal').textContent = '$' + getFinalTotal().toLocaleString();
     const fs = document.getElementById('formSection');
     fs.style.display = 'block';
@@ -580,14 +627,27 @@ async function submitOrder() {
     const btn = document.getElementById('btnSubmit');
     btn.disabled = true; btn.textContent = '送出中…';
     const sub = getSubtotal(), shipping = getShipping(sub);
-    const orderData = { timestamp: new Date().toLocaleString('zh-TW'), name, phone, address, note, items: getSelected().map(p => `${p.name}×${qty[p.id]}`).join('、'), total: getFinalTotal(), shipping };
+    const codFee = getCODFee();
+    const payment = paymentMode === 'cod' ? '貨到付款' : '銀行匯款';
+    const orderData = { timestamp: new Date().toLocaleString('zh-TW'), name, phone, address, note, payment, items: getSelected().map(p => `${p.name}×${qty[p.id]}`).join('、'), total: getFinalTotal(), shipping: shipping + codFee };
     try {
-        const params = new URLSearchParams({ name: orderData.name, phone: orderData.phone, address: orderData.address, items: orderData.items, total: orderData.total, shipping: orderData.shipping, note: orderData.note || '', timestamp: orderData.timestamp });
+        const params = new URLSearchParams({ name: orderData.name, phone: orderData.phone, address: orderData.address, items: orderData.items, total: orderData.total, shipping: orderData.shipping, payment: orderData.payment, note: orderData.note || '', timestamp: orderData.timestamp });
         await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
     } catch(e) { console.log(e); }
     document.getElementById('formSection').style.display = 'none';
     document.getElementById('stickyBar').classList.remove('show');
-    document.getElementById('payAmount').textContent = '$' + orderData.total.toLocaleString() + (orderData.shipping > 0 ? `（含運費 $${orderData.shipping}）` : '（已免運費）');
+    const amountNote = orderData.shipping > 0 ? `（含運費 $${orderData.shipping}）` : '（已免運費）';
+    document.getElementById('payAmount').textContent = '$' + orderData.total.toLocaleString() + amountNote;
+    // 根據付款方式顯示不同頁面
+    if (paymentMode === 'cod') {
+        document.getElementById('paySub').textContent = '訂單已確認！配送員送達時付款即可。';
+        document.getElementById('payBankSection').style.display = 'none';
+        document.getElementById('payCODSection').style.display = '';
+    } else {
+        document.getElementById('paySub').innerHTML = '請於 <strong>24 小時內</strong> 完成匯款，逾時訂單將自動取消';
+        document.getElementById('payBankSection').style.display = '';
+        document.getElementById('payCODSection').style.display = 'none';
+    }
     const pay = document.getElementById('paySection');
     pay.style.display = 'block';
     setTimeout(() => pay.scrollIntoView({ behavior: 'smooth' }), 80);
