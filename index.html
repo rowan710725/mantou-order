@@ -763,7 +763,7 @@ async function submitOrder() {
     const payment = paymentMode === 'cod' ? '貨到付款' : '銀行匯款';
     const orderData = { timestamp: new Date().toLocaleString('zh-TW'), name, phone, address, note, payment, items: getSelected().map(p => `${p.name}×${qty[p.id]}`).join('、'), total: getFinalTotal(), shipping: shipping + codFee };
     try {
-        const params = new URLSearchParams({ name: orderData.name, phone: orderData.phone, address: orderData.address, items: orderData.items, total: orderData.total, shipping: orderData.shipping, payment: orderData.payment, note: orderData.note || '', timestamp: orderData.timestamp });
+        const params = new URLSearchParams({ action: 'submitOrder', name: orderData.name, phone: orderData.phone, address: orderData.address, items: orderData.items, total: orderData.total, shipping: orderData.shipping, payment: orderData.payment, note: orderData.note || '', timestamp: orderData.timestamp });
         await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
     } catch(e) { console.log(e); }
     document.getElementById('formSection').style.display = 'none';
