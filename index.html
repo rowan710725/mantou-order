@@ -514,7 +514,7 @@
 </div>
 
 <script>
-const PRODUCTS = [
+let PRODUCTS = [
     { id:'zp',    name:'招牌饅頭',     desc:'內含六種堅果、葡萄乾、煙燻乳酪', price:300, ori:325, img:'zp.jpeg' },
     { id:'yj',    name:'芋堅饅頭',     desc:'芋頭控推薦',                       price:300, ori:325, img:'yj.jpeg' },
     { id:'rc',    name:'乳酪饅頭',     desc:'雙倍乳酪，愛乳酪者首選',           price:300, ori:325, img:'rc.jpeg' },
@@ -538,8 +538,9 @@ const SCRIPT_URL          = 'https://script.google.com/macros/s/AKfycbxQK7qmgvTW
 const LINE_ID             = '@a22255663';
 const FREE_SHIPPING_LIMIT = 3500;
 const SHIPPING_FEE        = 200;
-const qty = {};
-PRODUCTS.forEach(p => qty[p.id] = 0);
+let qty = {};
+function initQty() { PRODUCTS.forEach(p => { if (qty[p.id] === undefined) qty[p.id] = 0; }); }
+initQty();
 const lineUrl = 'https://line.me/R/ti/p/' + encodeURIComponent(LINE_ID);
 document.getElementById('lineAddBtn').href    = lineUrl;
 document.getElementById('linePopupBtn').href  = lineUrl;
@@ -786,6 +787,24 @@ async function submitOrder() {
     btn.disabled = false; btn.textContent = '確認訂購';
 }
 renderProducts();
+
+// 從 Google Sheets 載入最新商品（背景更新，不影響初始顯示速度）
+async function loadProducts() {
+  try {
+    const r = await fetch(SCRIPT_URL + '?action=getProducts');
+    const data = await r.json();
+    if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+      PRODUCTS = data.products;
+      initQty();
+      renderProducts();
+      renderCart();
+      updateBar();
+    }
+  } catch(e) {
+    console.log('商品清單載入失敗，使用預設資料', e);
+  }
+}
+loadProducts();
 
 // ── 查詢訂單 ──────────────────────────────────────────────────────────────────
 function updateQueryBtn() {
