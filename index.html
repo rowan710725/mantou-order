@@ -277,16 +277,7 @@
             <div class="gate-sub">綁定 LINE 官方帳號後，<br>下單即可自動收到訂單確認通知</div>
             <input class="gate-input" id="gatePhone" type="tel" maxlength="10"
                    placeholder="09XXXXXXXX"
-                   oninput="
-                     this.value=this.value.replace(/[^0-9]/g,'');
-                     var v=this.value;
-                     var btn=document.getElementById('gateBtnCheck');
-                     var err=document.getElementById('gateError');
-                     if(v.length===0){ err.textContent=''; btn.disabled=true; }
-                     else if(!v.startsWith('09')){ err.textContent='手機號碼必須以 09 開頭'; btn.disabled=true; }
-                     else if(v.length<10){ err.textContent='請輸入完整的 10 碼手機號碼'; btn.disabled=true; }
-                     else { err.textContent=''; btn.disabled=false; }
-                   "
+                   oninput="this.value=this.value.replace(/[^0-9]/g,'');onGatePhoneInput(this.value)"
                    onkeydown="if(event.key==='Enter')checkPhoneGate()">
             <div class="gate-error" id="gateError"></div>
             <button class="gate-btn" id="gateBtnCheck" onclick="checkPhoneGate()" disabled>確認</button>
@@ -514,6 +505,51 @@
 </div>
 
 <script>
+// ── 工具函數 ──────────────────────────────────────────────────────────────────
+
+/** 驗證台灣手機號碼，回傳錯誤訊息或空字串 */
+function validatePhone(v) {
+    if (!v || v.length === 0) return '';
+    if (!v.startsWith('09')) return '手機號碼必須以 09 開頭';
+    if (v.length < 10) return '請輸入完整的 10 碼手機號碼';
+    return '';
+}
+
+/** 手機關卡 input 事件處理 */
+function onGatePhoneInput(v) {
+    const err = document.getElementById('gateError');
+    const btn = document.getElementById('gateBtnCheck');
+    const msg = validatePhone(v);
+    err.textContent = msg;
+    btn.disabled = (v.length < 10 || msg !== '');
+}
+
+/** 同時更新購物車與底部 bar */
+function refresh() { renderCart(); updateBar(); }
+
+/**
+ * 共用 JSONP 手機綁定查詢
+ * @param {string} phone  完整手機號碼
+ * @param {string} prefix callback 名稱前綴
+ * @param {function} onResult  callback({ bound })
+ */
+function checkPhoneAPI(phone, prefix, onResult) {
+    const cbName = prefix + '_' + Date.now();
+    let done = false;
+    window[cbName] = function(data) {
+        if (done) return; done = true;
+        delete window[cbName];
+        onResult(data);
+    };
+    const s = document.createElement('script');
+    s.src = SCRIPT_URL + '?action=checkPhone&phone=' + encodeURIComponent(phone) + '&callback=' + cbName;
+    s.onerror = function() { if (!done) { done = true; onResult({ bound: false }); } };
+    document.head.appendChild(s);
+    setTimeout(function() { if (!done && window[cbName]) window[cbName]({ bound: false }); }, 8000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 let PRODUCTS = [
     { id:'zp',    name:'招牌饅頭',     desc:'內含六種堅果、葡萄乾、煙燻乳酪', price:300, ori:325, img:'zp.jpeg' },
     { id:'yj',    name:'芋堅饅頭',     desc:'芋頭控推薦',                       price:300, ori:325, img:'yj.jpeg' },
@@ -574,8 +610,8 @@ function renderProducts() {
         </div>
     `).join('');
 }
-function changeQty(id, d) { qty[id] = Math.max(0, qty[id] + d); document.getElementById('q-' + id).textContent = qty[id]; updateBar(); renderCart(); }
-function removeItem(id) { qty[id] = 0; document.getElementById('q-' + id).textContent = '0'; updateBar(); renderCart(); }
+function changeQty(id, d) { qty[id] = Math.max(0, qty[id] + d); document.getElementById('q-' + id).textContent = qty[id]; refresh(); }
+function removeItem(id) { qty[id] = 0; document.getElementById('q-' + id).textContent = '0'; refresh(); }
 function renderCart() {
     const sel = getSelected();
     const cs = document.getElementById('cartSection');
@@ -659,7 +695,7 @@ function updateBar() {
     sub > 0 ? document.getElementById('stickyBar').classList.add('show') : document.getElementById('stickyBar').classList.remove('show');
 }
 
-// 手機驗證關卡
+// ── 手機驗證關卡 ──────────────────────────────────────────────────────────────
 let _pendingPhone = '';
 function goToForm() {
     if (!getSelected().length) return;
@@ -668,50 +704,31 @@ function goToForm() {
     document.getElementById('gatePhone').value = '';
     document.getElementById('gateError').textContent = '';
     document.getElementById('gateRecheckMsg').textContent = '';
-    document.getElementById('gateBtnCheck').disabled = false;
+    document.getElementById('gateBtnCheck').disabled = true;
     document.getElementById('gateBtnCheck').textContent = '確認';
     document.getElementById('phoneGate').classList.add('show');
 }
 function checkPhoneGate() {
     const phone = document.getElementById('gatePhone').value.trim().replace(/[-\s]/g, '');
     if (!/^09\d{8}$/.test(phone)) { document.getElementById('gateError').textContent = '請輸入正確的手機號碼（09XXXXXXXX）'; return; }
-    document.getElementById('gateError').textContent = '';
+    _pendingPhone = phone;
     const btn = document.getElementById('gateBtnCheck');
     btn.disabled = true; btn.textContent = '確認中…';
-    _pendingPhone = phone;
-    const cbName = 'phoneCheck_' + Date.now();
-    let done = false;
-    window[cbName] = function(data) {
-        if (done) return; done = true;
+    checkPhoneAPI(phone, 'phoneCheck', function(data) {
         btn.disabled = false; btn.textContent = '確認';
-        delete window[cbName];
         if (data.bound) { proceedWithPhone(phone); }
         else { document.getElementById('gateStep1').style.display = 'none'; document.getElementById('gateStep2').style.display = 'block'; }
-    };
-    const s = document.createElement('script');
-    s.src = SCRIPT_URL + '?action=checkPhone&phone=' + encodeURIComponent(phone) + '&callback=' + cbName;
-    s.onerror = function() { if (!done) { done = true; btn.disabled = false; btn.textContent = '確認'; proceedWithPhone(phone); } };
-    document.head.appendChild(s);
-    setTimeout(function() { if (!done && window[cbName]) window[cbName]({ bound: false }); }, 8000);
+    });
 }
 function recheckBinding() {
-    const phone = _pendingPhone;
     const btn = document.getElementById('gateBtnRecheck');
     btn.disabled = true; btn.textContent = '確認中…';
     document.getElementById('gateRecheckMsg').textContent = '';
-    const cbName = 'phoneRecheck_' + Date.now();
-    let done = false;
-    window[cbName] = function(data) {
-        if (done) return; done = true;
+    checkPhoneAPI(_pendingPhone, 'phoneRecheck', function(data) {
         btn.disabled = false; btn.textContent = '我已完成，繼續下單 →';
-        delete window[cbName];
-        if (data.bound) { proceedWithPhone(phone); }
+        if (data.bound) { proceedWithPhone(_pendingPhone); }
         else { document.getElementById('gateRecheckMsg').textContent = '尚未偵測到綁定，請確認已傳送手機號碼給 LINE 官方帳號'; }
-    };
-    const s = document.createElement('script');
-    s.src = SCRIPT_URL + '?action=checkPhone&phone=' + encodeURIComponent(phone) + '&callback=' + cbName;
-    document.head.appendChild(s);
-    setTimeout(function() { if (!done && window[cbName]) window[cbName]({ bound: false }); }, 8000);
+    });
 }
 function backToPhoneInput() {
     document.getElementById('gateStep1').style.display = 'block';
@@ -797,8 +814,7 @@ async function loadProducts() {
       PRODUCTS = data.products;
       initQty();
       renderProducts();
-      renderCart();
-      updateBar();
+      refresh();
     }
   } catch(e) {
     console.log('商品清單載入失敗，使用預設資料', e);
@@ -808,13 +824,10 @@ loadProducts();
 
 // ── 查詢訂單 ──────────────────────────────────────────────────────────────────
 function updateQueryBtn() {
-    const v = document.getElementById('queryPhone').value;
-    const btn = document.getElementById('queryBtn');
-    const err = document.getElementById('queryPhoneError');
-    if (v.length === 0) { err.textContent = ''; btn.disabled = true; }
-    else if (!v.startsWith('09')) { err.textContent = '手機號碼必須以 09 開頭'; btn.disabled = true; }
-    else if (v.length < 10) { err.textContent = '請輸入完整的 10 碼手機號碼'; btn.disabled = true; }
-    else { err.textContent = ''; btn.disabled = false; }
+    const v   = document.getElementById('queryPhone').value;
+    const msg = validatePhone(v);
+    document.getElementById('queryPhoneError').textContent = msg;
+    document.getElementById('queryBtn').disabled = (v.length < 10 || msg !== '');
 }
 
 function queryOrders() {
