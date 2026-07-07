@@ -375,14 +375,20 @@ function addProduct(){
 async function saveAll(){
   showStatus('儲存中，請稍候…','loading');
   try{
-    // 改用 POST，將商品 JSON 放在 body，避免 GET URL 超長被截斷
+    // 商品 JSON 太大，GET URL 超長會讓 GAS 回傳 400
+    // 改用 no-cors POST 傳送 body，GAS 端會從 postData 解析
     const url  = SCRIPT_URL + '?action=saveProducts&adminPass=' + encodeURIComponent(PASS);
     const body = new URLSearchParams({ products: JSON.stringify(products) });
-    const r    = await fetch(url, { method: 'POST', body });
-    const data = await r.json();
-    if(data.success){ setDirty(false); showStatus('✅ 儲存成功！官網商品將在幾秒內更新','success'); }
-    else showStatus('❌ 儲存失敗：'+(data.error||'請稍後再試'),'error');
-  } catch(e){ showStatus('❌ 連線失敗，請確認網路後再試','error'); }
+    await fetch(url, { method: 'POST', body, mode: 'no-cors' });
+
+    // no-cors 無法讀回應，等 GAS 處理後用 GET 驗證
+    showStatus('⏳ 驗證中…','loading');
+    await new Promise(r => setTimeout(r, 2500));
+    const vr = await fetch(SCRIPT_URL + '?action=getProductsAdmin&adminPass=' + encodeURIComponent(PASS));
+    const vd = await vr.json();
+    if(vd.success){ setDirty(false); showStatus('✅ 儲存成功！官網商品將在幾秒內更新','success'); }
+    else showStatus('⚠️ 請刷新頁面確認是否儲存成功','error');
+  } catch(ex){ showStatus('❌ 連線失敗，請確認網路後再試','error'); }
 }
 
 // ── 圖片彈窗 ──────────────────────────────────────────────────────────────────
