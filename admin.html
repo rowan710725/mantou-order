@@ -53,8 +53,8 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 
 /* ── 商品表格 ── */
 .products-table{background:white;border-radius:10px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 2px 16px rgba(90,60,20,0.07);}
-.table-header{display:grid;grid-template-columns:82px 130px 1fr 72px 72px 140px 64px 44px;gap:10px;padding:12px 16px;background:var(--brown-dark);color:white;font-size:0.8rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
-.product-row{display:grid;grid-template-columns:82px 130px 1fr 72px 72px 140px 64px 44px;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
+.table-header{display:grid;grid-template-columns:60px 100px 1fr 65px 50px 65px 50px 60px 100px 44px 44px;gap:8px;padding:12px 12px;background:var(--brown-dark);color:white;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
+.product-row{display:grid;grid-template-columns:60px 100px 1fr 65px 50px 65px 50px 60px 100px 44px 44px;gap:8px;padding:12px 12px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
 .product-row:last-child{border-bottom:none;}
 .product-row:hover{background:var(--cream);}
 .product-row.inactive{opacity:0.45;}
@@ -161,7 +161,10 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
     <div class="products-table">
       <div class="table-header">
         <div>照片</div><div>品名</div><div>描述</div>
-        <div style="text-align:center">售價</div>
+        <div style="text-align:center">規格1<br>名稱</div>
+        <div style="text-align:center">規格1<br>價格</div>
+        <div style="text-align:center">規格2<br>名稱</div>
+        <div style="text-align:center">規格2<br>價格</div>
         <div style="text-align:center">原價</div>
         <div>圖片路徑</div>
         <div style="text-align:center">上架</div>
@@ -332,8 +335,14 @@ function renderProducts(){
              oninput="products[${i}].name=this.value;setDirty(true)">
       <input class="fi" type="text" value="${esc(p.desc)}" placeholder="描述"
              oninput="products[${i}].desc=this.value;setDirty(true)">
-      <input class="fi fi-num" type="number" value="${p.price}" min="0"
-             oninput="products[${i}].price=Number(this.value)||0;setDirty(true)">
+      <input class="fi fi-num" type="text" value="${esc(p.variant1_name||'')}" placeholder="規格1"
+             oninput="products[${i}].variant1_name=this.value;setDirty(true)">
+      <input class="fi fi-num" type="number" value="${p.variant1_price||0}" min="0" placeholder="價格"
+             oninput="products[${i}].variant1_price=Number(this.value)||0;setDirty(true)">
+      <input class="fi fi-num" type="text" value="${esc(p.variant2_name||'')}" placeholder="規格2"
+             oninput="products[${i}].variant2_name=this.value;setDirty(true)">
+      <input class="fi fi-num" type="number" value="${p.variant2_price||0}" min="0" placeholder="價格"
+             oninput="products[${i}].variant2_price=Number(this.value)||0;setDirty(true)">
       <input class="fi fi-num" type="number" value="${p.ori}" min="0"
              oninput="products[${i}].ori=Number(this.value)||0;setDirty(true)">
       <input class="fi fi-img" type="text" value="${esc(p.img)}" placeholder="檔名或網址"
@@ -366,7 +375,7 @@ function deleteProduct(i){
   products.splice(i,1); setDirty(true); renderProducts();
 }
 function addProduct(){
-  products.push({id:'new_'+Date.now(),name:'',desc:'',price:0,ori:0,img:'',active:true});
+  products.push({id:'new_'+Date.now(),name:'',desc:'',variant1_name:'',variant1_price:0,variant2_name:'',variant2_price:0,ori:0,img:'',active:true});
   setDirty(true); renderProducts();
   document.getElementById('productList').lastElementChild?.scrollIntoView({behavior:'smooth',block:'center'});
 }
