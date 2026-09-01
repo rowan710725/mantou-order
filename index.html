@@ -590,11 +590,13 @@ setTimeout(function() { document.getElementById('lineOverlay').classList.add('sh
 
 function renderProducts() {
     document.getElementById('productGrid').innerHTML = PRODUCTS.map(p => {
+        const hasVariant1 = p.variant1_name && p.variant1_price;
         const hasVariant2 = p.variant2_name && p.variant2_price;
+        const hasAnyVariant = hasVariant1 || hasVariant2;
         const defaultVariant = p.variant1_name || '標準';
         const defaultPrice = p.variant1_price ?? p.price ?? 0;
-        const priceDisplay = hasVariant2 ? `$${defaultPrice}~$${p.variant2_price}` : `$${defaultPrice}`;
-        const priceUnit = hasVariant2 ? '' : '/ 包';
+        const priceDisplay = hasAnyVariant ? (hasVariant2 ? `$${defaultPrice}~$${p.variant2_price}` : `$${defaultPrice}`) : `$${p.price}`;
+        const priceUnit = hasAnyVariant ? '' : '/ 包';
 
         return `
         <div class="product-card">
@@ -605,7 +607,7 @@ function renderProducts() {
                 <div class="prod-name">${p.name}</div>
                 <div class="prod-desc">${p.desc}</div>
                 <div class="prod-divider"></div>
-                ${hasVariant2 ? `
+                ${hasAnyVariant ? `
                 <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">規格選擇：</div>
                 <div style="display:flex;gap:8px;margin-bottom:12px;" id="variants-${p.id}">
                     <button class="qty-btn variant-btn active" data-variant="1" data-price="${p.variant1_price}" data-label="${p.variant1_name}" onclick="selectVariant('${p.id}',this)">
