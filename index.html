@@ -73,6 +73,8 @@
             font-weight: 700; transition: all 0.18s; line-height: 1;
         }
         .qty-btn:hover { background: var(--gold); color: white; }
+        .variant-btn { flex: 1; padding: 10px 8px; font-size: 0.9rem; text-align: center; }
+        .variant-btn.active { background: var(--brown-dark); color: white; }
         .qty-num { font-size: 1.2rem; font-weight: 700; min-width: 28px; text-align: center; color: var(--brown-dark); }
         .sticky-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -587,7 +589,14 @@ function closeLinePopup() { document.getElementById('lineOverlay').classList.rem
 setTimeout(function() { document.getElementById('lineOverlay').classList.add('show'); }, 1500);
 
 function renderProducts() {
-    document.getElementById('productGrid').innerHTML = PRODUCTS.map(p => `
+    document.getElementById('productGrid').innerHTML = PRODUCTS.map(p => {
+        const hasVariant2 = p.variant2_name && p.variant2_price;
+        const defaultVariant = p.variant1_name || '標準';
+        const defaultPrice = p.variant1_price ?? p.price ?? 0;
+        const priceDisplay = hasVariant2 ? `$${defaultPrice}~$${p.variant2_price}` : `$${defaultPrice}`;
+        const priceUnit = hasVariant2 ? '' : '/ 包';
+
+        return `
         <div class="product-card">
             <img class="prod-img" src="${p.img}" alt="${p.name}"
                  onerror="this.style.visibility='hidden';this.parentElement.querySelector('.prod-img-placeholder').style.display='flex';this.onerror=null;">
@@ -596,10 +605,21 @@ function renderProducts() {
                 <div class="prod-name">${p.name}</div>
                 <div class="prod-desc">${p.desc}</div>
                 <div class="prod-divider"></div>
+                ${hasVariant2 ? `
+                <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">規格選擇：</div>
+                <div style="display:flex;gap:8px;margin-bottom:12px;" id="variants-${p.id}">
+                    <button class="qty-btn variant-btn active" data-variant="1" data-price="${p.variant1_price}" data-label="${p.variant1_name}" onclick="selectVariant('${p.id}',this)">
+                        ${p.variant1_name}<br><small style="font-weight:400;font-size:0.75rem;">$${p.variant1_price}</small>
+                    </button>
+                    <button class="qty-btn variant-btn" data-variant="2" data-price="${p.variant2_price}" data-label="${p.variant2_name}" onclick="selectVariant('${p.id}',this)">
+                        ${p.variant2_name}<br><small style="font-weight:400;font-size:0.75rem;">$${p.variant2_price}</small>
+                    </button>
+                </div>
+                ` : ''}
                 <div class="prod-price">
-                    <span class="price-now">$${p.price}</span>
+                    <span class="price-now" id="price-${p.id}">${priceDisplay}</span>
                     <span class="price-ori">$${p.ori}</span>
-                    <span class="price-unit">/ 包</span>
+                    <span class="price-unit">${priceUnit}</span>
                 </div>
                 <div class="qty-row">
                     <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
@@ -608,7 +628,7 @@ function renderProducts() {
                 </div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 function changeQty(id, d) { qty[id] = Math.max(0, qty[id] + d); document.getElementById('q-' + id).textContent = qty[id]; refresh(); }
 function removeItem(id) { qty[id] = 0; document.getElementById('q-' + id).textContent = '0'; refresh(); }
@@ -619,15 +639,22 @@ function renderCart() {
     cs.style.display = '';
     const sub = getSubtotal();
     const remain = FREE_SHIPPING_LIMIT - sub;
-    document.getElementById('cartItemsList').innerHTML = sel.map(p => `
+    document.getElementById('cartItemsList').innerHTML = sel.map(p => {
+        const variantNum = selectedVariant[p.id] || 1;
+        const variant1Price = p.variant1_price ?? p.price ?? 0;
+        const variant2Price = p.variant2_price ?? p.price ?? 0;
+        const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
+        const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
+        const displayName = variantName ? `${p.name}(${variantName})` : p.name;
+        return `
         <div class="cart-item">
             <button class="cart-del" onclick="removeItem('${p.id}')" title="移除">🗑</button>
             <img class="cart-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='0';this.onerror=null;">
             <div class="cart-body">
-                <div class="cart-name">${p.name}</div>
+                <div class="cart-name">${displayName}</div>
                 <div class="cart-prices">
                     <span class="cart-ori">NT$ ${p.ori}</span>
-                    <span class="cart-now">NT$ ${p.price}</span>
+                    <span class="cart-now">NT$ ${currentPrice}</span>
                     <span class="cart-xqty">* ${qty[p.id]}</span>
                 </div>
                 <div class="cart-qty">
@@ -636,9 +663,9 @@ function renderCart() {
                     <button class="cart-qbtn" onclick="changeQty('${p.id}',1)">＋</button>
                 </div>
             </div>
-            <div class="cart-linetotal">NT$ ${(p.price * qty[p.id]).toLocaleString()}</div>
+            <div class="cart-linetotal">NT$ ${(currentPrice * qty[p.id]).toLocaleString()}</div>
         </div>
-    `).join('');
+    `}).join('');
     let promoHTML = '';
     if (remain > 0) {
         promoHTML += `<div class="cart-promo-row"><span class="ptag ptag-ship">滿額免運</span><span class="promo-txt">冷凍宅配滿 3,500 免運費！再買 <strong>NT$ ${remain.toLocaleString()}</strong> 即可享有</span><span class="promo-link">免運優惠</span></div>`;
@@ -648,7 +675,15 @@ function renderCart() {
     document.getElementById('cartPromoRows').innerHTML = promoHTML;
     document.getElementById('cartSubAmt').textContent = 'NT$ ' + sub.toLocaleString();
 }
-function getSubtotal() { return PRODUCTS.reduce((s, p) => s + qty[p.id] * p.price, 0); }
+function getSubtotal() {
+    return PRODUCTS.reduce((s, p) => {
+        const variantNum = selectedVariant[p.id] || 1;
+        const variant1Price = p.variant1_price ?? p.price ?? 0;
+        const variant2Price = p.variant2_price ?? p.price ?? 0;
+        const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
+        return s + qty[p.id] * currentPrice;
+    }, 0);
+}
 const COD_FEE = 30;
 let deliveryMode = 'delivery';
 let paymentMode  = 'bank';
@@ -743,9 +778,15 @@ function proceedWithPhone(phone) {
 function _fillForm() {
     const sel = getSelected(); if (!sel.length) return;
     const sub = getSubtotal(), shipping = getShipping(sub);
-    document.getElementById('reviewItems').innerHTML = sel.map(p =>
-        `<div class="review-item"><span>${p.name} × ${qty[p.id]}</span><span>$${(p.price*qty[p.id]).toLocaleString()}</span></div>`
-    ).join('');
+    document.getElementById('reviewItems').innerHTML = sel.map(p => {
+        const variantNum = selectedVariant[p.id] || 1;
+        const variant1Price = p.variant1_price ?? p.price ?? 0;
+        const variant2Price = p.variant2_price ?? p.price ?? 0;
+        const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
+        const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
+        const displayName = variantName ? `${p.name}(${variantName})` : p.name;
+        return `<div class="review-item"><span>${displayName} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
+    }).join('');
     const shippingFee = document.getElementById('reviewShippingFee');
     const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
     if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費 🎉'; shippingFee.style.color = '#27ae60'; }
@@ -806,6 +847,7 @@ async function submitOrder() {
 renderProducts();
 
 // 從 Google Sheets 載入最新商品（背景更新，不影響初始顯示速度）
+let selectedVariant = {}; // 跟踪每个商品选中的规格: { productId: 1 or 2 }
 async function loadProducts() {
   try {
     const r = await fetch(SCRIPT_URL + '?action=getProducts');
@@ -813,12 +855,35 @@ async function loadProducts() {
     if (data.success && Array.isArray(data.products) && data.products.length > 0) {
       PRODUCTS = data.products;
       initQty();
+      initSelectedVariant();
       renderProducts();
       refresh();
     }
   } catch(e) {
     console.log('商品清單載入失敗，使用預設資料', e);
   }
+}
+function initSelectedVariant() {
+  selectedVariant = {};
+  PRODUCTS.forEach(p => { selectedVariant[p.id] = 1; }); // 默认选择规格1
+}
+function selectVariant(productId, btn) {
+  const variantNum = parseInt(btn.dataset.variant);
+  const price = parseFloat(btn.dataset.price);
+  selectedVariant[productId] = variantNum;
+
+  // 更新按钮外观
+  const container = btn.parentElement;
+  container.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // 更新价格显示
+  const product = PRODUCTS.find(p => p.id === productId);
+  const hasVariant2 = product.variant2_name && product.variant2_price;
+  const priceDisplay = hasVariant2 ? `$${product.variant1_price}~$${product.variant2_price}` : `$${price}`;
+  document.getElementById('price-' + productId).textContent = priceDisplay;
+
+  refresh(); // 刷新购物车显示
 }
 loadProducts();
 
