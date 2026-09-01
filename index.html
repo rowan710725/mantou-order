@@ -852,18 +852,28 @@ renderProducts();
 let selectedVariant = {}; // 跟踪每个商品选中的规格: { productId: 1 or 2 }
 async function loadProducts() {
   try {
-    const r = await fetch(SCRIPT_URL + '?action=getProducts');
-    const data = await r.json();
-    if (data.success && Array.isArray(data.products) && data.products.length > 0) {
-      PRODUCTS = data.products;
-      initQty();
-      initSelectedVariant();
-      renderProducts();
-      refresh();
+    // 從 GitHub 讀取 products.json
+    const prodUrl = 'https://raw.githubusercontent.com/rowan710725/mantou-order/main/products.json';
+    const r = await fetch(prodUrl);
+    if (r.ok) {
+      const productsData = await r.json();
+      if (Array.isArray(productsData) && productsData.length > 0) {
+        PRODUCTS = productsData;
+        initQty();
+        initSelectedVariant();
+        renderProducts();
+        refresh();
+        return;
+      }
     }
   } catch(e) {
     console.log('商品清單載入失敗，使用預設資料', e);
   }
+  // 如果 GitHub 讀取失敗，使用預設資料
+  initQty();
+  initSelectedVariant();
+  renderProducts();
+  refresh();
 }
 function initSelectedVariant() {
   selectedVariant = {};
