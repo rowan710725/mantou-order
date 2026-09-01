@@ -889,11 +889,8 @@ function selectVariant(productId, btn) {
   container.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 
-  // 更新价格显示
-  const product = PRODUCTS.find(p => p.id === productId);
-  const hasVariant2 = product.variant2_name && product.variant2_price;
-  const priceDisplay = hasVariant2 ? `$${product.variant1_price}~$${product.variant2_price}` : `$${price}`;
-  document.getElementById('price-' + productId).textContent = priceDisplay;
+  // 更新价格显示 — 根据选中的规格显示该规格的价格
+  document.getElementById('price-' + productId).textContent = `$${price}`;
 
   refresh(); // 刷新购物车显示
 }
