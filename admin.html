@@ -296,16 +296,27 @@ async function login(){
   const errEl=document.getElementById('loginError');
   errEl.textContent='驗證中…';
   try{
-    const r=await fetch(SCRIPT_URL+'?action=getProductsAdmin&adminPass='+encodeURIComponent(pass));
-    const data=await r.json();
-    if(data.success){
-      PASS=pass; products=data.products;
-      document.getElementById('loginScreen').style.display='none';
-      document.getElementById('adminUI').style.display='';
-      document.getElementById('patTip').style.display=getPAT()?'none':'';
-      renderProducts();
-    } else { errEl.textContent=data.error||'密碼錯誤，請再試一次'; }
-  } catch(e){ errEl.textContent='連線失敗，請確認網路後再試'; }
+    // 簡單的前端密碼驗證
+    const CORRECT_PASS = 'fanwang2026';
+    if(pass !== CORRECT_PASS){
+      errEl.textContent='密碼錯誤，請再試一次';
+      return;
+    }
+
+    // 從 GitHub 讀取 products.json
+    const prodUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/products.json`;
+    const pr = await fetch(prodUrl);
+    if(!pr.ok) throw new Error('無法讀取商品資料');
+    products = await pr.json();
+
+    PASS = pass;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminUI').style.display = '';
+    document.getElementById('patTip').style.display = getPAT() ? 'none' : '';
+    renderProducts();
+  } catch(e){
+    errEl.textContent = e.message || '連線失敗，請確認網路後再試';
+  }
 }
 function logout(){
   if(dirty&&!confirm('有未儲存的變更，確定要登出嗎？')) return;
@@ -383,21 +394,49 @@ function addProduct(){
 // ── 儲存 ──────────────────────────────────────────────────────────────────────
 async function saveAll(){
   showStatus('儲存中，請稍候…','loading');
+  const pat = getPAT();
+  if(!pat){
+    showStatus('❌ 尚未設定 GitHub Token，請點右上角「⚙️ 設定」完成設定','error');
+    return;
+  }
   try{
-    // 商品 JSON 太大，GET URL 超長會讓 GAS 回傳 400
-    // 改用 no-cors POST 傳送 body，GAS 端會從 postData 解析
-    const url  = SCRIPT_URL + '?action=saveProducts&adminPass=' + encodeURIComponent(PASS);
-    const body = new URLSearchParams({ products: JSON.stringify(products) });
-    await fetch(url, { method: 'POST', body, mode: 'no-cors' });
+    const content = JSON.stringify(products, null, 2);
+    const base64 = btoa(unescape(encodeURIComponent(content)));
+    const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/products.json`;
 
-    // no-cors 無法讀回應，等 GAS 處理後用 GET 驗證
-    showStatus('⏳ 驗證中…','loading');
-    await new Promise(r => setTimeout(r, 2500));
-    const vr = await fetch(SCRIPT_URL + '?action=getProductsAdmin&adminPass=' + encodeURIComponent(PASS));
-    const vd = await vr.json();
-    if(vd.success){ setDirty(false); showStatus('✅ 儲存成功！官網商品將在幾秒內更新','success'); }
-    else showStatus('⚠️ 請刷新頁面確認是否儲存成功','error');
-  } catch(ex){ showStatus('❌ 連線失敗，請確認網路後再試','error'); }
+    // 先取得現有檔案的 sha（如果存在）
+    let sha = null;
+    try{
+      const existing = await fetch(apiUrl, { headers: { Authorization: `Bearer ${pat}` } });
+      if(existing.ok){
+        const data = await existing.json();
+        sha = data.sha;
+      }
+    } catch(e){}
+
+    // 推送到 GitHub
+    const body = {
+      message: `更新商品資料 (${new Date().toLocaleString('zh-TW')})`,
+      content: base64
+    };
+    if(sha) body.sha = sha;
+
+    const res = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${pat}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if(res.ok){
+      setDirty(false);
+      showStatus('✅ 儲存成功！官網商品將在幾秒內更新','success');
+    } else {
+      const err = await res.json();
+      showStatus('❌ ' + (err.message || '保存失敗'),'error');
+    }
+  } catch(ex){
+    showStatus('❌ ' + ex.message,'error');
+  }
 }
 
 // ── 圖片彈窗 ──────────────────────────────────────────────────────────────────
