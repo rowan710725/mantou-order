@@ -97,12 +97,13 @@
             position: relative; min-height: 44px; display: flex; align-items: center; justify-content: center;
         }
         .variant-btn.active { background: var(--brown-dark); color: white; }
+        .variant-btn:hover {
+            color: transparent;
+        }
         .variant-btn:hover::after {
             content: attr(data-price-display);
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            color: inherit;
             font-size: 0.9rem;
             font-weight: 700;
         }
