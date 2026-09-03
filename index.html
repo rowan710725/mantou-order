@@ -92,8 +92,20 @@
             font-weight: 700; transition: all 0.18s; line-height: 1;
         }
         .qty-btn:hover { background: var(--gold); color: white; }
-        .variant-btn { flex: 1; padding: 10px 8px; font-size: 0.9rem; text-align: center; }
+        .variant-btn {
+            flex: 1; padding: 10px 8px; font-size: 0.9rem; text-align: center;
+            position: relative; min-height: 44px; display: flex; align-items: center; justify-content: center;
+        }
         .variant-btn.active { background: var(--brown-dark); color: white; }
+        .variant-btn:hover::after {
+            content: attr(data-price-display);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
         .qty-num { font-size: 1.2rem; font-weight: 700; min-width: 28px; text-align: center; color: var(--brown-dark); }
         .sticky-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -650,11 +662,11 @@ function renderProducts() {
                 ${hasAnyVariant ? `
                 <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">規格選擇：</div>
                 <div style="display:flex;gap:8px;margin-bottom:12px;" id="variants-${p.id}">
-                    ${hasVariant1 ? `<button class="qty-btn variant-btn active" data-variant="1" data-price="${p.variant1_price}" data-label="${p.variant1_name}" onclick="selectVariant('${p.id}',this)">
-                        ${p.variant1_name}<br><small style="font-weight:400;font-size:0.75rem;">$${p.variant1_price}</small>
+                    ${hasVariant1 ? `<button class="qty-btn variant-btn active" data-variant="1" data-price="${p.variant1_price}" data-label="${p.variant1_name}" data-price-display="$${p.variant1_price}" onclick="selectVariant('${p.id}',this)">
+                        ${p.variant1_name}
                     </button>` : ''}
-                    ${hasVariant2 ? `<button class="qty-btn variant-btn" data-variant="2" data-price="${p.variant2_price}" data-label="${p.variant2_name}" onclick="selectVariant('${p.id}',this)">
-                        ${p.variant2_name}<br><small style="font-weight:400;font-size:0.75rem;">$${p.variant2_price}</small>
+                    ${hasVariant2 ? `<button class="qty-btn variant-btn" data-variant="2" data-price="${p.variant2_price}" data-label="${p.variant2_name}" data-price-display="$${p.variant2_price}" onclick="selectVariant('${p.id}',this)">
+                        ${p.variant2_name}
                     </button>` : ''}
                 </div>
                 ` : ''}
