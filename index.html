@@ -171,26 +171,45 @@
         .pickup-notice { background: #EEF7EE; border: 1.5px solid #A5D6A7; border-radius: 8px; padding: 18px 20px; margin-bottom: 20px; font-size: 0.95rem; color: #2E7D32; line-height: 1.7; }
         .pickup-line-btn { display: inline-flex; align-items: center; gap: 7px; background: #06C755; color: white; border-radius: 50px; padding: 10px 22px; font-size: 0.92rem; font-weight: 700; text-decoration: none; margin-top: 12px; transition: background 0.2s; }
         .pickup-line-btn:hover { background: #05b34b; }
-        .channel-section { padding: 48px 20px; max-width: 1200px; margin: 0 auto; }
-        .channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; margin: 0 auto; }
-        .channel-card { background: white; border-radius: 8px; padding: 20px 22px 18px; border: 1.5px solid var(--border); display: flex; flex-direction: column; gap: 0; transition: box-shadow 0.2s; }
-        .channel-card:hover { box-shadow: 0 6px 20px rgba(90,60,20,0.12); }
-        .channel-badge { display: inline-block; font-size: 0.88rem; font-weight: 700; padding: 4px 12px; border-radius: 2px; margin-bottom: 12px; }
+        .channel-section { padding: 40px 20px; max-width: 1000px; margin: 0 auto; }
+        .channel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 0 auto; }
+        .channel-card { background: white; border-radius: 6px; padding: 14px 12px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0; transition: box-shadow 0.2s; text-align: center; }
+        .channel-card:hover { box-shadow: 0 3px 12px rgba(90,60,20,0.1); }
+        .channel-wrapper { position: relative; overflow: hidden; min-height: 180px; }
+        .channel-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(92, 58, 30, 0.95);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            pointer-events: none;
+            border-radius: 6px;
+        }
+        .channel-wrapper:hover .channel-overlay { opacity: 1; }
+        .channel-badge { display: none; }
         .badge-family { background: #E8F5E9; color: #2E7D32; }
         .badge-seven { background: #FFF3E0; color: #C45000; }
-        .channel-logo { font-size: 1.9rem; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; }
+        .channel-logo { font-size: 1.1rem; font-weight: 900; margin-bottom: 6px; letter-spacing: -1px; }
         .logo-family { color: #00933B; }
         .logo-seven { color: #EE1C25; }
-        .channel-sub { font-size: 1rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 14px; flex: 1; }
+        .channel-sub { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; flex: 1; }
         .channel-sub strong { color: var(--text); }
-        .channel-fee { display: inline-block; background: var(--cream); border-radius: 4px; padding: 8px 14px; font-size: 1.05rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 16px; border: 1px solid var(--border); }
-        .channel-links { display: flex; flex-direction: column; gap: 10px; }
-        .channel-link { display: block; text-align: center; padding: 13px 16px; border-radius: 4px; font-size: 1.05rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .channel-fee { display: block; background: var(--cream); border-radius: 3px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 10px; border: none; }
+        .channel-links { display: flex; flex-direction: column; gap: 6px; }
+        .channel-link { display: block; text-align: center; padding: 8px 10px; border-radius: 3px; font-size: 0.75rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
         .link-primary-family { background: #00933B; color: white; }
         .link-primary-family:hover { background: #007A30; }
         .link-primary-seven { background: #EE1C25; color: white; }
         .link-primary-seven:hover { background: #C8101A; }
-        .link-secondary { background: var(--cream-card); color: var(--brown-dark); border: 1.5px solid var(--border); }
+        .link-secondary { background: var(--cream-card); color: var(--brown-dark); border: 1px solid var(--border); }
         .link-secondary:hover { background: var(--cream-dark); }
         /* LINE 歡迎彈窗 */
         .line-overlay { position: fixed; inset: 0; background: rgba(40,20,0,0.55); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.35s; }
@@ -325,49 +344,6 @@
 <!-- Banner -->
 <div style="line-height:0;">
     <img src="line_oa_chat_260423_170052.jpg" alt="方王媽媽堅果饅頭" style="width:100%; display:block;">
-</div>
-
-<!-- 購買方式 -->
-<div class="channel-section">
-    <h2 class="sec-title">購買方式</h2>
-    <p class="sec-sub">可選擇超商取貨或官網宅配到府</p>
-    <div class="channel-grid">
-        <div class="channel-card">
-            <span class="channel-badge badge-family">全家便利店</span>
-            <div class="channel-logo logo-family">好賣＋</div>
-            <div class="channel-sub"><strong>全家取貨付款</strong>，3-4 天到貨，4 天內取貨<br><br>🧊 冷凍商品滿 2,500 元免運（未滿運費 99 元）<br>🌡 常溫商品滿 1,500 元免運（未滿運費 38 元）<br>📌 近期好賣+ 結帳區有免運券可領取</div>
-            <div class="channel-fee">🚚 運費 NT$99</div>
-            <div class="channel-links">
-                <a class="channel-link link-primary-family" href="https://famistore.famiport.com.tw/users/240902" target="_blank">好賣＋ 購買平台 →</a>
-                <a class="channel-link link-secondary" href="https://www.a22255663.com.tw" target="_blank">宅配請進官網選購 →</a>
-            </div>
-        </div>
-        <div class="channel-card">
-            <span class="channel-badge badge-seven">7-11 賣貨便</span>
-            <div class="channel-logo logo-seven">賣貨便</div>
-            <div class="channel-sub"><strong>7-11 取貨付款</strong>，3-4 天到貨，4 天內取貨<br><br>🧊 冷凍商品滿 3,000 元免運（未滿運費 129 元）<br>🌡 常溫商品滿 1,500 元免運（未滿運費 38 元）</div>
-            <div class="channel-fee">🚚 運費 NT$129</div>
-            <div class="channel-links">
-                <a class="channel-link link-primary-seven" href="https://myship.7-11.com.tw/general/detail/GM2304147275126" target="_blank">賣貨便 購買平台 →</a>
-                <a class="channel-link link-secondary" href="https://www.a22255663.com.tw" target="_blank">宅配請進官網選購 →</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- LINE 綁定提示 -->
-<div style="background:#E8F5E9; border-top:2px solid #86EFAC; border-bottom:2px solid #86EFAC; padding:18px 24px; text-align:center;">
-    <span style="font-size:1.35rem; margin-right:8px;">💚</span>
-    <span style="font-size:1rem; color:#166534; font-weight:600;">
-        想收到 LINE 訂單確認通知？加入官方帳號
-        <a href="https://line.me/R/ti/p/%40a22255663" target="_blank" style="color:#06C755; font-weight:700; text-decoration:none;">@a22255663</a>，
-        傳送您的手機號碼即可完成設定。
-    </span>
-    <a href="https://line.me/R/ti/p/%40a22255663" target="_blank"
-       style="display:inline-flex; align-items:center; gap:6px; background:#06C755; color:white; border-radius:50px; padding:8px 18px; font-size:0.88rem; font-weight:700; text-decoration:none; margin-left:14px; vertical-align:middle; box-shadow:0 2px 8px rgba(6,199,85,0.3);">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-        立即加入
-    </a>
 </div>
 
 <!-- Products -->
@@ -509,6 +485,46 @@
     </div>
 </div>
 
+<!-- 其它購買方式 -->
+<div class="channel-section">
+    <h2 class="sec-title">其它購買方式</h2>
+    <p class="sec-sub">可選擇超商取貨或官網宅配到府</p>
+    <div class="channel-grid">
+        <div class="channel-card channel-wrapper">
+            <div class="channel-overlay">
+                <div style="font-size:0.88rem; line-height:1.6;">
+                    💚 冷凍商品滿 2,500 元免運（未滿運費 99 元）<br>
+                    🟡 常溫商品滿 1,500 元免運（未滿運費 38 元）<br>
+                    🎁 近期好賣＋結帳區有免運券可領取
+                </div>
+            </div>
+            <div class="channel-logo logo-family">好賣＋</div>
+            <div class="channel-sub"><strong>全家取貨</strong><br>3-4 天到貨</div>
+            <div class="channel-fee">NT$99</div>
+            <div class="channel-links">
+                <a class="channel-link link-primary-family" href="https://famistore.famiport.com.tw/users/240902" target="_blank">購買</a>
+                <a class="channel-link link-secondary" href="https://www.a22255663.com.tw" target="_blank">宅配</a>
+            </div>
+        </div>
+        <div class="channel-card channel-wrapper">
+            <div class="channel-overlay">
+                <div style="font-size:0.88rem; line-height:1.6;">
+                    💚 冷凍商品滿 3,000 元免運（未滿運費 129 元）<br>
+                    🟡 常溫商品滿 1,500 元免運（未滿運費 38 元）<br>
+                    🎁 免運券可在賣貨便平台自動折抵
+                </div>
+            </div>
+            <div class="channel-logo logo-seven">賣貨便</div>
+            <div class="channel-sub"><strong>7-11 取貨</strong><br>3-4 天到貨</div>
+            <div class="channel-fee">NT$129</div>
+            <div class="channel-links">
+                <a class="channel-link link-primary-seven" href="https://myship.7-11.com.tw/general/detail/GM2304147275126" target="_blank">購買</a>
+                <a class="channel-link link-secondary" href="https://www.a22255663.com.tw" target="_blank">宅配</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <footer>
     <div class="f-logo">🥟 方王媽媽堅果饅頭</div>
     <p style="font-size:1.2rem;">官方 LINE：@a22255663　　訂購電話：02-2225-5663</p>
@@ -605,7 +621,8 @@ document.getElementById('pickupLineBtn').href = lineUrl;
 document.getElementById('gateLINEBtn').href   = lineUrl;
 
 function closeLinePopup() { document.getElementById('lineOverlay').classList.remove('show'); }
-setTimeout(function() { document.getElementById('lineOverlay').classList.add('show'); }, 1500);
+// 一開始不要求加入 LINE（改為訂購時要求）
+// setTimeout(function() { document.getElementById('lineOverlay').classList.add('show'); }, 1500);
 
 function renderProducts() {
     document.getElementById('productGrid').innerHTML = PRODUCTS.map(p => {
@@ -758,14 +775,37 @@ function updateBar() {
 let _pendingPhone = '';
 function goToForm() {
     if (!getSelected().length) return;
-    document.getElementById('gateStep1').style.display = 'block';
-    document.getElementById('gateStep2').style.display = 'none';
-    document.getElementById('gatePhone').value = '';
-    document.getElementById('gateError').textContent = '';
-    document.getElementById('gateRecheckMsg').textContent = '';
-    document.getElementById('gateBtnCheck').disabled = true;
-    document.getElementById('gateBtnCheck').textContent = '確認';
-    document.getElementById('phoneGate').classList.add('show');
+    // 直接進入表單，不在這裡要求 LINE 綁定
+    // LINE 綁定改為訂購時要求（submitOrder）
+    const sel = getSelected(); if (!sel.length) return;
+    const sub = getSubtotal(), shipping = getShipping(sub);
+    document.getElementById('reviewItems').innerHTML = sel.map(p => {
+        const variantNum = selectedVariant[p.id] || 1;
+        const variant1Price = p.variant1_price ?? p.price ?? 0;
+        const variant2Price = p.variant2_price ?? p.price ?? 0;
+        const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
+        const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
+        const displayName = variantName ? `${p.name}(${variantName})` : p.name;
+        return `<div class="review-item"><span>${displayName} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
+    }).join('');
+    const shippingFee = document.getElementById('reviewShippingFee');
+    const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
+    if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費 🎉'; shippingFee.style.color = '#27ae60'; }
+    else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運 🎉'; shippingFee.style.color = '#27ae60'; }
+    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString(); shippingFee.style.color = ''; }
+    let codRow = document.getElementById('reviewCODRow');
+    if (!codRow) {
+        codRow = document.createElement('div');
+        codRow.id = 'reviewCODRow';
+        codRow.className = 'review-item';
+        document.getElementById('reviewShipping').after(codRow);
+    }
+    if (getCODFee() > 0) { codRow.innerHTML = `<span>💵 貨到付款代收費</span><span>$${COD_FEE}</span>`; codRow.style.display = ''; }
+    else { codRow.style.display = 'none'; }
+    document.getElementById('reviewTotal').textContent = '$' + getFinalTotal().toLocaleString();
+    const fs = document.getElementById('formSection');
+    fs.style.display = 'block';
+    setTimeout(() => fs.scrollIntoView({ behavior: 'smooth' }), 80);
 }
 function checkPhoneGate() {
     const phone = document.getElementById('gatePhone').value.trim().replace(/[-\s]/g, '');
@@ -785,7 +825,16 @@ function recheckBinding() {
     document.getElementById('gateRecheckMsg').textContent = '';
     checkPhoneAPI(_pendingPhone, 'phoneRecheck', function(data) {
         btn.disabled = false; btn.textContent = '我已完成，繼續下單 →';
-        if (data.bound) { proceedWithPhone(_pendingPhone); }
+        if (data.bound) {
+            if (_awaitingLineBinding) {
+                // 來自 submitOrder，驗證成功後繼續提交訂單
+                _awaitingLineBinding = false;
+                proceedWithOrderSubmit();
+            } else {
+                // 普通 LINE 綁定流程
+                proceedWithPhone(_pendingPhone);
+            }
+        }
         else { document.getElementById('gateRecheckMsg').textContent = '尚未偵測到綁定，請確認已傳送手機號碼給 LINE 官方帳號'; }
     });
 }
@@ -798,6 +847,41 @@ function proceedWithPhone(phone) {
     document.getElementById('phoneGate').classList.remove('show');
     document.getElementById('fPhone').value = phone;
     _fillForm();
+}
+// 訂購時 LINE 綁定驗證成功後，繼續提交訂單
+async function proceedWithOrderSubmit() {
+    document.getElementById('phoneGate').classList.remove('show');
+    const name = document.getElementById('fName').value.trim();
+    const phone = document.getElementById('fPhone').value.trim();
+    const address = deliveryMode === 'pickup' ? '【自取】' + (document.getElementById('fPickupTime').value.trim() || '') : document.getElementById('fAddress').value.trim();
+    const note = document.getElementById('fNote').value.trim();
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true; btn.textContent = '送出中…';
+    const sub = getSubtotal(), shipping = getShipping(sub);
+    const codFee = getCODFee();
+    const payment = paymentMode === 'cod' ? '貨到付款' : '銀行匯款';
+    const orderData = { timestamp: new Date().toLocaleString('zh-TW'), name, phone, address, note, payment, items: getSelected().map(p => `${p.name}×${qty[p.id]}`).join('、'), total: getFinalTotal(), shipping: shipping + codFee };
+    try {
+        const params = new URLSearchParams({ action: 'submitOrder', name: orderData.name, phone: orderData.phone, address: orderData.address, items: orderData.items, total: orderData.total, shipping: orderData.shipping, payment: orderData.payment, note: orderData.note || '', timestamp: orderData.timestamp });
+        await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
+    } catch(e) { console.log(e); }
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('stickyBar').classList.remove('show');
+    const amountNote = orderData.shipping > 0 ? `（含運費 $${orderData.shipping}）` : '（已免運費）';
+    document.getElementById('payAmount').textContent = '$' + orderData.total.toLocaleString() + amountNote;
+    if (paymentMode === 'cod') {
+        document.getElementById('paySub').textContent = '訂單已確認！配送員送達時付款即可。';
+        document.getElementById('payBankSection').style.display = 'none';
+        document.getElementById('payCODSection').style.display = '';
+    } else {
+        document.getElementById('paySub').innerHTML = '請於 <strong>24 小時內</strong> 完成匯款，逾時訂單將自動取消';
+        document.getElementById('payBankSection').style.display = '';
+        document.getElementById('payCODSection').style.display = 'none';
+    }
+    const pay = document.getElementById('paySection');
+    pay.style.display = 'block';
+    setTimeout(() => pay.scrollIntoView({ behavior: 'smooth' }), 80);
+    btn.disabled = false; btn.textContent = '確認訂購';
 }
 function _fillForm() {
     const sel = getSelected(); if (!sel.length) return;
@@ -831,6 +915,7 @@ function _fillForm() {
     fs.style.display = 'block';
     setTimeout(() => fs.scrollIntoView({ behavior: 'smooth' }), 80);
 }
+let _awaitingLineBinding = false; // 用來標記是否等待 LINE 綁定後提交
 async function submitOrder() {
     const name = document.getElementById('fName').value.trim();
     const phone = document.getElementById('fPhone').value.trim();
@@ -839,6 +924,16 @@ async function submitOrder() {
     if (!name) { alert('請填寫姓名！'); return; }
     if (deliveryMode === 'delivery' && !document.getElementById('fAddress').value.trim()) { alert('請填寫收件地址！'); return; }
     if (deliveryMode === 'pickup' && !document.getElementById('fPickupTime').value.trim()) { alert('請填寫希望取貨時間！'); return; }
+    // 訂購時要求加入 LINE
+    if (!phone) { alert('請輸入有效的手機號碼！'); return; }
+    _pendingPhone = phone;
+    _awaitingLineBinding = true;
+    document.getElementById('gateStep1').style.display = 'none';
+    document.getElementById('gateStep2').style.display = 'block';
+    document.getElementById('gateRecheckMsg').textContent = '';
+    document.getElementById('gateBtnRecheck').textContent = '我已完成，繼續下單 →';
+    document.getElementById('phoneGate').classList.add('show');
+    return; // 等待用戶完成 LINE 綁定後繼續
     const btn = document.getElementById('btnSubmit');
     btn.disabled = true; btn.textContent = '送出中…';
     const sub = getSubtotal(), shipping = getShipping(sub);
