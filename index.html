@@ -178,7 +178,10 @@
         .channel-wrapper { position: relative; overflow: hidden; min-height: 180px; }
         .channel-overlay {
             position: absolute;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 50px;
             background: rgba(92, 58, 30, 0.95);
             color: white;
             display: flex;
@@ -191,7 +194,7 @@
             font-size: 0.85rem;
             line-height: 1.6;
             pointer-events: none;
-            border-radius: 6px;
+            border-radius: 6px 6px 0 0;
         }
         .channel-wrapper:hover .channel-overlay { opacity: 1; }
         .channel-badge { display: none; }
@@ -488,7 +491,7 @@
 <!-- 其它購買方式 -->
 <div class="channel-section">
     <h2 class="sec-title">其它購買方式</h2>
-    <p class="sec-sub">可選擇超商取貨或官網宅配到府</p>
+    <p class="sec-sub">超商貨到付款</p>
     <div class="channel-grid">
         <div class="channel-card channel-wrapper">
             <div class="channel-overlay">
@@ -503,7 +506,6 @@
             <div class="channel-fee">NT$99</div>
             <div class="channel-links">
                 <a class="channel-link link-primary-family" href="https://famistore.famiport.com.tw/users/240902" target="_blank">購買</a>
-                <a class="channel-link link-secondary" href="https://www.a22255663.com.tw" target="_blank">宅配</a>
             </div>
         </div>
         <div class="channel-card channel-wrapper">
@@ -519,7 +521,6 @@
             <div class="channel-fee">NT$129</div>
             <div class="channel-links">
                 <a class="channel-link link-primary-seven" href="https://myship.7-11.com.tw/general/detail/GM2304147275126" target="_blank">購買</a>
-                <a class="channel-link link-secondary" href="https://www.a22255663.com.tw" target="_blank">宅配</a>
             </div>
         </div>
     </div>
