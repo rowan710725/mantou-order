@@ -94,18 +94,26 @@
         .qty-btn:hover { background: var(--gold); color: white; }
         .variant-btn {
             flex: 1; padding: 10px 8px; font-size: 0.9rem; text-align: center;
-            position: relative; min-height: 44px; display: flex; align-items: center; justify-content: center;
+            position: relative; min-height: auto; display: block;
+            color: var(--text);
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .variant-btn.active { background: var(--brown-dark); color: white; }
         .variant-btn:hover {
-            color: transparent;
+            border-color: var(--gold);
+        }
+        .variant-btn.active {
+            background: var(--brown-dark);
+            color: white;
+            border-color: var(--brown-dark);
         }
         .variant-btn:hover::after {
             content: attr(data-price-display);
-            position: absolute;
-            color: inherit;
-            font-size: 0.9rem;
             font-weight: 700;
+            font-size: 0.95rem;
         }
         .qty-num { font-size: 1.2rem; font-weight: 700; min-width: 28px; text-align: center; color: var(--brown-dark); }
         .sticky-bar {
