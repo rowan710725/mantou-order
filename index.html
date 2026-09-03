@@ -104,11 +104,15 @@
         }
         .variant-btn:hover {
             border-color: var(--gold);
+            color: transparent;
         }
         .variant-btn.active {
             background: var(--brown-dark);
             color: white;
             border-color: var(--brown-dark);
+        }
+        .variant-btn.active:hover {
+            color: transparent;
         }
         .variant-btn:hover::after {
             content: attr(data-price-display);
