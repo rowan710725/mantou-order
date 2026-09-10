@@ -296,18 +296,14 @@ async function login(){
   const errEl=document.getElementById('loginError');
   errEl.textContent='驗證中…';
   try{
-    // 簡單的前端密碼驗證
-    const CORRECT_PASS = 'Fw#9mT@2026';
-    if(pass !== CORRECT_PASS){
+    // 向 GAS 驗證密碼（前端不存密碼）
+    const vr = await fetch(SCRIPT_URL + '?action=getProductsAdmin&adminPass=' + encodeURIComponent(pass));
+    const vd = await vr.json();
+    if(!vd.success){
       errEl.textContent='密碼錯誤，請再試一次';
       return;
     }
-
-    // 從 GitHub 讀取 products.json
-    const prodUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/products.json`;
-    const pr = await fetch(prodUrl);
-    if(!pr.ok) throw new Error('無法讀取商品資料');
-    products = await pr.json();
+    products = vd.products;
 
     PASS = pass;
     document.getElementById('loginScreen').style.display = 'none';
