@@ -866,7 +866,8 @@ function goToForm() {
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
         const displayName = variantName ? `${p.name}(${variantName})` : p.name;
-        return `<div class="review-item"><span>${displayName} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
+        const codeDisplay = p.code ? ` [${p.code}]` : '';
+        return `<div class="review-item"><span>${displayName}${codeDisplay} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
     }).join('');
     const shippingFee = document.getElementById('reviewShippingFee');
     const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
@@ -973,7 +974,8 @@ function _fillForm() {
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
         const displayName = variantName ? `${p.name}(${variantName})` : p.name;
-        return `<div class="review-item"><span>${displayName} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
+        const codeDisplay = p.code ? ` [${p.code}]` : '';
+        return `<div class="review-item"><span>${displayName}${codeDisplay} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
     }).join('');
     const shippingFee = document.getElementById('reviewShippingFee');
     const shippingSpan = document.getElementById('reviewShipping').querySelector('span');

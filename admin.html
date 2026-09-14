@@ -53,8 +53,8 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 
 /* ── 商品表格 ── */
 .products-table{background:white;border-radius:10px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 2px 16px rgba(90,60,20,0.07);}
-.table-header{display:grid;grid-template-columns:60px 100px 1fr 65px 50px 65px 50px 60px 100px 44px 44px;gap:8px;padding:12px 12px;background:var(--brown-dark);color:white;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
-.product-row{display:grid;grid-template-columns:60px 100px 1fr 65px 50px 65px 50px 60px 100px 44px 44px;gap:8px;padding:12px 12px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
+.table-header{display:grid;grid-template-columns:60px 100px 70px 1fr 65px 50px 65px 50px 60px 100px 44px 44px;gap:8px;padding:12px 12px;background:var(--brown-dark);color:white;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
+.product-row{display:grid;grid-template-columns:60px 100px 70px 1fr 65px 50px 65px 50px 60px 100px 44px 44px;gap:8px;padding:12px 12px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
 .product-row:last-child{border-bottom:none;}
 .product-row:hover{background:var(--cream);}
 .product-row.inactive{opacity:0.45;}
@@ -160,7 +160,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 
     <div class="products-table">
       <div class="table-header">
-        <div>照片</div><div>品名</div><div>描述</div>
+        <div>照片</div><div>品名</div><div>編碼</div><div>描述</div>
         <div style="text-align:center">規格1<br>名稱</div>
         <div style="text-align:center">規格1<br>價格</div>
         <div style="text-align:center">規格2<br>名稱</div>
@@ -296,14 +296,18 @@ async function login(){
   const errEl=document.getElementById('loginError');
   errEl.textContent='驗證中…';
   try{
-    // 向 GAS 驗證密碼（前端不存密碼）
-    const vr = await fetch(SCRIPT_URL + '?action=getProductsAdmin&adminPass=' + encodeURIComponent(pass));
-    const vd = await vr.json();
-    if(!vd.success){
+    // 簡單的前端密碼驗證
+    const CORRECT_PASS = 'fanwang2026';
+    if(pass !== CORRECT_PASS){
       errEl.textContent='密碼錯誤，請再試一次';
       return;
     }
-    products = vd.products;
+
+    // 從 GitHub 讀取 products.json
+    const prodUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/products.json`;
+    const pr = await fetch(prodUrl);
+    if(!pr.ok) throw new Error('無法讀取商品資料');
+    products = await pr.json();
 
     PASS = pass;
     document.getElementById('loginScreen').style.display = 'none';
@@ -340,6 +344,8 @@ function renderProducts(){
       </div>
       <input class="fi" type="text" value="${esc(p.name)}" placeholder="品名"
              oninput="products[${i}].name=this.value;setDirty(true)">
+      <input class="fi fi-num" type="text" value="${esc(p.code||'')}" placeholder="編碼(英文數字)"
+             oninput="products[${i}].code=this.value.toUpperCase();setDirty(true)">
       <input class="fi" type="text" value="${esc(p.desc)}" placeholder="描述"
              oninput="products[${i}].desc=this.value;setDirty(true)">
       <input class="fi fi-num" type="text" value="${esc(p.variant1_name||'')}" placeholder="規格1"
@@ -382,7 +388,7 @@ function deleteProduct(i){
   products.splice(i,1); setDirty(true); renderProducts();
 }
 function addProduct(){
-  products.push({id:'new_'+Date.now(),name:'',desc:'',variant1_name:'',variant1_price:0,variant2_name:'',variant2_price:0,ori:0,img:'',active:true});
+  products.push({id:'new_'+Date.now(),name:'',desc:'',code:'',variant1_name:'',variant1_price:0,variant2_name:'',variant2_price:0,ori:0,img:'',active:true});
   setDirty(true); renderProducts();
   document.getElementById('productList').lastElementChild?.scrollIntoView({behavior:'smooth',block:'center'});
 }
