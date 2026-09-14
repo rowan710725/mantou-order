@@ -461,11 +461,7 @@
         <div class="form-group"><label>姓名 *</label><input id="fName" type="text" placeholder="請輸入您的姓名"></div>
         <div class="form-group">
             <label>電話 *</label>
-            <div style="display:flex; gap:10px;">
-                <input id="fPhone" type="tel" placeholder="09XXXXXXXX" style="flex:1;" maxlength="10">
-                <button type="button" onclick="verifyPhoneInForm()" style="padding:10px 20px; background:#5C3A1E; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">驗證</button>
-            </div>
-            <div id="phoneVerifyMsg" style="margin-top:8px; font-size:0.9rem; color:#666; display:none;"></div>
+            <input id="fPhone" type="tel" placeholder="09XXXXXXXX" maxlength="10">
         </div>
         <div class="form-group" id="addressGroup"><label>收件地址 *</label><input id="fAddress" type="text" placeholder="請輸入完整收件地址（含縣市區里）"></div>
         <div class="form-group" id="pickupTimeGroup" style="display:none;"><label>希望取貨時間 *</label><input id="fPickupTime" type="text" placeholder="例：5/10（六）上午 10:00 ~ 12:00"></div>
@@ -679,7 +675,7 @@ let PRODUCTS = [
     { id:'mush',  name:'香菇原蹄',     desc:'200g 裝，香脆下飯',                price:110, ori:150, img:'mush.jpeg' },
     { id:'flt35', name:'蜂梨糖(小)',   desc:'50g 裝，隨身享用',                 price: 35, ori: 40, img:'flt35.jpeg' },
 ];
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdlmcAg8DkY8YmE9KNYO75HLB-WPrZmC2RX0mWhB40dyDNrQmPRw2kwmvSmj4XrS2A2w/exec';
+const SCRIPT_URL          = 'https://script.google.com/macros/s/AKfycbzdlmcAg8DkY8YmE9KNYO75HLB-WPrZmC2RX0mWhB40dyDNrQmPRw2kwmvSmj4XrS2A2w/exec';
 const LINE_ID             = '@a22255663';
 const FREE_SHIPPING_LIMIT = 3500;
 const SHIPPING_FEE        = 200;
@@ -885,11 +881,11 @@ function checkPhoneGate() {
     _pendingPhone = phone;
     const btn = document.getElementById('gateBtnCheck');
     btn.disabled = true; btn.textContent = '確認中…';
-    checkPhoneAPI(phone, 'phoneCheck', function(data) {
+    // 直接進入下單，不檢查 LINE 綁定
+    setTimeout(() => {
         btn.disabled = false; btn.textContent = '確認';
-        if (data.bound) { proceedWithPhone(phone); }
-        else { document.getElementById('gateStep1').style.display = 'none'; document.getElementById('gateStep2').style.display = 'block'; }
-    });
+        proceedWithPhone(phone);
+    }, 500);
 }
 function recheckBinding() {
     const btn = document.getElementById('gateBtnRecheck');
@@ -998,14 +994,6 @@ async function submitOrder() {
     if (deliveryMode === 'pickup' && !document.getElementById('fPickupTime').value.trim()) { alert('請填寫希望取貨時間！'); return; }
     // 訂購時要求加入 LINE
     if (!phone) { alert('請輸入有效的手機號碼！'); return; }
-    _pendingPhone = phone;
-    _awaitingLineBinding = true;
-    document.getElementById('gateStep1').style.display = 'none';
-    document.getElementById('gateStep2').style.display = 'block';
-    document.getElementById('gateRecheckMsg').textContent = '';
-    document.getElementById('gateBtnRecheck').textContent = '我已完成，繼續下單 →';
-    document.getElementById('phoneGate').classList.add('show');
-    return; // 等待用戶完成 LINE 綁定後繼續
     const btn = document.getElementById('btnSubmit');
     btn.disabled = true; btn.textContent = '送出中…';
     const sub = getSubtotal(), shipping = getShipping(sub);
