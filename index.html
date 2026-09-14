@@ -824,7 +824,7 @@ function updateOrderReviewIfVisible() {
         const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
         if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
         else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-        else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString(); shippingFee.style.color = ''; }
+        else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString() + '運費'; shippingFee.style.color = ''; }
         let codRow = document.getElementById('reviewCODRow');
         if (!codRow) {
             codRow = document.createElement('div');
@@ -872,7 +872,7 @@ function goToForm() {
     const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
     if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
     else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString(); shippingFee.style.color = ''; }
+    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString() + '運費'; shippingFee.style.color = ''; }
     let codRow = document.getElementById('reviewCODRow');
     if (!codRow) {
         codRow = document.createElement('div');
@@ -979,7 +979,7 @@ function _fillForm() {
     const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
     if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
     else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString(); shippingFee.style.color = ''; }
+    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString() + '運費'; shippingFee.style.color = ''; }
     // 貨到付款代收費
     let codRow = document.getElementById('reviewCODRow');
     if (!codRow) {
