@@ -739,7 +739,7 @@ function renderProducts() {
         </div>
     `}).join('');
 }
-function changeQty(id, d) { qty[id] = Math.max(0, qty[id] + d); document.getElementById('q-' + id).textContent = qty[id]; refresh(); }
+function changeQty(id, d) { qty[id] = Math.max(0, qty[id] + d); document.getElementById('q-' + id).textContent = qty[id]; refresh(); updateOrderReviewIfVisible(); }
 function removeItem(id) { qty[id] = 0; document.getElementById('q-' + id).textContent = '0'; refresh(); }
 function renderCart() {
     const sel = getSelected();
@@ -807,21 +807,33 @@ function setDelivery(mode) {
     if (mode === 'pickup') { setPayment('bank'); document.getElementById('paymentGroup').style.display = 'none'; }
     else { document.getElementById('paymentGroup').style.display = ''; }
     updateBar();
+    updateOrderReviewIfVisible();
 }
 function setPayment(mode) {
     paymentMode = mode;
     document.getElementById('optBank').classList.toggle('active', mode === 'bank');
     document.getElementById('optCOD').classList.toggle('active', mode === 'cod');
     updateBar();
-    // 即時更新訂單摘要的代收費與總計
-    const codRow = document.getElementById('reviewCODRow');
-    if (codRow) {
-        if (getCODFee() > 0) {
-            codRow.innerHTML = `<span>💵 貨到付款代收費</span><span>$${COD_FEE}</span>`;
-            codRow.style.display = '';
-        } else {
-            codRow.style.display = 'none';
+    updateOrderReviewIfVisible();
+}
+function updateOrderReviewIfVisible() {
+    const fs = document.getElementById('formSection');
+    if (fs && fs.style.display !== 'none') {
+        const sub = getSubtotal(), shipping = getShipping(sub);
+        const shippingFee = document.getElementById('reviewShippingFee');
+        const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
+        if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
+        else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
+        else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString(); shippingFee.style.color = ''; }
+        let codRow = document.getElementById('reviewCODRow');
+        if (!codRow) {
+            codRow = document.createElement('div');
+            codRow.id = 'reviewCODRow';
+            codRow.className = 'review-item';
+            document.getElementById('reviewShipping').after(codRow);
         }
+        if (getCODFee() > 0) { codRow.innerHTML = `<span>💵 貨到付款代收費</span><span>$${COD_FEE}</span>`; codRow.style.display = ''; }
+        else { codRow.style.display = 'none'; }
         document.getElementById('reviewTotal').textContent = '$' + getFinalTotal().toLocaleString();
     }
 }
@@ -1070,6 +1082,7 @@ function selectVariant(productId, btn) {
   document.getElementById('price-' + productId).textContent = `$${price}`;
 
   refresh(); // 刷新购物车显示
+  updateOrderReviewIfVisible();
 }
 loadProducts();
 
