@@ -77,7 +77,6 @@
         .img-wrapper-hover:hover .desc-overlay { opacity: 1; }
         .prod-body { padding: 18px 20px 20px; }
         .prod-name { font-size: 1.1rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 6px; }
-        .prod-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; display: none; }
         .prod-divider { height: 1px; background: var(--border); margin-bottom: 14px; }
         .prod-price { display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; }
         .price-now { font-size: 1.35rem; font-weight: 700; color: #B8391C; }
@@ -230,9 +229,6 @@
             border-radius: 6px 6px 0 0;
         }
         .channel-wrapper:hover .channel-overlay { opacity: 1; }
-        .channel-badge { display: none; }
-        .badge-family { background: #E8F5E9; color: #2E7D32; }
-        .badge-seven { background: #FFF3E0; color: #C45000; }
         .channel-logo { font-size: 1.1rem; font-weight: 900; margin-bottom: 6px; letter-spacing: -1px; }
         .logo-family { color: #00933B; }
         .logo-seven { color: #EE1C25; }
@@ -260,26 +256,6 @@
         .line-popup-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #06C755; color: white; border: none; border-radius: 50px; padding: 14px 28px; font-size: 1rem; font-weight: 700; cursor: pointer; text-decoration: none; width: 100%; font-family: inherit; transition: background 0.2s; box-shadow: 0 4px 14px rgba(6,199,85,0.3); margin-bottom: 12px; }
         .line-popup-btn:hover { background: #05b34b; }
         .line-popup-later { background: none; border: none; color: #C0AB95; font-size: 0.85rem; cursor: pointer; font-family: inherit; padding: 4px 8px; }
-        /* 手機號碼驗證關卡 */
-        .gate-overlay { position: fixed; inset: 0; background: rgba(40,20,0,0.65); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-        .gate-overlay.show { opacity: 1; pointer-events: all; }
-        .gate-popup { background: white; border-radius: 14px; padding: 36px 28px 28px; max-width: 360px; width: 100%; text-align: center; transform: translateY(24px) scale(0.96); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); border: 1.5px solid var(--border); }
-        .gate-overlay.show .gate-popup { transform: translateY(0) scale(1); }
-        .gate-icon { font-size: 2.8rem; margin-bottom: 12px; }
-        .gate-title { font-size: 1.15rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 6px; }
-        .gate-sub { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 22px; }
-        .gate-input { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 1.1rem; font-family: inherit; outline: none; text-align: center; letter-spacing: 2px; color: var(--text); transition: border-color 0.2s; background: var(--cream-card); }
-        .gate-input:focus { border-color: var(--gold); background: white; }
-        .gate-error { color: #c0392b; font-size: 0.83rem; margin: 8px 0 0; min-height: 20px; }
-        .gate-btn { width: 100%; margin-top: 16px; background: var(--brown-dark); color: white; border: none; border-radius: 8px; padding: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s; }
-        .gate-btn:hover { background: var(--brown); }
-        .gate-btn:disabled { background: #C0B09A; cursor: not-allowed; }
-        .gate-line-box { background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 10px; padding: 20px 18px; margin-top: 4px; text-align: left; }
-        .gate-line-box .step { font-size: 0.9rem; color: #166534; line-height: 2; }
-        .gate-line-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #06C755; color: white; border: none; border-radius: 50px; padding: 13px 24px; font-size: 0.95rem; font-weight: 700; cursor: pointer; text-decoration: none; width: 100%; font-family: inherit; transition: background 0.2s; box-shadow: 0 4px 12px rgba(6,199,85,0.3); margin: 14px 0 0; }
-        .gate-line-btn:hover { background: #05b34b; }
-        .gate-recheck-msg { font-size: 0.83rem; color: #c0392b; margin-top: 8px; min-height: 18px; }
-        .gate-back { background: none; border: none; color: var(--text-muted); font-size: 0.83rem; cursor: pointer; font-family: inherit; margin-top: 10px; text-decoration: underline; }
         footer { background: var(--cream-dark); border-top: 1.5px solid var(--border); color: var(--brown-dark); text-align: center; padding: 48px 24px; margin-top: 60px; }
         footer .f-logo { font-size: 1.1rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 10px; letter-spacing: 2px; }
         footer p { color: var(--text-muted); font-size: 0.88rem; line-height: 2; }
@@ -344,38 +320,6 @@
     </div>
 </div>
 
-<!-- 手機號碼驗證關卡 -->
-<div class="gate-overlay" id="phoneGate">
-    <div class="gate-popup">
-        <div id="gateStep1">
-            <div class="gate-icon">📱</div>
-            <div class="gate-title">請輸入您的手機號碼</div>
-            <div class="gate-sub">綁定 LINE 官方帳號後，<br>下單即可自動收到訂單確認通知</div>
-            <input class="gate-input" id="gatePhone" type="tel" maxlength="10"
-                   placeholder="09XXXXXXXX"
-                   oninput="this.value=this.value.replace(/[^0-9]/g,'');onGatePhoneInput(this.value)"
-                   onkeydown="if(event.key==='Enter')checkPhoneGate()">
-            <div class="gate-error" id="gateError"></div>
-            <button class="gate-btn" id="gateBtnCheck" onclick="checkPhoneGate()" disabled>確認</button>
-        </div>
-        <div id="gateStep2" style="display:none;">
-            <div class="gate-icon">💚</div>
-            <div class="gate-title">加入 LINE 官方帳號</div>
-            <div class="gate-line-box">
-                <div class="step">① 點下方按鈕加入 LINE 官方帳號</div>
-                <div class="step">② 傳送您的手機號碼給官方帳號</div>
-                <div class="step">③ 收到「綁定成功」後回來按確認</div>
-                <a class="gate-line-btn" id="gateLINEBtn" href="#" target="_blank">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-                    加入 LINE 官方帳號
-                </a>
-            </div>
-            <button class="gate-btn" id="gateBtnRecheck" onclick="recheckBinding()" style="margin-top:14px;">我已完成，繼續下單 →</button>
-            <div class="gate-recheck-msg" id="gateRecheckMsg"></div>
-            <button class="gate-back" onclick="backToPhoneInput()">← 重新輸入手機號碼</button>
-        </div>
-    </div>
-</div>
 
 <!-- Banner -->
 <div style="line-height:0;">
@@ -586,74 +530,15 @@ function validatePhone(v) {
     return '';
 }
 
-/** 手機關卡 input 事件處理 */
-function onGatePhoneInput(v) {
-    const err = document.getElementById('gateError');
-    const btn = document.getElementById('gateBtnCheck');
-    const msg = validatePhone(v);
-    err.textContent = msg;
-    btn.disabled = (v.length < 10 || msg !== '');
-}
-
 /** 同時更新購物車與底部 bar */
 function refresh() { renderCart(); updateBar(); }
 
-/**
- * 共用 JSONP 手機綁定查詢
- * @param {string} phone  完整手機號碼
- * @param {string} prefix callback 名稱前綴
- * @param {function} onResult  callback({ bound })
- */
-function checkPhoneAPI(phone, prefix, onResult) {
-    const cbName = prefix + '_' + Date.now();
-    let done = false;
-    window[cbName] = function(data) {
-        if (done) return; done = true;
-        delete window[cbName];
-        onResult(data);
-    };
-    const s = document.createElement('script');
-    s.src = SCRIPT_URL + '?action=checkPhone&phone=' + encodeURIComponent(phone) + '&callback=' + cbName;
-    s.onerror = function() { if (!done) { done = true; onResult({ bound: false }); } };
-    document.head.appendChild(s);
-    setTimeout(function() { if (!done && window[cbName]) window[cbName]({ bound: false }); }, 8000);
-}
-
-// 訂購表單中的手機驗證
-function verifyPhoneInForm() {
-    const phone = document.getElementById('fPhone').value.trim().replace(/[-\s]/g, '');
-    const msgEl = document.getElementById('phoneVerifyMsg');
-
-    if (!phone) {
-        msgEl.textContent = '請輸入電話號碼';
-        msgEl.style.display = 'block';
-        msgEl.style.color = '#C9391C';
-        return;
-    }
-
-    if (!/^09\d{8}$/.test(phone)) {
-        msgEl.textContent = '請輸入正確的手機號碼（09XXXXXXXX）';
-        msgEl.style.display = 'block';
-        msgEl.style.color = '#C9391C';
-        return;
-    }
-
-    msgEl.textContent = '驗證中...';
-    msgEl.style.display = 'block';
-    msgEl.style.color = '#666';
-
-    checkPhoneAPI(phone, 'formPhoneCheck', function(data) {
-        if (data.bound) {
-            msgEl.textContent = '✓ 已驗證（已綁定 LINE）';
-            msgEl.style.color = '#2E7D32';
-        } else {
-            msgEl.textContent = '✓ 號碼有效';
-            msgEl.style.color = '#2E7D32';
-        }
-    });
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
+
+/** 規格價格若是 0（代表還沒填價），要退回商品基本售價，不能直接當真的 $0 */
+function resolvePrice(variantPrice, basePrice) {
+    return (variantPrice > 0) ? variantPrice : basePrice;
+}
 
 let PRODUCTS = [
     { id:'zp',    name:'招牌饅頭',     desc:'內含六種堅果、葡萄乾、煙燻乳酪', price:300, ori:325, img:'zp.jpeg' },
@@ -686,7 +571,6 @@ const lineUrl = 'https://line.me/R/ti/p/' + encodeURIComponent(LINE_ID);
 document.getElementById('lineAddBtn').href    = lineUrl;
 document.getElementById('linePopupBtn').href  = lineUrl;
 document.getElementById('pickupLineBtn').href = lineUrl;
-document.getElementById('gateLINEBtn').href   = lineUrl;
 
 function closeLinePopup() { document.getElementById('lineOverlay').classList.remove('show'); }
 // 一開始不要求加入 LINE（改為訂購時要求）
@@ -698,7 +582,7 @@ function renderProducts() {
         const hasVariant2 = p.variant2_name && p.variant2_price;
         const hasAnyVariant = hasVariant1 || hasVariant2;
         const defaultVariant = p.variant1_name || '標準';
-        const defaultPrice = p.variant1_price ?? p.price ?? 0;
+        const defaultPrice = resolvePrice(p.variant1_price, p.price);
         const priceDisplay = hasAnyVariant ? (hasVariant2 ? `$${defaultPrice}~$${p.variant2_price}` : `$${defaultPrice}`) : `$${p.price}`;
         const priceUnit = hasAnyVariant ? '' : '/ 包';
 
@@ -712,7 +596,6 @@ function renderProducts() {
             </div>
             <div class="prod-body">
                 <div class="prod-name">${p.name}</div>
-                <div class="prod-desc">${p.desc}</div>
                 <div class="prod-divider"></div>
                 ${hasAnyVariant ? `
                 <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">規格選擇：</div>
@@ -750,8 +633,8 @@ function renderCart() {
     const remain = FREE_SHIPPING_LIMIT - sub;
     document.getElementById('cartItemsList').innerHTML = sel.map(p => {
         const variantNum = selectedVariant[p.id] || 1;
-        const variant1Price = p.variant1_price ?? p.price ?? 0;
-        const variant2Price = p.variant2_price ?? p.price ?? 0;
+        const variant1Price = resolvePrice(p.variant1_price, p.price);
+        const variant2Price = resolvePrice(p.variant2_price, p.price);
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
         const displayName = variantName ? `${p.name}(${variantName})` : p.name;
@@ -787,8 +670,8 @@ function renderCart() {
 function getSubtotal() {
     return PRODUCTS.reduce((s, p) => {
         const variantNum = selectedVariant[p.id] || 1;
-        const variant1Price = p.variant1_price ?? p.price ?? 0;
-        const variant2Price = p.variant2_price ?? p.price ?? 0;
+        const variant1Price = resolvePrice(p.variant1_price, p.price);
+        const variant2Price = resolvePrice(p.variant2_price, p.price);
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
         return s + qty[p.id] * currentPrice;
     }, 0);
@@ -818,24 +701,7 @@ function setPayment(mode) {
 }
 function updateOrderReviewIfVisible() {
     const fs = document.getElementById('formSection');
-    if (fs && fs.style.display !== 'none') {
-        const sub = getSubtotal(), shipping = getShipping(sub);
-        const shippingFee = document.getElementById('reviewShippingFee');
-        const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
-        if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-        else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-        else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString() + '運費'; shippingFee.style.color = ''; }
-        let codRow = document.getElementById('reviewCODRow');
-        if (!codRow) {
-            codRow = document.createElement('div');
-            codRow.id = 'reviewCODRow';
-            codRow.className = 'review-item';
-            document.getElementById('reviewShipping').after(codRow);
-        }
-        if (getCODFee() > 0) { codRow.innerHTML = `<span>💵 貨到付款代收費</span><span>$${COD_FEE}</span>`; codRow.style.display = ''; }
-        else { codRow.style.display = 'none'; }
-        document.getElementById('reviewTotal').textContent = '$' + getFinalTotal().toLocaleString();
-    }
+    if (fs && fs.style.display !== 'none') renderOrderReview();
 }
 function getShipping(s) { if (deliveryMode === 'pickup') return 0; return s >= FREE_SHIPPING_LIMIT ? 0 : SHIPPING_FEE; }
 function getCODFee()    { return (deliveryMode !== 'pickup' && paymentMode === 'cod') ? COD_FEE : 0; }
@@ -852,152 +718,43 @@ function updateBar() {
 }
 
 // ── 手機驗證關卡 ──────────────────────────────────────────────────────────────
-let _pendingPhone = '';
+/** 訂單審核區塊共用渲染邏輯（goToForm 進場時、切換配送/付款方式時都要用） */
+function renderOrderReview() {
+    const sel = getSelected();
+    document.getElementById('reviewItems').innerHTML = sel.map(p => {
+        const variantNum = selectedVariant[p.id] || 1;
+        const variant1Price = resolvePrice(p.variant1_price, p.price);
+        const variant2Price = resolvePrice(p.variant2_price, p.price);
+        const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
+        const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
+        const displayName = variantName ? `${p.name}(${variantName})` : p.name;
+        const codeDisplay = p.code ? ` [${p.code}]` : '';
+        return `<div class="review-item"><span>${displayName}${codeDisplay} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
+    }).join('');
+    const sub = getSubtotal(), shipping = getShipping(sub);
+    const shippingFee = document.getElementById('reviewShippingFee');
+    const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
+    if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
+    else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
+    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString() + '運費'; shippingFee.style.color = ''; }
+    let codRow = document.getElementById('reviewCODRow');
+    if (!codRow) {
+        codRow = document.createElement('div');
+        codRow.id = 'reviewCODRow';
+        codRow.className = 'review-item';
+        document.getElementById('reviewShipping').after(codRow);
+    }
+    if (getCODFee() > 0) { codRow.innerHTML = `<span>💵 貨到付款代收費</span><span>$${COD_FEE}</span>`; codRow.style.display = ''; }
+    else { codRow.style.display = 'none'; }
+    document.getElementById('reviewTotal').textContent = '$' + getFinalTotal().toLocaleString();
+}
 function goToForm() {
     if (!getSelected().length) return;
-    // 直接進入表單，不在這裡要求 LINE 綁定
-    // LINE 綁定改為訂購時要求（submitOrder）
-    const sel = getSelected(); if (!sel.length) return;
-    const sub = getSubtotal(), shipping = getShipping(sub);
-    document.getElementById('reviewItems').innerHTML = sel.map(p => {
-        const variantNum = selectedVariant[p.id] || 1;
-        const variant1Price = p.variant1_price ?? p.price ?? 0;
-        const variant2Price = p.variant2_price ?? p.price ?? 0;
-        const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
-        const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
-        const displayName = variantName ? `${p.name}(${variantName})` : p.name;
-        const codeDisplay = p.code ? ` [${p.code}]` : '';
-        return `<div class="review-item"><span>${displayName}${codeDisplay} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
-    }).join('');
-    const shippingFee = document.getElementById('reviewShippingFee');
-    const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
-    if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-    else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString() + '運費'; shippingFee.style.color = ''; }
-    let codRow = document.getElementById('reviewCODRow');
-    if (!codRow) {
-        codRow = document.createElement('div');
-        codRow.id = 'reviewCODRow';
-        codRow.className = 'review-item';
-        document.getElementById('reviewShipping').after(codRow);
-    }
-    if (getCODFee() > 0) { codRow.innerHTML = `<span>💵 貨到付款代收費</span><span>$${COD_FEE}</span>`; codRow.style.display = ''; }
-    else { codRow.style.display = 'none'; }
-    document.getElementById('reviewTotal').textContent = '$' + getFinalTotal().toLocaleString();
+    renderOrderReview();
     const fs = document.getElementById('formSection');
     fs.style.display = 'block';
     setTimeout(() => fs.scrollIntoView({ behavior: 'smooth' }), 80);
 }
-function checkPhoneGate() {
-    const phone = document.getElementById('gatePhone').value.trim().replace(/[-\s]/g, '');
-    if (!/^09\d{8}$/.test(phone)) { document.getElementById('gateError').textContent = '請輸入正確的手機號碼（09XXXXXXXX）'; return; }
-    _pendingPhone = phone;
-    const btn = document.getElementById('gateBtnCheck');
-    btn.disabled = true; btn.textContent = '確認中…';
-    // 直接進入下單，不檢查 LINE 綁定
-    setTimeout(() => {
-        btn.disabled = false; btn.textContent = '確認';
-        proceedWithPhone(phone);
-    }, 500);
-}
-function recheckBinding() {
-    const btn = document.getElementById('gateBtnRecheck');
-    btn.disabled = true; btn.textContent = '確認中…';
-    document.getElementById('gateRecheckMsg').textContent = '';
-    checkPhoneAPI(_pendingPhone, 'phoneRecheck', function(data) {
-        btn.disabled = false; btn.textContent = '我已完成，繼續下單 →';
-        if (data.bound) {
-            if (_awaitingLineBinding) {
-                // 來自 submitOrder，驗證成功後繼續提交訂單
-                _awaitingLineBinding = false;
-                proceedWithOrderSubmit();
-            } else {
-                // 普通 LINE 綁定流程
-                proceedWithPhone(_pendingPhone);
-            }
-        }
-        else { document.getElementById('gateRecheckMsg').textContent = '尚未偵測到綁定，請確認已傳送手機號碼給 LINE 官方帳號'; }
-    });
-}
-function backToPhoneInput() {
-    document.getElementById('gateStep1').style.display = 'block';
-    document.getElementById('gateStep2').style.display = 'none';
-    document.getElementById('gateError').textContent = '';
-}
-function proceedWithPhone(phone) {
-    document.getElementById('phoneGate').classList.remove('show');
-    document.getElementById('fPhone').value = phone;
-    _fillForm();
-}
-// 訂購時 LINE 綁定驗證成功後，繼續提交訂單
-async function proceedWithOrderSubmit() {
-    document.getElementById('phoneGate').classList.remove('show');
-    const name = document.getElementById('fName').value.trim();
-    const phone = document.getElementById('fPhone').value.trim();
-    const address = deliveryMode === 'pickup' ? '【自取】' + (document.getElementById('fPickupTime').value.trim() || '') : document.getElementById('fAddress').value.trim();
-    const note = document.getElementById('fNote').value.trim();
-    const btn = document.getElementById('btnSubmit');
-    btn.disabled = true; btn.textContent = '送出中…';
-    const sub = getSubtotal(), shipping = getShipping(sub);
-    const codFee = getCODFee();
-    const payment = paymentMode === 'cod' ? '貨到付款' : '銀行匯款';
-    const orderData = { timestamp: new Date().toLocaleString('zh-TW'), name, phone, address, note, payment, items: getSelected().map(p => `${p.name}×${qty[p.id]}`).join('、'), total: getFinalTotal(), shipping: shipping + codFee };
-    try {
-        const params = new URLSearchParams({ action: 'submitOrder', name: orderData.name, phone: orderData.phone, address: orderData.address, items: orderData.items, total: orderData.total, shipping: orderData.shipping, payment: orderData.payment, note: orderData.note || '', timestamp: orderData.timestamp });
-        await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
-    } catch(e) { console.log(e); }
-    document.getElementById('formSection').style.display = 'none';
-    document.getElementById('stickyBar').classList.remove('show');
-    const amountNote = orderData.shipping > 0 ? `（含運費 $${orderData.shipping}）` : '（已免運費）';
-    document.getElementById('payAmount').textContent = '$' + orderData.total.toLocaleString() + amountNote;
-    if (paymentMode === 'cod') {
-        document.getElementById('paySub').textContent = '訂單已確認！配送員送達時付款即可。';
-        document.getElementById('payBankSection').style.display = 'none';
-        document.getElementById('payCODSection').style.display = '';
-    } else {
-        document.getElementById('paySub').innerHTML = '請於 <strong>24 小時內</strong> 完成匯款，逾時訂單將自動取消';
-        document.getElementById('payBankSection').style.display = '';
-        document.getElementById('payCODSection').style.display = 'none';
-    }
-    const pay = document.getElementById('paySection');
-    pay.style.display = 'block';
-    setTimeout(() => pay.scrollIntoView({ behavior: 'smooth' }), 80);
-    btn.disabled = false; btn.textContent = '確認訂購';
-}
-function _fillForm() {
-    const sel = getSelected(); if (!sel.length) return;
-    const sub = getSubtotal(), shipping = getShipping(sub);
-    document.getElementById('reviewItems').innerHTML = sel.map(p => {
-        const variantNum = selectedVariant[p.id] || 1;
-        const variant1Price = p.variant1_price ?? p.price ?? 0;
-        const variant2Price = p.variant2_price ?? p.price ?? 0;
-        const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
-        const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
-        const displayName = variantName ? `${p.name}(${variantName})` : p.name;
-        const codeDisplay = p.code ? ` [${p.code}]` : '';
-        return `<div class="review-item"><span>${displayName}${codeDisplay} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
-    }).join('');
-    const shippingFee = document.getElementById('reviewShippingFee');
-    const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
-    if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-    else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString() + '運費'; shippingFee.style.color = ''; }
-    // 貨到付款代收費
-    let codRow = document.getElementById('reviewCODRow');
-    if (!codRow) {
-        codRow = document.createElement('div');
-        codRow.id = 'reviewCODRow';
-        codRow.className = 'review-item';
-        document.getElementById('reviewShipping').after(codRow);
-    }
-    if (getCODFee() > 0) { codRow.innerHTML = `<span>💵 貨到付款代收費</span><span>$${COD_FEE}</span>`; codRow.style.display = ''; }
-    else { codRow.style.display = 'none'; }
-    document.getElementById('reviewTotal').textContent = '$' + getFinalTotal().toLocaleString();
-    const fs = document.getElementById('formSection');
-    fs.style.display = 'block';
-    setTimeout(() => fs.scrollIntoView({ behavior: 'smooth' }), 80);
-}
-let _awaitingLineBinding = false; // 用來標記是否等待 LINE 綁定後提交
 async function submitOrder() {
     const name = document.getElementById('fName').value.trim();
     const phone = document.getElementById('fPhone').value.trim();
