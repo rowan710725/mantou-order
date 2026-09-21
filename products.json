@@ -161,9 +161,9 @@
     "variant1_name": "一包500g ",
     "variant1_price": 110,
     "variant2_name": "2包優惠",
-    "variant2_price": 0,
+    "variant2_price": 200,
     "price": 110,
-    "ori": 200,
+    "ori": 150,
     "img": "sw.jpeg",
     "active": true
   },
@@ -245,9 +245,9 @@
     "variant1_name": "一包50g ",
     "variant1_price": 35,
     "variant2_name": "３包優惠",
-    "variant2_price": 0,
+    "variant2_price": 100,
     "price": 35,
-    "ori": 100,
+    "ori": 40,
     "img": "flt35.jpeg",
     "active": true
   }
