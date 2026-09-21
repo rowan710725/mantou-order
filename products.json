@@ -122,7 +122,7 @@
     "variant2_price": 0,
     "price": 449,
     "ori": 2000,
-    "img": "mini.jpeg",
+    "img": "mimi2.jpg",
     "active": true
   },
   {
@@ -169,17 +169,17 @@
   },
   {
     "id": "lotus",
-    "name": "蓮子雪耳露",
-    "code": "LOTUS",
-    "desc": "600g 裝，養顏滋潤",
-    "variant1_name": "",
-    "variant1_price": 0,
+    "name": "歡樂綜合包",
+    "code": "HLC",
+    "desc": "5種不同口味歡樂綜合包",
+    "variant1_name": "原味",
+    "variant1_price": 310,
     "variant2_name": "",
     "variant2_price": 0,
     "price": 100,
-    "ori": 125,
-    "img": "lotus.jpeg",
-    "active": false
+    "ori": 320,
+    "img": "chatgpt_image_2026_9_16____03_46_33.png",
+    "active": true
   },
   {
     "id": "raisin",
