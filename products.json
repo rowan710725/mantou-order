@@ -160,10 +160,10 @@
     "desc": "500g 裝，天然炭烤香甜",
     "variant1_name": "一包500g ",
     "variant1_price": 110,
-    "variant2_name": "",
+    "variant2_name": "2包優惠",
     "variant2_price": 0,
     "price": 110,
-    "ori": 125,
+    "ori": 200,
     "img": "sw.jpeg",
     "active": true
   },
@@ -244,10 +244,10 @@
     "desc": "50g 裝，隨身享用",
     "variant1_name": "一包50g ",
     "variant1_price": 35,
-    "variant2_name": "",
+    "variant2_name": "３包優惠",
     "variant2_price": 0,
     "price": 35,
-    "ori": 40,
+    "ori": 100,
     "img": "flt35.jpeg",
     "active": true
   }
