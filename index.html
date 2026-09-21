@@ -806,7 +806,8 @@ async function loadProducts() {
     if (r.ok) {
       const productsData = await r.json();
       if (Array.isArray(productsData) && productsData.length > 0) {
-        PRODUCTS = productsData;
+        // 後台「上架」開關存的 active 欄位，官網要照著過濾，下架的商品不該出現在這裡
+        PRODUCTS = productsData.filter(p => p.active !== false);
         initQty();
         initSelectedVariant();
         renderProducts();
