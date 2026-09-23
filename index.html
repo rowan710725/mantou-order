@@ -882,10 +882,20 @@ function queryOrders() {
             }
             let html = `<div style="font-weight:700;color:var(--brown-dark);margin-bottom:14px;">找到 ${data.orders.length} 筆訂單：</div>`;
             data.orders.forEach((o, i) => {
+                const total = Number(o.total) || 0;
+                const rawShipping = Number(o.shipping) || 0;
+                const isCOD = o.payment === '貨到付款';
+                const codFee = isCOD ? 30 : 0;
+                const shipping = Math.max(0, rawShipping - codFee);
+                const subtotal = total - rawShipping;
+                const paymentLabel = (o.payment || '銀行匯款') + (isCOD ? '（＋30）' : '');
                 html += `<div style="background:var(--cream-card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
                     <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:8px;">${o.timestamp}</div>
                     <div style="font-size:0.95rem;margin-bottom:6px;"><strong>品項：</strong>${o.items}</div>
-                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>金額：</strong>$${Number(o.total).toLocaleString()}</div>
+                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>小計：</strong>$${subtotal.toLocaleString()}</div>
+                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>運費：</strong>${shipping > 0 ? '$' + shipping.toLocaleString() : '免運'}</div>
+                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>付款方式：</strong>${paymentLabel}</div>
+                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>總金額：</strong>$${total.toLocaleString()}</div>
                     <div style="font-size:0.95rem;margin-bottom:6px;"><strong>地址：</strong>${o.address}</div>
                     <div style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.82rem;font-weight:700;
                         background:${o.status === '已付款' ? '#E8F5E9' : '#FFF8E1'};
