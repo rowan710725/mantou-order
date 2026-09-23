@@ -770,7 +770,13 @@ async function submitOrder() {
     const sub = getSubtotal(), shipping = getShipping(sub);
     const codFee = getCODFee();
     const payment = paymentMode === 'cod' ? '貨到付款' : '銀行匯款';
-    const orderData = { timestamp: new Date().toLocaleString('zh-TW'), name, phone, address, note, payment, items: getSelected().map(p => `${p.name}×${qty[p.id]}`).join('、'), total: getFinalTotal(), shipping: shipping + codFee };
+    const itemsText = getSelected().map(p => {
+        const variantNum = selectedVariant[p.id] || 1;
+        const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
+        const displayName = variantName ? `${p.name}(${variantName})` : p.name;
+        return `${displayName}×${qty[p.id]}`;
+    }).join('、');
+    const orderData = { timestamp: new Date().toLocaleString('zh-TW'), name, phone, address, note, payment, items: itemsText, total: getFinalTotal(), shipping: shipping + codFee };
     try {
         const params = new URLSearchParams({ action: 'submitOrder', name: orderData.name, phone: orderData.phone, address: orderData.address, items: orderData.items, total: orderData.total, shipping: orderData.shipping, payment: orderData.payment, note: orderData.note || '', timestamp: orderData.timestamp });
         await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
