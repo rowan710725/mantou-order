@@ -380,7 +380,7 @@
         </div>
         <div class="form-group" id="paymentGroup">
             <label>付款方式 *</label>
-            <div class="delivery-toggle">
+            <div class="delivery-toggle" id="paymentToggleDelivery">
                 <button class="delivery-opt active" id="optBank" onclick="setPayment('bank')">
                     <span class="opt-icon">🏦</span>
                     <span class="opt-label">銀行匯款</span>
@@ -390,6 +390,18 @@
                     <span class="opt-icon">💵</span>
                     <span class="opt-label">貨到付款</span>
                     <span class="opt-note">送達時付款</span>
+                </button>
+            </div>
+            <div class="delivery-toggle" id="paymentTogglePickup" style="display:none;">
+                <button class="delivery-opt active" id="optCash" onclick="setPayment('cash')">
+                    <span class="opt-icon">💵</span>
+                    <span class="opt-label">付現金</span>
+                    <span class="opt-note">取貨時付款</span>
+                </button>
+                <button class="delivery-opt" id="optDigital" onclick="setPayment('digital')">
+                    <span class="opt-icon">📱</span>
+                    <span class="opt-label">數位支付</span>
+                    <span class="opt-note">取貨時付款</span>
                 </button>
             </div>
         </div>
@@ -435,6 +447,14 @@
                 💵 <strong>貨到付款</strong><br>
                 商品送達時，請準備現金交給配送員即可。<br>
                 代收服務費 <strong>$30</strong> 已含在訂單總金額內。<br>
+                如有問題請聯繫我們的 LINE 官方帳號。
+            </div>
+        </div>
+        <div id="payPickupSection" style="display:none;">
+            <div class="pay-notice" style="background:#E8F5E9;border:1px solid #86EFAC;color:#2E7D32;line-height:2;">
+                🏠 <strong>自取付款</strong><br>
+                <span id="pickupPaymentMethodText"></span><br>
+                請於取貨時完成付款，謝謝！<br>
                 如有問題請聯繫我們的 LINE 官方帳號。
             </div>
         </div>
@@ -686,9 +706,10 @@ function setDelivery(mode) {
     document.getElementById('addressGroup').style.display    = mode === 'delivery' ? '' : 'none';
     document.getElementById('pickupTimeGroup').style.display = mode === 'pickup'   ? '' : 'none';
     document.getElementById('pickupNotice').style.display    = mode === 'pickup'   ? '' : 'none';
-    // 自取不需貨到付款
-    if (mode === 'pickup') { setPayment('bank'); document.getElementById('paymentGroup').style.display = 'none'; }
-    else { document.getElementById('paymentGroup').style.display = ''; }
+    // 自取用「付現金／數位支付」，宅配用「銀行匯款／貨到付款」
+    document.getElementById('paymentToggleDelivery').style.display = mode === 'delivery' ? '' : 'none';
+    document.getElementById('paymentTogglePickup').style.display   = mode === 'pickup'   ? '' : 'none';
+    setPayment(mode === 'pickup' ? 'cash' : 'bank');
     updateBar();
     updateOrderReviewIfVisible();
 }
@@ -696,6 +717,8 @@ function setPayment(mode) {
     paymentMode = mode;
     document.getElementById('optBank').classList.toggle('active', mode === 'bank');
     document.getElementById('optCOD').classList.toggle('active', mode === 'cod');
+    document.getElementById('optCash').classList.toggle('active', mode === 'cash');
+    document.getElementById('optDigital').classList.toggle('active', mode === 'digital');
     updateBar();
     updateOrderReviewIfVisible();
 }
@@ -769,7 +792,8 @@ async function submitOrder() {
     btn.disabled = true; btn.textContent = '送出中…';
     const sub = getSubtotal(), shipping = getShipping(sub);
     const codFee = getCODFee();
-    const payment = paymentMode === 'cod' ? '貨到付款' : '銀行匯款';
+    const paymentTextMap = { bank: '銀行匯款', cod: '貨到付款', cash: '付現金', digital: '數位支付' };
+    const payment = paymentTextMap[paymentMode] || '銀行匯款';
     const itemsText = getSelected().map(p => {
         const variantNum = selectedVariant[p.id] || 1;
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
@@ -785,15 +809,23 @@ async function submitOrder() {
     document.getElementById('stickyBar').classList.remove('show');
     const amountNote = orderData.shipping > 0 ? `（含運費 $${orderData.shipping}）` : '（已免運費）';
     document.getElementById('payAmount').textContent = '$' + orderData.total.toLocaleString() + amountNote;
-    // 根據付款方式顯示不同頁面
-    if (paymentMode === 'cod') {
+    // 根據配送／付款方式顯示不同頁面
+    if (deliveryMode === 'pickup') {
+        document.getElementById('paySub').textContent = '訂單已確認！取貨時付款即可。';
+        document.getElementById('payBankSection').style.display = 'none';
+        document.getElementById('payCODSection').style.display = 'none';
+        document.getElementById('payPickupSection').style.display = '';
+        document.getElementById('pickupPaymentMethodText').textContent = '付款方式：' + payment;
+    } else if (paymentMode === 'cod') {
         document.getElementById('paySub').textContent = '訂單已確認！配送員送達時付款即可。';
         document.getElementById('payBankSection').style.display = 'none';
         document.getElementById('payCODSection').style.display = '';
+        document.getElementById('payPickupSection').style.display = 'none';
     } else {
         document.getElementById('paySub').innerHTML = '請於 <strong>24 小時內</strong> 完成匯款，逾時訂單將自動取消';
         document.getElementById('payBankSection').style.display = '';
         document.getElementById('payCODSection').style.display = 'none';
+        document.getElementById('payPickupSection').style.display = 'none';
     }
     const pay = document.getElementById('paySection');
     pay.style.display = 'block';
