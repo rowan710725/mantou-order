@@ -121,7 +121,15 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 @media(max-width:860px){
   .table-header{display:none;}
   .product-row{grid-template-columns:76px 1fr 44px;gap:8px;padding:14px;}
+  .video-row{grid-template-columns:1fr 44px;}
+  .press-row{grid-template-columns:76px 1fr 44px;}
 }
+
+/* ── 媒體報導管理 ── */
+.video-row{display:grid;grid-template-columns:1fr 1fr 1fr 44px;gap:8px;padding:12px;border-bottom:1px solid var(--border);align-items:center;}
+.video-row:last-child{border-bottom:none;}
+.press-row{display:grid;grid-template-columns:60px 140px 1fr 44px;gap:8px;padding:12px;border-bottom:1px solid var(--border);align-items:center;}
+.press-row:last-child{border-bottom:none;}
 </style>
 </head>
 <body>
@@ -196,6 +204,31 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
         <div class="loading-row">🔄 載入商品清單中…</div>
       </div>
     </div>
+
+    <div class="products-table" style="margin-top:24px;">
+      <div class="table-header" style="grid-template-columns:1fr;">
+        <div>📰 媒體報導管理</div>
+      </div>
+      <div style="padding:18px;">
+        <div style="font-weight:700;color:var(--brown-dark);margin-bottom:8px;">影音報導（YouTube）</div>
+        <div id="videoList"></div>
+        <div style="display:flex;justify-content:flex-start;margin-top:10px;">
+          <button class="hdr-btn hdr-add" style="color:var(--brown-dark);border-color:var(--border);background:var(--cream-card);" onclick="addMediaVideo()">＋ 新增影片</button>
+        </div>
+
+        <hr class="divider" style="margin:24px 0;">
+
+        <div style="font-weight:700;color:var(--brown-dark);margin-bottom:8px;">新聞雜誌</div>
+        <div id="pressList"></div>
+        <div style="display:flex;justify-content:flex-start;margin-top:10px;">
+          <button class="hdr-btn hdr-add" style="color:var(--brown-dark);border-color:var(--border);background:var(--cream-card);" onclick="addMediaPress()">＋ 新增報導</button>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;margin-top:18px;">
+          <button class="hdr-btn hdr-save" id="mediaSaveBtn" onclick="saveMedia()" style="width:auto;">💾 儲存媒體報導</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -203,7 +236,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 <div class="modal-overlay" id="imgModal" style="display:none"
      onclick="if(event.target===this) closeImgModal()">
   <div class="modal-box">
-    <h3>📷 修改商品圖片</h3>
+    <h3 id="imgModalTitle">📷 修改商品圖片</h3>
     <img class="img-preview" id="imgPreview" src="" alt="圖片預覽">
 
     <!-- 直接上傳區 -->
@@ -293,6 +326,9 @@ const GH_REPO    = 'mantou-order';
 
 let PASS = '', products = [], dirty = false, editingImgIdx = -1;
 let selectedFile = null;
+let mediaVideos = [], mediaPress = [];
+let imgModalMode = 'product'; // 'product' | 'media'
+const MEDIA_GROUPS = ['新聞/雜誌', '旅遊/生活風格', '團購/宅配'];
 
 // ── 工具 ──────────────────────────────────────────────────────────────────────
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -345,23 +381,37 @@ async function login(){
       }
     } catch(e){}
 
+    // 從 GitHub 讀取 media_content.json（媒體報導，找不到也不擋登入）
+    try{
+      const mcUrl = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/media_content.json?t=${Date.now()}`;
+      const mr = await fetch(mcUrl);
+      if(mr.ok){
+        const mc = await mr.json();
+        mediaVideos = mc.videos || [];
+        mediaPress = mc.press || [];
+      }
+    } catch(e){}
+
     PASS = pass;
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminUI').style.display = '';
     document.getElementById('patTip').style.display = getPAT() ? 'none' : '';
     renderProducts();
+    renderMediaVideos();
+    renderMediaPress();
   } catch(e){
     errEl.textContent = e.message || '連線失敗，請確認網路後再試';
   }
 }
 function logout(){
-  if(dirty&&!confirm('有未儲存的變更，確定要登出嗎？')) return;
+  if((dirty||mediaDirty)&&!confirm('有未儲存的變更，確定要登出嗎？')) return;
   PASS='';
   document.getElementById('adminPassInput').value='';
   document.getElementById('loginError').textContent='';
   document.getElementById('adminUI').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
   setDirty(false);
+  setMediaDirty(false);
 }
 
 // ── 渲染商品列表 ──────────────────────────────────────────────────────────────
@@ -427,6 +477,127 @@ function addProduct(){
   products.push({id:'new_'+Date.now(),name:'',desc:'',code:'',variant1_name:'',variant1_price:0,variant2_name:'',variant2_price:0,ori:0,img:'',active:true});
   setDirty(true); renderProducts();
   document.getElementById('productList').lastElementChild?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+// ── 媒體報導：影音 ─────────────────────────────────────────────────────────────
+function extractYoutubeId(str){
+  str = (str||'').trim();
+  let m = str.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{6,})/);
+  if(m) return m[1];
+  if(/^[a-zA-Z0-9_-]{6,}$/.test(str)) return str;
+  return str;
+}
+let mediaDirty = false;
+function setMediaDirty(v){
+  mediaDirty=v;
+  const btn=document.getElementById('mediaSaveBtn');
+  btn.textContent=v?'💾 儲存媒體報導 ●':'💾 儲存媒體報導';
+  btn.classList.toggle('dirty',v);
+}
+function renderMediaVideos(){
+  const list=document.getElementById('videoList');
+  if(!mediaVideos.length){
+    list.innerHTML='<div class="loading-row">目前沒有影片，點下方「新增影片」來新增</div>';
+    return;
+  }
+  list.innerHTML=mediaVideos.map((v,i)=>`
+    <div class="video-row">
+      <input class="fi" type="text" value="${esc(v.title)}" placeholder="標題"
+             oninput="mediaVideos[${i}].title=this.value;setMediaDirty(true)">
+      <input class="fi" type="text" value="${esc(v.sub||'')}" placeholder="副標"
+             oninput="mediaVideos[${i}].sub=this.value;setMediaDirty(true)">
+      <input class="fi" type="text" value="${esc(v.id)}" placeholder="YouTube 網址或影片ID"
+             oninput="mediaVideos[${i}].id=extractYoutubeId(this.value);setMediaDirty(true)">
+      <button class="del-btn" onclick="deleteMediaVideo(${i})" title="刪除">🗑</button>
+    </div>
+  `).join('');
+}
+function addMediaVideo(){
+  mediaVideos.push({id:'',title:'',sub:''});
+  setMediaDirty(true); renderMediaVideos();
+}
+function deleteMediaVideo(i){
+  if(!confirm('確定刪除「'+(mediaVideos[i].title||'此影片')+'」嗎？')) return;
+  mediaVideos.splice(i,1); setMediaDirty(true); renderMediaVideos();
+}
+
+// ── 媒體報導：新聞雜誌 ─────────────────────────────────────────────────────────
+function renderMediaPress(){
+  const list=document.getElementById('pressList');
+  if(!mediaPress.length){
+    list.innerHTML='<div class="loading-row">目前沒有報導，點下方「新增報導」來新增</div>';
+    return;
+  }
+  list.innerHTML=mediaPress.map((p,i)=>`
+    <div class="press-row" id="press-row-${i}">
+      <div class="row-img-wrap" style="width:60px;height:60px;" onclick="openMediaImgModal(${i})">
+        <img src="${esc(imgSrc(p.img))}" alt="${esc(p.name)}"
+             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect fill=%22%23EDE0C4%22 width=%2260%22 height=%2260%22/><text x=%2230%22 y=%2238%22 text-anchor=%22middle%22 font-size=%2224%22>📰</text></svg>'">
+        <div class="row-img-overlay">點擊<br>修改</div>
+      </div>
+      <select class="fi" onchange="mediaPress[${i}].group=this.value;setMediaDirty(true)">
+        ${MEDIA_GROUPS.map(g=>`<option value="${esc(g)}" ${p.group===g?'selected':''}>${esc(g)}</option>`).join('')}
+      </select>
+      <input class="fi" type="text" value="${esc(p.name)}" placeholder="名稱"
+             oninput="mediaPress[${i}].name=this.value;setMediaDirty(true)">
+      <button class="del-btn" onclick="deleteMediaPress(${i})" title="刪除">🗑</button>
+    </div>
+  `).join('');
+}
+function refreshPressThumb(i){
+  const row=document.getElementById('press-row-'+i);
+  if(row){ const img=row.querySelector('.row-img-wrap img'); if(img) img.src=imgSrc(mediaPress[i].img)||''; }
+}
+function addMediaPress(){
+  mediaPress.push({group:MEDIA_GROUPS[0],name:'',img:''});
+  setMediaDirty(true); renderMediaPress();
+}
+function deleteMediaPress(i){
+  if(!confirm('確定刪除「'+(mediaPress[i].name||'此報導')+'」嗎？')) return;
+  mediaPress.splice(i,1); setMediaDirty(true); renderMediaPress();
+}
+
+async function saveMedia(){
+  const pat = getPAT();
+  if(!pat){
+    showStatus('❌ 尚未設定 GitHub Token，請點右上角「⚙️ 設定」完成設定','error');
+    return;
+  }
+  const btn = document.getElementById('mediaSaveBtn');
+  btn.disabled = true;
+  showStatus('儲存媒體報導中，請稍候…','loading');
+  try{
+    const content = JSON.stringify({videos:mediaVideos, press:mediaPress}, null, 2);
+    const base64 = btoa(unescape(encodeURIComponent(content)));
+    const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/media_content.json`;
+
+    let sha = null;
+    try{
+      const existing = await fetch(apiUrl, { headers: { Authorization: `Bearer ${pat}` } });
+      if(existing.ok){ const data = await existing.json(); sha = data.sha; }
+    } catch(e){}
+
+    const body = { message: `更新媒體報導 (${new Date().toLocaleString('zh-TW')})`, content: base64 };
+    if(sha) body.sha = sha;
+
+    const res = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${pat}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if(res.ok){
+      setMediaDirty(false);
+      showStatus('✅ 媒體報導儲存成功！媒體報導頁將在幾秒內更新','success');
+    } else {
+      const err = await res.json();
+      showStatus('❌ ' + (err.message || '保存失敗'),'error');
+    }
+  } catch(ex){
+    showStatus('❌ ' + ex.message,'error');
+  } finally{
+    btn.disabled = false;
+  }
 }
 
 // ── 儲存 ──────────────────────────────────────────────────────────────────────
@@ -531,7 +702,8 @@ async function saveStoreInfo(){
 
 // ── 圖片彈窗 ──────────────────────────────────────────────────────────────────
 function openImgModal(i){
-  editingImgIdx=i; selectedFile=null;
+  imgModalMode='product'; editingImgIdx=i; selectedFile=null;
+  document.getElementById('imgModalTitle').textContent='📷 修改商品圖片';
   const img=products[i].img||'';
   document.getElementById('imgInput').value=img;
   document.getElementById('imgPreview').src=imgSrc(img)||placeholder();
@@ -546,6 +718,22 @@ function openImgModal(i){
   document.getElementById('uploadSection').style.pointerEvents=hasPAT?'':'none';
   document.getElementById('imgModal').style.display='flex';
 }
+function openMediaImgModal(i){
+  imgModalMode='media'; editingImgIdx=i; selectedFile=null;
+  document.getElementById('imgModalTitle').textContent='📷 修改報導截圖';
+  const img=mediaPress[i].img||'';
+  document.getElementById('imgInput').value=img;
+  document.getElementById('imgPreview').src=imgSrc(img)||placeholder();
+  document.getElementById('imgFile').value='';
+  document.getElementById('uploadBtn').style.display='none';
+  document.getElementById('uploadStatus').className='upload-status';
+  document.getElementById('uploadStatus').textContent='';
+  const hasPAT=!!getPAT();
+  document.getElementById('noPATNote').style.display=hasPAT?'none':'';
+  document.getElementById('uploadSection').style.opacity=hasPAT?'1':'0.5';
+  document.getElementById('uploadSection').style.pointerEvents=hasPAT?'':'none';
+  document.getElementById('imgModal').style.display='flex';
+}
 function closeImgModal(){ document.getElementById('imgModal').style.display='none'; editingImgIdx=-1; selectedFile=null; }
 function placeholder(){ return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180"><rect fill="%23EDE0C4" width="400" height="180"/><text x="200" y="100" text-anchor="middle" font-size="40">🥟</text></svg>'; }
 function updateImgPreview(){
@@ -554,8 +742,15 @@ function updateImgPreview(){
 }
 function confirmImg(){
   if(editingImgIdx<0) return;
-  products[editingImgIdx].img=document.getElementById('imgInput').value.trim();
-  setDirty(true); renderProducts(); closeImgModal();
+  const val=document.getElementById('imgInput').value.trim();
+  if(imgModalMode==='media'){
+    mediaPress[editingImgIdx].img=val;
+    setMediaDirty(true); renderMediaPress();
+  } else {
+    products[editingImgIdx].img=val;
+    setDirty(true); renderProducts();
+  }
+  closeImgModal();
 }
 
 // ── 照片上傳 ──────────────────────────────────────────────────────────────────
@@ -613,7 +808,8 @@ async function uploadPhoto(){
     const dataUrl=await compressImage(selectedFile,900,0.85);
     const base64=dataUrl.split(',')[1];
     const filename=sanitizeFilename(selectedFile.name);
-    const apiUrl=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${filename}`;
+    const filepath=imgModalMode==='media' ? `media/press/${filename}` : filename;
+    const apiUrl=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${filepath}`;
 
     // 如果同名檔案已存在，取得 sha 才能更新
     let sha=null;
@@ -622,7 +818,7 @@ async function uploadPhoto(){
       if(check.ok){ const ex=await check.json(); sha=ex.sha; }
     } catch(e){}
 
-    const body={message:`上傳商品照片：${filename}`,content:base64};
+    const body={message:`上傳${imgModalMode==='media'?'媒體報導截圖':'商品照片'}：${filepath}`,content:base64};
     if(sha) body.sha=sha;
 
     const res=await fetch(apiUrl,{
@@ -633,7 +829,7 @@ async function uploadPhoto(){
 
     if(res.ok){
       status.className='upload-status ok'; status.textContent='✅ 上傳成功！';
-      document.getElementById('imgInput').value=filename;
+      document.getElementById('imgInput').value=filepath;
       // 等 GitHub Pages 部署後圖片才會顯示，但路徑已正確填入
     } else {
       const err=await res.json();
@@ -668,7 +864,7 @@ function savePAT(){
   closeSettings();
 }
 
-window.addEventListener('beforeunload',e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
+window.addEventListener('beforeunload',e=>{ if(dirty||mediaDirty){ e.preventDefault(); e.returnValue=''; } });
 </script>
 </body>
 </html>

@@ -132,57 +132,52 @@
 </div>
 
 <script>
-const videos = [
-  {id:'O1XloUmR_Fg', title:'幸福食光 第195集', sub:'中和手工饅頭專訪'},
-  {id:'2KrX7ZaN3wg', title:'民視新聞', sub:'新聞採訪報導'},
-  {id:'OUHI6HINi-I', title:'台視新聞', sub:'新聞採訪報導'},
-  {id:'6uQjcWwSis0', title:'中視新聞', sub:'新聞採訪報導'},
-  {id:'bowmHmJ8gTY', title:'公視新聞', sub:'新聞採訪報導'},
-  {id:'P_p34dvrCxQ', title:'東森新聞', sub:'新聞採訪報導'},
-  {id:'EbHZs62WGCc', title:'年代新聞', sub:'新聞採訪報導'},
-  {id:'9QoZm_qYEEU', title:'完全娛樂', sub:'節目採訪報導'},
-  {id:'SbNwvyk95dE', title:'中視新聞', sub:'新聞採訪報導（二）'},
-  {id:'86nJYCiYVow', title:'今晚哪裡有問題', sub:'節目採訪報導'},
-  {id:'CSsBIxj67qk', title:'東森全民估價王', sub:'節目採訪報導'},
-  {id:'CRq4lD_4tAA', title:'衛視中文台', sub:'節目採訪報導'}
-];
-const ytGrid = document.getElementById('ytGrid');
-videos.forEach(v => {
-  const card = document.createElement('div');
-  card.className = 'yt-card';
-  card.innerHTML = `
-    <div class="yt-frame-wrap">
-      <iframe src="https://www.youtube.com/embed/${v.id}" title="${v.title}" loading="lazy" allowfullscreen></iframe>
-    </div>
-    <div class="yt-body">
-      <div class="yt-title">${v.title}</div>
-      <div class="yt-sub">${v.sub}</div>
-    </div>`;
-  ytGrid.appendChild(card);
-});
+const GROUP_MAP = { '新聞/雜誌': 'group1', '旅遊/生活風格': 'group2', '團購/宅配': 'group3' };
 
-const groups = {
-  group1: [['yizhoukan-1','壹週刊Ⅰ'],['yizhoukan-2','壹週刊Ⅱ'],['udn-2','聯合報Ⅱ'],['udn-3','聯合報Ⅲ'],
-            ['appledaily-1','蘋果日報Ⅰ'],['appledaily-2','蘋果日報Ⅱ'],['appledaily-3','蘋果日報Ⅲ'],
-            ['chinatimes','中國時報'],['shuangbao','爽報'],['startup-1','創業搶鮮誌Ⅰ'],['startup-2','創業搶鮮誌Ⅱ']],
-  group2: [['travelcom','行遍天下'],['wildlife-living','野趣生活家'],['souvenir-guide','伴手禮指南'],
-            ['thsr-shopping','台灣高鐵購物誌'],['here-magazine','here雜誌'],['taipei-walker','Taipei Walker']],
-  group3: [['711-delivery','7-11宅配美食'],['blackcat-top10-2010','2010黑貓宅配前十名'],['blackcat-explorer','黑貓探險隊'],
-            ['home-delivery-food','宅配美食通'],['gohappy','GO Happy雜誌'],['tuangou-food-go','團購美食GO'],
-            ['kadokawa','角川雜誌'],['feifan-food-weekly','非凡美食e週刊'],['dazuiniao','大嘴鳥易購']]
-};
-for (const [id, items] of Object.entries(groups)) {
-  const el = document.getElementById(id);
-  items.forEach(([file, name]) => {
+async function loadMediaContent() {
+  try {
+    const url = 'https://raw.githubusercontent.com/rowan710725/mantou-order/main/media_content.json?t=' + Date.now();
+    const r = await fetch(url);
+    if (!r.ok) return;
+    const data = await r.json();
+    renderVideos(data.videos || []);
+    renderPress(data.press || []);
+  } catch (e) { console.log('媒體內容載入失敗', e); }
+}
+
+function renderVideos(videos) {
+  const ytGrid = document.getElementById('ytGrid');
+  ytGrid.innerHTML = '';
+  videos.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'yt-card';
+    card.innerHTML = `
+      <div class="yt-frame-wrap">
+        <iframe src="https://www.youtube.com/embed/${v.id}" title="${v.title}" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <div class="yt-body">
+        <div class="yt-title">${v.title}</div>
+        <div class="yt-sub">${v.sub}</div>
+      </div>`;
+    ytGrid.appendChild(card);
+  });
+}
+
+function renderPress(press) {
+  ['group1','group2','group3'].forEach(id => { document.getElementById(id).innerHTML = ''; });
+  press.forEach(item => {
+    const elId = GROUP_MAP[item.group] || 'group1';
+    const el = document.getElementById(elId);
     const btn = document.createElement('button');
     btn.className = 'media-card';
-    btn.innerHTML = `<div class="media-thumb"><img src="media/press/${file}.jpg" alt="${name}" loading="lazy"></div><div class="media-name">${name}</div>`;
-    btn.addEventListener('click', () => openLB(file, name));
+    btn.innerHTML = `<div class="media-thumb"><img src="${item.img}" alt="${item.name}" loading="lazy"></div><div class="media-name">${item.name}</div>`;
+    btn.addEventListener('click', () => openLB(item.img, item.name));
     el.appendChild(btn);
   });
 }
-function openLB(file, name) {
-  document.getElementById('lb-img').src = `media/press/${file}.jpg`;
+
+function openLB(img, name) {
+  document.getElementById('lb-img').src = img;
   document.getElementById('lb-img').alt = name;
   document.getElementById('lb-name').textContent = name;
   document.getElementById('lightbox').classList.add('open');
@@ -193,6 +188,8 @@ function closeLB() {
 document.getElementById('lightbox').addEventListener('click', (e) => {
   if (e.target.id === 'lightbox') closeLB();
 });
+
+loadMediaContent();
 </script>
 
 </body>
