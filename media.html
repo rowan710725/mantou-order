@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>媒體報導｜方王媽媽堅果饅頭</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream:       #F7F0E2;
+            --cream-dark:  #EDE0C4;
+            --cream-card:  #FBF6ED;
+            --border:      #DDD0B4;
+            --brown:       #7A5230;
+            --brown-dark:  #5C3A1E;
+            --brown-light: #A07848;
+            --gold:        #C9A870;
+            --gold-light:  #E5C88A;
+            --text:        #3E2A14;
+            --text-muted:  #8A7260;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: var(--cream); color: var(--text); }
+
+        .media-hero { text-align: center; padding: 34px 20px 10px; max-width: 980px; margin: 0 auto; }
+        .back-link {
+            display: inline-block; font-size: 0.8rem; color: var(--text-muted); text-decoration: none;
+            margin-bottom: 16px; border: 1px solid var(--gold-light); border-radius: 20px; padding: 6px 16px;
+        }
+        .back-link:hover { background: var(--cream-card); }
+        .media-hero h1 { font-size: 1.7rem; color: var(--brown-dark); margin: 0 0 8px; letter-spacing: 1px; }
+        .media-hero h1::after {
+            content: ''; display: block; width: 48px; height: 3px;
+            background: var(--gold); border-radius: 2px; margin: 12px auto 0;
+        }
+        .media-hero p { color: var(--text-muted); font-size: 0.92rem; margin-top: 10px; }
+
+        .media-group-title {
+            font-size: 0.8rem; font-weight: 700; color: var(--gold); letter-spacing: 1.5px;
+            margin-bottom: 12px; padding-left: 10px; border-left: 3px solid var(--gold);
+        }
+
+        .yt-section { padding: 20px 20px 10px; max-width: 980px; margin: 0 auto; }
+        .yt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-bottom: 30px; }
+        .yt-card { background: var(--cream-card); border: 1px solid var(--gold-light); border-radius: 12px; overflow: hidden; }
+        .yt-frame-wrap { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
+        .yt-frame-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+        .yt-body { padding: 10px 12px 14px; }
+        .yt-title { font-size: 0.86rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 2px; }
+        .yt-sub { font-size: 0.74rem; color: var(--text-muted); }
+
+        .media-wall { padding: 10px 20px 50px; max-width: 980px; margin: 0 auto; }
+        .media-group { margin-bottom: 26px; }
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        .media-card {
+            background: var(--cream-card); border: 1px solid var(--gold-light);
+            border-radius: 10px; overflow: hidden; cursor: pointer; padding: 0; width: 100%;
+            font: inherit; text-align: left; display: block;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .media-card:hover, .media-card:focus-visible {
+            transform: translateY(-3px); box-shadow: 0 8px 18px rgba(122,82,48,.18); outline: none;
+        }
+        .media-thumb { height: 100px; overflow: hidden; background: var(--cream-dark); }
+        .media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .media-name { padding: 8px 10px; font-size: 0.8rem; font-weight: 700; color: var(--brown-dark); text-align: center; }
+
+        .lightbox-overlay {
+            position: fixed; inset: 0; background: rgba(62,42,20,.75);
+            display: none; align-items: center; justify-content: center; z-index: 100; padding: 24px;
+        }
+        .lightbox-overlay.open { display: flex; }
+        .lightbox-box { background: var(--cream-card); border-radius: 14px; max-width: 520px; width: 100%; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+        .lightbox-img-wrap { position: relative; background: #000; }
+        .lightbox-img-wrap img { width: 100%; display: block; max-height: 70vh; object-fit: contain; }
+        .lightbox-close {
+            position: absolute; top: 8px; right: 10px; background: rgba(0,0,0,.5); border: none;
+            color: white; font-size: 1.2rem; cursor: pointer; line-height: 1; width: 32px; height: 32px; border-radius: 50%;
+        }
+        .lightbox-body { padding: 14px 20px 18px; text-align: center; font-weight: 700; color: var(--brown-dark); }
+
+        footer { background: var(--brown-dark); color: var(--cream-dark); text-align: center; padding: 30px 20px; }
+        footer p { margin-top: 4px; font-size: 0.9rem; }
+
+        @media (max-width: 600px) {
+            .media-hero h1 { font-size: 1.4rem; }
+            .yt-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="media-hero">
+    <a class="back-link" href="index.html">← 返回首頁</a>
+    <h1>媒體報導</h1>
+    <p>十多年來受到各大新聞、雜誌與影音媒體採訪報導</p>
+</div>
+
+<div class="yt-section">
+    <div class="media-group-title">影音報導</div>
+    <div class="yt-grid" id="ytGrid"></div>
+</div>
+
+<div class="media-wall">
+    <div class="media-group">
+        <div class="media-group-title">新聞 / 雜誌</div>
+        <div class="media-grid" id="group1"></div>
+    </div>
+    <div class="media-group">
+        <div class="media-group-title">旅遊 / 生活風格</div>
+        <div class="media-grid" id="group2"></div>
+    </div>
+    <div class="media-group">
+        <div class="media-group-title">團購 / 宅配</div>
+        <div class="media-grid" id="group3"></div>
+    </div>
+</div>
+
+<footer>
+    <div style="font-size:1.1rem; font-weight:700;">🥟 方王媽媽堅果饅頭</div>
+    <p>官方 LINE：@a22255663　　訂購電話：02-2225-5663</p>
+</footer>
+
+<div class="lightbox-overlay" id="lightbox">
+  <div class="lightbox-box">
+    <div class="lightbox-img-wrap">
+      <button class="lightbox-close" onclick="closeLB()">✕</button>
+      <img id="lb-img" src="" alt="">
+    </div>
+    <div class="lightbox-body" id="lb-name"></div>
+  </div>
+</div>
+
+<script>
+const videos = [
+  {id:'O1XloUmR_Fg', title:'幸福食光 第195集', sub:'中和手工饅頭專訪'},
+  {id:'2KrX7ZaN3wg', title:'民視新聞', sub:'新聞採訪報導'},
+  {id:'OUHI6HINi-I', title:'台視新聞', sub:'新聞採訪報導'},
+  {id:'6uQjcWwSis0', title:'中視新聞', sub:'新聞採訪報導'},
+  {id:'bowmHmJ8gTY', title:'公視新聞', sub:'新聞採訪報導'},
+  {id:'P_p34dvrCxQ', title:'東森新聞', sub:'新聞採訪報導'},
+  {id:'EbHZs62WGCc', title:'年代新聞', sub:'新聞採訪報導'},
+  {id:'9QoZm_qYEEU', title:'完全娛樂', sub:'節目採訪報導'},
+  {id:'SbNwvyk95dE', title:'中視新聞', sub:'新聞採訪報導（二）'},
+  {id:'86nJYCiYVow', title:'今晚哪裡有問題', sub:'節目採訪報導'},
+  {id:'CSsBIxj67qk', title:'東森全民估價王', sub:'節目採訪報導'},
+  {id:'CRq4lD_4tAA', title:'衛視中文台', sub:'節目採訪報導'}
+];
+const ytGrid = document.getElementById('ytGrid');
+videos.forEach(v => {
+  const card = document.createElement('div');
+  card.className = 'yt-card';
+  card.innerHTML = `
+    <div class="yt-frame-wrap">
+      <iframe src="https://www.youtube.com/embed/${v.id}" title="${v.title}" loading="lazy" allowfullscreen></iframe>
+    </div>
+    <div class="yt-body">
+      <div class="yt-title">${v.title}</div>
+      <div class="yt-sub">${v.sub}</div>
+    </div>`;
+  ytGrid.appendChild(card);
+});
+
+const groups = {
+  group1: [['yizhoukan-1','壹週刊Ⅰ'],['yizhoukan-2','壹週刊Ⅱ'],['udn-2','聯合報Ⅱ'],['udn-3','聯合報Ⅲ'],
+            ['appledaily-1','蘋果日報Ⅰ'],['appledaily-2','蘋果日報Ⅱ'],['appledaily-3','蘋果日報Ⅲ'],
+            ['chinatimes','中國時報'],['shuangbao','爽報'],['startup-1','創業搶鮮誌Ⅰ'],['startup-2','創業搶鮮誌Ⅱ']],
+  group2: [['travelcom','行遍天下'],['wildlife-living','野趣生活家'],['souvenir-guide','伴手禮指南'],
+            ['thsr-shopping','台灣高鐵購物誌'],['here-magazine','here雜誌'],['taipei-walker','Taipei Walker']],
+  group3: [['711-delivery','7-11宅配美食'],['blackcat-top10-2010','2010黑貓宅配前十名'],['blackcat-explorer','黑貓探險隊'],
+            ['home-delivery-food','宅配美食通'],['gohappy','GO Happy雜誌'],['tuangou-food-go','團購美食GO'],
+            ['kadokawa','角川雜誌'],['feifan-food-weekly','非凡美食e週刊'],['dazuiniao','大嘴鳥易購']]
+};
+for (const [id, items] of Object.entries(groups)) {
+  const el = document.getElementById(id);
+  items.forEach(([file, name]) => {
+    const btn = document.createElement('button');
+    btn.className = 'media-card';
+    btn.innerHTML = `<div class="media-thumb"><img src="media/press/${file}.jpg" alt="${name}" loading="lazy"></div><div class="media-name">${name}</div>`;
+    btn.addEventListener('click', () => openLB(file, name));
+    el.appendChild(btn);
+  });
+}
+function openLB(file, name) {
+  document.getElementById('lb-img').src = `media/press/${file}.jpg`;
+  document.getElementById('lb-img').alt = name;
+  document.getElementById('lb-name').textContent = name;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLB() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'lightbox') closeLB();
+});
+</script>
+
+</body>
+</html>

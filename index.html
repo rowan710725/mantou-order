@@ -37,6 +37,31 @@
         .logo-text { font-size: 1.2rem; font-weight: 700; color: var(--brown-dark); letter-spacing: 1px; }
         .header-phone { font-size: 0.85rem; color: var(--text-muted); }
         .section { padding: 40px 20px; max-width: 980px; margin: 0 auto; }
+        .trust-section { padding: 22px 20px 8px; max-width: 980px; margin: 0 auto; }
+        .trust-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 14px; margin-bottom: 14px; }
+        .trust-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--cream-card); border: 1.5px solid var(--gold-light);
+            border-radius: 30px; padding: 8px 16px;
+            font-size: 0.85rem; font-weight: 700; color: var(--brown-dark); white-space: nowrap;
+        }
+        .trust-line2 { text-align: center; font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
+        .trust-line2 a { color: var(--brown-dark); font-weight: 700; text-decoration: none; border-bottom: 1px dashed var(--gold); }
+        .trust-warning {
+            text-align: center; font-size: 0.82rem; color: #B8391C;
+            background: #FBEDE7; border: 1px solid #EBC9BB; border-radius: 8px;
+            padding: 10px 16px; max-width: 560px; margin: 14px auto 0;
+        }
+        .media-btn-wrap { text-align: center; margin-top: 16px; }
+        .media-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--brown-dark); color: var(--cream-card);
+            border: none; border-radius: 30px; padding: 12px 26px;
+            font-family: inherit; font-size: 0.92rem; font-weight: 700; cursor: pointer; text-decoration: none;
+        }
+        .media-btn:hover { background: var(--brown); }
+        .media-btn-arrow { transition: transform 0.15s ease; }
+        .media-btn:hover .media-btn-arrow { transform: translateX(3px); }
         .sec-title {
             text-align: center; font-size: 1.7rem; font-weight: 700;
             color: var(--brown-dark); margin-bottom: 10px; letter-spacing: 1px;
@@ -324,6 +349,22 @@
 <!-- Banner -->
 <div style="line-height:0;">
     <img src="line_oa_chat_260423_170052.jpg" alt="方王媽媽堅果饅頭" style="width:100%; display:block;">
+</div>
+
+<!-- Trust Section -->
+<div class="trust-section">
+    <div class="trust-row">
+        <span class="trust-badge">🏅 榮獲金牌獎</span>
+        <span class="trust-badge">✓ SGS檢驗不含塑化劑</span>
+        <span class="trust-badge">✓ 不含毒澱粉檢驗</span>
+    </div>
+    <div class="trust-line2">
+        <a href="https://www.google.com/maps/place/235%E5%8F%B0%E7%81%A3%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E7%AB%8B%E5%BE%B7%E8%A1%9798%E5%B7%B772%E8%99%9F" target="_blank">⭐ Google 評價</a>
+    </div>
+    <div class="trust-warning">⚠️ 方王媽媽堅果饅頭僅此一家，絕無分號，請小心詐騙</div>
+    <div class="media-btn-wrap">
+        <a class="media-btn" href="media.html">📰 媒體報導 <span class="media-btn-arrow">→</span></a>
+    </div>
 </div>
 
 <!-- Products -->
