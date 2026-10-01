@@ -53,8 +53,8 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 
 /* ── 商品表格 ── */
 .products-table{background:white;border-radius:10px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 2px 16px rgba(90,60,20,0.07);}
-.table-header{display:grid;grid-template-columns:60px 100px 70px 1fr 65px 50px 65px 50px 60px 100px 44px 44px;gap:8px;padding:12px 12px;background:var(--brown-dark);color:white;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
-.product-row{display:grid;grid-template-columns:60px 100px 70px 1fr 65px 50px 65px 50px 60px 100px 44px 44px;gap:8px;padding:12px 12px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
+.table-header{display:grid;grid-template-columns:60px 100px 60px 1fr 62px 66px 62px 66px 64px 90px 76px 44px 44px;gap:8px;padding:12px 12px;background:var(--brown-dark);color:white;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
+.product-row{display:grid;grid-template-columns:60px 100px 60px 1fr 62px 66px 62px 66px 64px 90px 76px 44px 44px;gap:8px;padding:12px 12px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
 .product-row:last-child{border-bottom:none;}
 .product-row:hover{background:var(--cream);}
 .product-row.inactive{opacity:0.45;}
@@ -67,6 +67,8 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 .fi-num{text-align:center;font-weight:700;}
 .fi-img{font-size:0.78rem;}
 .toggle-wrap{display:flex;justify-content:center;}
+.hot-sel{padding:8px 4px;cursor:pointer;}
+.hot-sel.hot-on{background:#FFF3C4;border-color:#E9B53B;color:#7A4B00;}
 .toggle{width:44px;height:24px;border-radius:12px;background:#ccc;position:relative;cursor:pointer;border:none;flex-shrink:0;transition:background 0.25s;}
 .toggle.on{background:#27ae60;}
 .toggle::after{content:'';width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;left:3px;transition:left 0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.25);}
@@ -197,6 +199,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
         <div style="text-align:center">規格2<br>價格</div>
         <div style="text-align:center">原價</div>
         <div>圖片路徑</div>
+        <div style="text-align:center">熱銷<br>排名</div>
         <div style="text-align:center">上架</div>
         <div></div>
       </div>
@@ -446,6 +449,10 @@ function renderProducts(){
              oninput="products[${i}].ori=Number(this.value)||0;setDirty(true)">
       <input class="fi fi-img" type="text" value="${esc(p.img)}" placeholder="檔名或網址"
              oninput="products[${i}].img=this.value;setDirty(true);refreshThumb(${i})">
+      <select class="fi fi-num hot-sel ${p.hot?'hot-on':''}" title="首頁「人氣熱銷」排名" onchange="setHot(${i},this.value)">
+        <option value="">—</option>
+        ${[1,2,3].map(n=>`<option value="${n}" ${p.hot===n?'selected':''}>No.${n}</option>`).join('')}
+      </select>
       <div class="toggle-wrap">
         <button class="toggle ${p.active?'on':''}"
                 title="${p.active?'已上架（點擊下架）':'已下架（點擊上架）'}"
@@ -454,6 +461,15 @@ function renderProducts(){
       <button class="del-btn" onclick="deleteProduct(${i})" title="刪除">🗑</button>
     </div>
   `).join('');
+}
+
+// 首頁「人氣熱銷」排名：同一個名次只能給一個商品，選了就把別人的同名次拿掉
+function setHot(i, val){
+  const n = Number(val) || 0;
+  products.forEach((p, j) => { if (j !== i && n && p.hot === n) delete p.hot; });
+  if (n) products[i].hot = n; else delete products[i].hot;
+  setDirty(true);
+  renderProducts();
 }
 
 function refreshThumb(i){

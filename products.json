@@ -11,7 +11,8 @@
     "price": 300,
     "ori": 325,
     "img": "zp.jpeg",
-    "active": true
+    "active": true,
+    "hot": 1
   },
   {
     "id": "yj",
@@ -53,7 +54,8 @@
     "price": 300,
     "ori": 325,
     "img": "hm.jpeg",
-    "active": true
+    "active": true,
+    "hot": 3
   },
   {
     "id": "yghm",
@@ -81,7 +83,8 @@
     "price": 275,
     "ori": 300,
     "img": "jg.jpeg",
-    "active": true
+    "active": true,
+    "hot": 2
   },
   {
     "id": "hmjg",
