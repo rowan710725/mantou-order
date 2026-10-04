@@ -1162,6 +1162,13 @@ async function submitOrder() {
     pay.style.display = 'block';
     setTimeout(() => pay.scrollIntoView({ behavior: 'smooth' }), 80);
     btn.disabled = false; btn.textContent = '確認訂購';
+    // 清空購物車，隱藏底部結帳列
+    qty = {};
+    refresh();
+    const cbGoBtn = document.querySelector('#cartBar .cb-go');
+    if (cbGoBtn) { cbGoBtn.textContent = '訂單已送出 ✓'; cbGoBtn.disabled = true; cbGoBtn.style.background = '#888'; cbGoBtn.onclick = null; }
+    document.getElementById('cartBar').classList.remove('show');
+    document.body.classList.remove('has-cart');
 }
 renderProducts();
 
