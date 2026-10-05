@@ -394,6 +394,8 @@
         .bank-row:last-child { border-bottom: none; }
         .bank-lbl { color: var(--text-muted); width: 100px; flex-shrink: 0; font-size: 0.9rem; }
         .bank-val { font-weight: 700; color: var(--brown-dark); letter-spacing: 0.5px; font-size: 1rem; }
+        .pay-items { background: var(--cream-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin: 0 auto 24px; max-width: 360px; text-align: left; line-height: 1.9; }
+        .pay-items-title { font-weight: 700; color: var(--brown-dark); margin-bottom: 4px; }
         .pay-notice { background: #FDFAE8; border: 1px solid #DDD08A; border-radius: 8px; padding: 20px; text-align: left; font-size: 0.95rem; color: #6A5800; line-height: 1.8; }
         .pay-notice strong { color: #4A3E00; }
         .line-add-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: #06C755; color: white; border: none; border-radius: 50px; padding: 15px 32px; font-size: 1rem; font-weight: 700; cursor: pointer; text-decoration: none; margin: 24px auto 0; width: fit-content; font-family: inherit; transition: background 0.2s, transform 0.2s; box-shadow: 0 4px 14px rgba(6,199,85,0.3); }
@@ -705,7 +707,9 @@
         <div class="pay-check">✅</div>
         <div class="pay-title">訂單送出成功！</div>
         <div class="pay-sub" id="payOrderNo" style="font-weight:700;"></div>
-        <div class="pay-sub" id="paySub">請於 <strong>24 小時內</strong> 完成匯款，逾時訂單將自動取消</div>
+        <div class="pay-items" id="payItems"></div>
+        <div class="pay-sub" style="margin-top:-12px;">📸 建議截圖保存此頁，方便日後查詢</div>
+        <div class="pay-sub" id="paySub">請於<strong>出貨前</strong>完成匯款，並於官方 LINE 上面告知帳號後５碼</div>
         <div class="pay-amount" id="payAmount">$0</div>
         <div id="payBankSection">
             <div class="bank-box">
@@ -1123,12 +1127,13 @@ async function submitOrder() {
     const codFee = getCODFee();
     const paymentTextMap = { bank: '銀行匯款', cod: '貨到付款', cash: '付現金', digital: '數位支付' };
     const payment = paymentTextMap[paymentMode] || '銀行匯款';
-    const itemsText = getSelected().map(p => {
+    const itemsList = getSelected().map(p => {
         const variantNum = selectedVariant[p.id] || 1;
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
         const displayName = variantName ? `${p.name}(${variantName})` : p.name;
         return `${displayName}×${qty[p.id]}`;
-    }).join('、');
+    });
+    const itemsText = itemsList.join('、');
     const orderNo = makeOrderNo();
     const orderData = { orderNo, timestamp: new Date().toLocaleString('zh-TW'), name, phone, address, note, payment, items: itemsText, total: getFinalTotal(), shipping: shipping + codFee };
     try {
@@ -1139,6 +1144,8 @@ async function submitOrder() {
     document.getElementById('stickyBar').classList.remove('show');
     const amountNote = orderData.shipping > 0 ? `（含運費 $${orderData.shipping}）` : '（已免運費）';
     document.getElementById('payOrderNo').textContent = '訂單編號：' + orderData.orderNo;
+    document.getElementById('payItems').innerHTML = '<div class="pay-items-title">訂購品項</div>'
+        + itemsList.map(t => `<div>${esc(t).replace('×', ' × ')}</div>`).join('');
     document.getElementById('payAmount').textContent = '$' + orderData.total.toLocaleString() + amountNote;
     // 根據配送／付款方式顯示不同頁面
     if (deliveryMode === 'pickup') {
@@ -1153,7 +1160,7 @@ async function submitOrder() {
         document.getElementById('payCODSection').style.display = '';
         document.getElementById('payPickupSection').style.display = 'none';
     } else {
-        document.getElementById('paySub').innerHTML = '請於 <strong>24 小時內</strong> 完成匯款，逾時訂單將自動取消';
+        document.getElementById('paySub').innerHTML = '請於<strong>出貨前</strong>完成匯款，並於官方 LINE 上面告知帳號後５碼';
         document.getElementById('payBankSection').style.display = '';
         document.getElementById('payCODSection').style.display = 'none';
         document.getElementById('payPickupSection').style.display = 'none';
@@ -1343,6 +1350,11 @@ function selectVariant(productId, btn) {
 loadProducts();
 loadStoreInfo();
 
+// 把 < > & " ' 轉成安全文字，避免資料被當成程式執行
+function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
 // ── 查詢訂單 ──────────────────────────────────────────────────────────────────
 function openQuery() {
     document.getElementById('queryOverlay').classList.add('show');
@@ -1389,19 +1401,19 @@ function queryOrders() {
                 const subtotal = total - rawShipping;
                 const paymentLabel = (o.payment || '銀行匯款') + (isCOD ? '（＋30）' : '');
                 html += `<div style="background:var(--cream-card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
-                    ${o.orderNo ? `<div style="font-size:0.95rem;font-weight:700;margin-bottom:4px;">訂單編號：${o.orderNo}</div>` : ''}
-                    <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:8px;">${o.timestamp}</div>
-                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>品項：</strong>${o.items}</div>
+                    ${o.orderNo ? `<div style="font-size:0.95rem;font-weight:700;margin-bottom:4px;">訂單編號：${esc(o.orderNo)}</div>` : ''}
+                    <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:8px;">${esc(o.timestamp)}</div>
+                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>品項：</strong>${esc(o.items)}</div>
                     <div style="font-size:0.95rem;margin-bottom:6px;"><strong>小計：</strong>$${subtotal.toLocaleString()}</div>
                     <div style="font-size:0.95rem;margin-bottom:6px;"><strong>運費：</strong>${shipping > 0 ? '$' + shipping.toLocaleString() : '免運'}</div>
-                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>付款方式：</strong>${paymentLabel}</div>
+                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>付款方式：</strong>${esc(paymentLabel)}</div>
                     <div style="font-size:0.95rem;margin-bottom:6px;"><strong>總金額：</strong>$${total.toLocaleString()}</div>
-                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>地址：</strong>${o.address}</div>
+                    <div style="font-size:0.95rem;margin-bottom:6px;"><strong>地址：</strong>${esc(o.address)}</div>
                     <div style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.82rem;font-weight:700;
                         background:${o.status === '已付款' ? '#E8F5E9' : '#FFF8E1'};
                         color:${o.status === '已付款' ? '#2E7D32' : '#E65100'};
                         border:1px solid ${o.status === '已付款' ? '#86EFAC' : '#FFD180'};">
-                        ${o.status || '待付款'}
+                        ${esc(o.status || '待付款')}
                     </div>
                 </div>`;
             });
