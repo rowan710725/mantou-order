@@ -69,7 +69,8 @@
     "price": 300,
     "ori": 325,
     "img": "yghm.jpeg",
-    "active": true
+    "active": true,
+    "hot": 5
   },
   {
     "id": "jg",
@@ -182,7 +183,8 @@
     "price": 100,
     "ori": 320,
     "img": "chatgpt_image_2026_9_16____03_46_33.png",
-    "active": true
+    "active": true,
+    "hot": 4
   },
   {
     "id": "raisin",
