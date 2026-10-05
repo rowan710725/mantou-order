@@ -411,16 +411,20 @@
         .pickup-line-btn { display: inline-flex; align-items: center; gap: 7px; background: #06C755; color: white; border-radius: 50px; padding: 10px 22px; font-size: 0.92rem; font-weight: 700; text-decoration: none; margin-top: 12px; transition: background 0.2s; }
         .pickup-line-btn:hover { background: #05b34b; }
         .channel-section { padding: 40px 20px; max-width: 1000px; margin: 0 auto; }
-        .channel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 0 auto; }
-        .channel-card { background: white; border-radius: 6px; padding: 14px 12px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0; transition: box-shadow 0.2s; text-align: center; }
-        .channel-card:hover { box-shadow: 0 3px 12px rgba(90,60,20,0.1); }
-        .channel-wrapper { position: relative; overflow: hidden; min-height: 180px; }
+        .channel-head { display: flex; align-items: center; gap: 18px; margin-bottom: 22px; color: var(--brown-dark); }
+        .channel-head::before, .channel-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .channel-head h2 { display: flex; align-items: center; gap: 10px; font-size: 1.6rem; font-weight: 900; letter-spacing: 4px; margin: 0; }
+        .channel-head svg { width: 34px; height: 34px; }
+        .channel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 0 auto; }
+        .channel-card { background: white; border-radius: 16px; padding: 22px 18px 18px; box-shadow: 0 4px 18px rgba(90,60,20,0.08); display: flex; flex-direction: column; gap: 12px; transition: box-shadow 0.2s; }
+        .channel-card:hover { box-shadow: 0 6px 24px rgba(90,60,20,0.14); }
+        .channel-wrapper { position: relative; overflow: hidden; }
         .channel-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            bottom: 50px;
+            bottom: 74px;
             background: rgba(92, 58, 30, 0.95);
             color: white;
             display: flex;
@@ -433,23 +437,32 @@
             font-size: 0.85rem;
             line-height: 1.6;
             pointer-events: none;
-            border-radius: 6px 6px 0 0;
+            border-radius: 16px 16px 0 0;
+            z-index: 2;
         }
         .channel-wrapper:hover .channel-overlay { opacity: 1; }
-        .channel-logo { font-size: 1.1rem; font-weight: 900; margin-bottom: 6px; letter-spacing: -1px; }
-        .logo-family { color: #00933B; }
-        .logo-seven { color: #EE1C25; }
-        .channel-sub { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; flex: 1; }
-        .channel-sub strong { color: var(--text); }
-        .channel-fee { display: block; background: var(--cream); border-radius: 3px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 10px; border: none; }
-        .channel-links { display: flex; flex-direction: column; gap: 6px; }
-        .channel-link { display: block; text-align: center; padding: 8px 10px; border-radius: 3px; font-size: 0.75rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
-        .link-primary-family { background: #00933B; color: white; }
+        .channel-top { display: flex; align-items: center; min-height: 96px; }
+        .channel-logo { flex: 1.3; text-align: center; font-weight: 900; line-height: 1; padding-right: 14px; }
+        .channel-logo img { display: block; margin: 0 auto; max-width: 100%; max-height: 92px; object-fit: contain; }
+        .logo-family { font-size: 2.7rem; color: #00933B; letter-spacing: 1px; }
+        .logo-family b { color: #1E73BE; font-weight: 900; }
+        .logo-seven { font-size: 2.9rem; color: #F07A10; font-style: italic; letter-spacing: 2px; transform: skewX(-8deg); }
+        .channel-sub { flex: 1; border-left: 1px solid var(--border); padding-left: 18px; font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
+        .channel-sub br { display: none; }
+        .channel-sub strong { display: block; font-size: 1.35rem; font-weight: 900; color: var(--text); letter-spacing: 1px; }
+        .channel-fee { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--cream-card); border-radius: 10px; padding: 10px; font-size: 0.95rem; font-weight: 700; color: var(--brown-dark); }
+        .channel-fee svg { width: 24px; height: 24px; }
+        .channel-fee em { font-style: normal; font-size: 1.35rem; font-weight: 900; }
+        .fee-family { color: #00933B; }
+        .fee-seven { color: #E3141C; }
+        .channel-link { position: relative; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 20px; border-radius: 10px; color: white; font-size: 1.3rem; font-weight: 700; letter-spacing: 4px; text-decoration: none; transition: background 0.2s; }
+        .channel-link svg { width: 28px; height: 28px; flex: none; }
+        .channel-link .sep { display: none; }
+        .channel-link .go { position: absolute; right: 20px; font-size: 1.5rem; line-height: 1; }
+        .link-primary-family { background: #0E8C3A; }
         .link-primary-family:hover { background: #007A30; }
-        .link-primary-seven { background: #EE1C25; color: white; }
+        .link-primary-seven { background: #E3141C; }
         .link-primary-seven:hover { background: #C8101A; }
-        .link-secondary { background: var(--cream-card); color: var(--brown-dark); border: 1px solid var(--border); }
-        .link-secondary:hover { background: var(--cream-dark); }
         /* LINE 歡迎彈窗 */
         .line-overlay { position: fixed; inset: 0; background: rgba(40,20,0,0.55); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.35s; }
         .line-overlay.show { opacity: 1; pointer-events: all; }
@@ -512,6 +525,10 @@
             .variant-btn { flex: none; width: 100%; min-height: 36px; padding: 8px 4px; font-size: 0.85rem; white-space: nowrap; }
             .price-now { font-size: 1.15rem; }
             .channel-grid { grid-template-columns: 1fr; }
+            .channel-head h2 { font-size: 1.3rem; letter-spacing: 2px; }
+            .logo-family { font-size: 2.1rem; }
+            .logo-seven { font-size: 2.2rem; }
+            .channel-sub strong { font-size: 1.15rem; }
             .cart-img { width:64px; height:64px; }
             .cart-item { gap:10px; padding:14px 14px; }
         }
@@ -768,8 +785,7 @@
 
 <!-- 其它購買方式 -->
 <div class="channel-section">
-    <h2 class="sec-title">其它購買方式</h2>
-    <p class="sec-sub">超商貨到付款</p>
+    <div class="channel-head"><h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h11v10H2zM13 9h4l4 4v3h-8z"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>超商取貨付款</h2></div>
     <div class="channel-grid">
         <div class="channel-card channel-wrapper">
             <div class="channel-overlay">
@@ -779,11 +795,13 @@
                     🎁 近期好賣＋結帳區有免運券可領取
                 </div>
             </div>
-            <div class="channel-logo logo-family">好賣＋</div>
-            <div class="channel-sub"><strong>全家取貨</strong><br>3-4 天到貨</div>
-            <div class="channel-fee">店到店運費NT$99</div>
+            <div class="channel-top">
+                <div class="channel-logo"><img src="logo-hmp.png" alt="好賣＋"></div>
+                <div class="channel-sub"><strong>全家取貨</strong><br>3-4 天到貨</div>
+            </div>
+            <div class="channel-fee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9M3 9c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3M5 12v8h14v-8M10 20v-5h4v5"/></svg>店到店運費 <em class="fee-family">NT$99</em></div>
             <div class="channel-links">
-                <a class="channel-link link-primary-family" href="https://famistore.famiport.com.tw/users/240902" target="_blank">購買</a>
+                <a class="channel-link link-primary-family" href="https://famistore.famiport.com.tw/users/240902" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h3l2.5 12h11L21 7H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/><path d="M9 11h9"/></svg><span class="sep"></span>購買<span class="go">›</span></a>
             </div>
         </div>
         <div class="channel-card channel-wrapper">
@@ -794,11 +812,13 @@
                     🎁 免運券可在賣貨便平台自動折抵
                 </div>
             </div>
-            <div class="channel-logo logo-seven">賣貨便</div>
-            <div class="channel-sub"><strong>7-11 取貨</strong><br>3-4 天到貨</div>
-            <div class="channel-fee">店到店運費NT$129</div>
+            <div class="channel-top">
+                <div class="channel-logo"><img src="logo-myship.png" alt="7-ELEVEN 賣貨便"></div>
+                <div class="channel-sub"><strong>7-11 取貨</strong><br>3-4 天到貨</div>
+            </div>
+            <div class="channel-fee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9M3 9c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3M5 12v8h14v-8M10 20v-5h4v5"/></svg>店到店運費 <em class="fee-seven">NT$129</em></div>
             <div class="channel-links">
-                <a class="channel-link link-primary-seven" href="https://myship.7-11.com.tw/general/detail/GM2304147275126" target="_blank">購買</a>
+                <a class="channel-link link-primary-seven" href="https://myship.7-11.com.tw/general/detail/GM2304147275126" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h3l2.5 12h11L21 7H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/><path d="M9 11h9"/></svg><span class="sep"></span>購買<span class="go">›</span></a>
             </div>
         </div>
     </div>
