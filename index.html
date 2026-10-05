@@ -420,27 +420,29 @@
         .channel-card:hover { box-shadow: 0 6px 24px rgba(90,60,20,0.14); }
         .channel-wrapper { position: relative; overflow: hidden; }
         .channel-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 74px;
-            background: rgba(92, 58, 30, 0.95);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-            padding: 12px;
-            text-align: center;
-            font-size: 0.85rem;
-            line-height: 1.6;
-            pointer-events: none;
-            border-radius: 16px 16px 0 0;
-            z-index: 2;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 74px; z-index: 2;
+            background: #4A2E17; color: #FBF6ED; border-radius: 16px 16px 12px 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 12px 18px; opacity: 0; transform: translateY(6px); transition: opacity 0.25s, transform 0.25s; pointer-events: none;
         }
-        .channel-wrapper:hover .channel-overlay { opacity: 1; }
+        .channel-wrapper:hover .channel-overlay { opacity: 1; transform: none; }
+        .free-title { font-size: 1rem; font-weight: 900; color: #E5C88A; letter-spacing: 3px; padding-bottom: 6px; margin-bottom: 8px; border-bottom: 2px solid rgba(229,200,138,0.5); }
+        .free-row { text-align: center; font-size: 1rem; line-height: 1.55; }
+        .free-cat { margin-right: 8px; }
+        .free-cat { font-weight: 700; }
+        .free-rule b { color: #F6CF5E; font-size: 1.12rem; }
+        .free-note { display: block; font-size: 0.85rem; opacity: 0.8; }
+        .free-coupon { margin-top: 6px; font-size: 0.92rem; text-align: center; }
+        /* 手機（沒有滑鼠）：免運資訊直接顯示在運費列下面 */
+        @media (hover: none) {
+            .channel-overlay { position: static; order: 2; opacity: 1; transform: none; background: var(--cream-card); color: var(--text); border: 1px dashed var(--border); border-radius: 10px; padding: 10px 14px; align-items: center; text-align: center; }
+            .channel-top { order: 0; } .channel-fee { order: 1; } .channel-links { order: 3; }
+            .free-title { display: none; }
+            .free-row { font-size: 0.9rem; }
+            .free-rule b { color: var(--brown-dark); font-size: 1rem; }
+            .free-note { display: block; font-size: 0.82rem; opacity: 1; color: var(--text-muted); }
+            .free-coupon { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+        }
         .channel-top { display: flex; align-items: center; min-height: 96px; }
         .channel-logo { flex: 1.3; text-align: center; font-weight: 900; line-height: 1; padding-right: 14px; }
         .channel-logo img { display: block; margin: 0 auto; max-width: 100%; max-height: 92px; object-fit: contain; }
@@ -789,11 +791,10 @@
     <div class="channel-grid">
         <div class="channel-card channel-wrapper">
             <div class="channel-overlay">
-                <div style="font-size:0.88rem; line-height:1.6;">
-                    💚 冷凍商品滿 2,500 元免運（未滿運費 99 元）<br>
-                    🟡 常溫商品滿 1,500 元免運（未滿運費 38 元）<br>
-                    🎁 近期好賣＋結帳區有免運券可領取
-                </div>
+                <div class="free-title">🚚 免運優惠</div>
+                <div class="free-row"><span class="free-cat">❄️ 冷凍商品</span><span class="free-rule">滿 <b>NT$2,500</b> 免運</span><span class="free-note">未滿運費 NT$99</span></div>
+                <div class="free-row"><span class="free-cat">☀️ 常溫商品</span><span class="free-rule">滿 <b>NT$1,500</b> 免運</span><span class="free-note">未滿運費 NT$38</span></div>
+                <div class="free-coupon">🎁 近期好賣＋結帳區有免運券可領取</div>
             </div>
             <div class="channel-top">
                 <div class="channel-logo"><img src="logo-hmp.png" alt="好賣＋"></div>
@@ -806,11 +807,10 @@
         </div>
         <div class="channel-card channel-wrapper">
             <div class="channel-overlay">
-                <div style="font-size:0.88rem; line-height:1.6;">
-                    💚 冷凍商品滿 3,000 元免運（未滿運費 129 元）<br>
-                    🟡 常溫商品滿 1,500 元免運（未滿運費 38 元）<br>
-                    🎁 免運券可在賣貨便平台自動折抵
-                </div>
+                <div class="free-title">🚚 免運優惠</div>
+                <div class="free-row"><span class="free-cat">❄️ 冷凍商品</span><span class="free-rule">滿 <b>NT$3,000</b> 免運</span><span class="free-note">未滿運費 NT$129</span></div>
+                <div class="free-row"><span class="free-cat">☀️ 常溫商品</span><span class="free-rule">滿 <b>NT$1,500</b> 免運</span><span class="free-note">未滿運費 NT$38</span></div>
+                <div class="free-coupon">🎁 免運券可在賣貨便平台自動折抵</div>
             </div>
             <div class="channel-top">
                 <div class="channel-logo"><img src="logo-myship.png" alt="7-ELEVEN 賣貨便"></div>
