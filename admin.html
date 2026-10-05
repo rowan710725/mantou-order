@@ -41,6 +41,32 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 .hdr-logout{background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);}
 .hdr-logout:hover{color:white;border-color:white;}
 
+/* ── 分頁列 ── */
+.tab-bar{background:white;border-bottom:1.5px solid var(--border);position:sticky;top:64px;z-index:90;}
+.tab-bar-inner{max-width:1140px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:8px;}
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:9px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--cream-card);color:var(--brown-dark);font-size:0.9rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all 0.2s;}
+.tab:hover{border-color:var(--gold);}
+.tab.active{background:var(--brown-dark);border-color:var(--brown-dark);color:white;}
+.tab .dot{color:#27ae60;margin-left:4px;display:none;}
+.tab.active .dot{color:#7CE3A0;}
+.tab.is-dirty .dot{display:inline;}
+.tab-actions{display:flex;gap:8px;flex-shrink:0;}
+.tab-actions .hdr-add{background:var(--cream-card);color:var(--brown-dark);border:1.5px solid var(--border);}
+.tab-actions .hdr-add:hover{border-color:var(--gold);background:white;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* ── 運費設定 ── */
+.ship-group{border:1.5px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;background:var(--cream-card);}
+.ship-group h4{font-size:0.95rem;color:var(--brown-dark);margin-bottom:12px;}
+.ship-group h4 small{font-weight:500;color:var(--text-muted);margin-left:6px;}
+.ship-fields{display:flex;flex-wrap:wrap;gap:12px 24px;}
+.ship-field{display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text);}
+.ship-field input{width:96px;text-align:center;font-weight:700;margin:0;}
+.ship-warn{background:#FFF8E1;border:1px solid #FFD180;border-radius:8px;padding:12px 16px;font-size:0.85rem;color:#795548;line-height:1.7;}
+
 /* ── 狀態列 ── */
 .status-bar{padding:12px 28px;font-size:0.9rem;font-weight:600;display:none;}
 .status-bar.success{background:#E8F5E9;color:#2E7D32;border-bottom:2px solid #A5D6A7;display:block;}
@@ -121,6 +147,8 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 .steps b{color:var(--brown-dark);}
 
 @media(max-width:860px){
+  .tab-bar-inner{flex-wrap:wrap;}
+  .tab-actions{width:100%;justify-content:flex-end;}
   .table-header{display:none;}
   .product-row{grid-template-columns:76px 1fr 44px;gap:8px;padding:14px;}
   .video-row{grid-template-columns:1fr 44px;}
@@ -152,14 +180,27 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 <!-- ── 後台主介面 ── -->
 <div id="adminUI" style="display:none">
   <header>
-    <div class="header-title">🥟 商品後台管理</div>
+    <div class="header-title">🥟 小官網後台管理</div>
     <div class="header-actions">
-      <button class="hdr-btn hdr-save" id="saveBtn" onclick="saveAll()">💾 儲存變更</button>
-      <button class="hdr-btn hdr-add" onclick="addProduct()">＋ 新增品項</button>
       <button class="hdr-btn hdr-settings" onclick="openSettings()" title="GitHub 設定">⚙️ 設定</button>
       <button class="hdr-btn hdr-logout" onclick="logout()">登出</button>
     </div>
   </header>
+
+  <div class="tab-bar">
+    <div class="tab-bar-inner">
+      <div class="tabs">
+        <button class="tab" data-tab="products" onclick="switchTab('products')">🥟 商品<span class="dot">●</span></button>
+        <button class="tab" data-tab="store" onclick="switchTab('store')">🏠 門市資訊<span class="dot">●</span></button>
+        <button class="tab" data-tab="media" onclick="switchTab('media')">📰 媒體報導<span class="dot">●</span></button>
+        <button class="tab" data-tab="shipping" onclick="switchTab('shipping')">🚚 運費設定<span class="dot">●</span></button>
+      </div>
+      <div class="tab-actions">
+        <button class="hdr-btn hdr-add" id="addProductBtn" onclick="addProduct()">＋ 新增品項</button>
+        <button class="hdr-btn hdr-save" id="saveBtn" onclick="saveCurrent()">💾 儲存變更</button>
+      </div>
+    </div>
+  </div>
 
   <div class="status-bar" id="statusBar"></div>
 
@@ -168,28 +209,27 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
       ⚠️ 尚未設定 GitHub Token，照片上傳功能尚未啟用。請點右上角「⚙️ 設定」完成設定。
     </div>
 
-    <div class="products-table" style="margin-bottom:24px;">
+    <div class="panel" id="panel-store">
+    <div class="products-table">
       <div class="table-header" style="grid-template-columns:1fr;">
         <div>🏠 自取門市資訊</div>
       </div>
       <div style="padding:18px;">
         <label class="field-label">地址</label>
-        <input class="modal-input" id="storeAddress" type="text" placeholder="例：新北市中和區立德街98巷72號">
+        <input class="modal-input" id="storeAddress" type="text" oninput="setTabDirty('store',true)" placeholder="例：新北市中和區立德街98巷72號">
 
         <label class="field-label">營業時間（一行一筆）</label>
-        <input class="modal-input" id="storeHours1" type="text" placeholder="例：週一～五　10:00-19:00">
-        <input class="modal-input" id="storeHours2" type="text" placeholder="例：週六　10:00-17:00">
-        <input class="modal-input" id="storeHours3" type="text" placeholder="例：週日　公休">
+        <input class="modal-input" id="storeHours1" type="text" oninput="setTabDirty('store',true)" placeholder="例：週一～五　10:00-19:00">
+        <input class="modal-input" id="storeHours2" type="text" oninput="setTabDirty('store',true)" placeholder="例：週六　10:00-17:00">
+        <input class="modal-input" id="storeHours3" type="text" oninput="setTabDirty('store',true)" placeholder="例：週日　公休">
 
         <label class="field-label">提醒文字</label>
-        <input class="modal-input" id="storeNote" type="text" placeholder="例：需先完成訂購，以利備貨…" style="margin-bottom:14px;">
-
-        <div style="display:flex;justify-content:flex-end;">
-          <button class="hdr-btn hdr-save" id="storeSaveBtn" onclick="saveStoreInfo()" style="width:auto;">💾 儲存門市資訊</button>
-        </div>
+        <input class="modal-input" id="storeNote" type="text" oninput="setTabDirty('store',true)" placeholder="例：需先完成訂購，以利備貨…" style="margin-bottom:0;">
       </div>
     </div>
+    </div>
 
+    <div class="panel" id="panel-products">
     <div class="products-table">
       <div class="table-header">
         <div>照片</div><div>品名</div><div>編碼</div><div>描述</div>
@@ -207,8 +247,10 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
         <div class="loading-row">🔄 載入商品清單中…</div>
       </div>
     </div>
+    </div>
 
-    <div class="products-table" style="margin-top:24px;">
+    <div class="panel" id="panel-media">
+    <div class="products-table">
       <div class="table-header" style="grid-template-columns:1fr;">
         <div>📰 媒體報導管理</div>
       </div>
@@ -226,11 +268,48 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
         <div style="display:flex;justify-content:flex-start;margin-top:10px;">
           <button class="hdr-btn hdr-add" style="color:var(--brown-dark);border-color:var(--border);background:var(--cream-card);" onclick="addMediaPress()">＋ 新增報導</button>
         </div>
-
-        <div style="display:flex;justify-content:flex-end;margin-top:18px;">
-          <button class="hdr-btn hdr-save" id="mediaSaveBtn" onclick="saveMedia()" style="width:auto;">💾 儲存媒體報導</button>
-        </div>
       </div>
+    </div>
+    </div>
+
+    <div class="panel" id="panel-shipping">
+    <div class="products-table">
+      <div class="table-header" style="grid-template-columns:1fr;">
+        <div>🚚 運費設定</div>
+      </div>
+      <div style="padding:18px;">
+        <div class="ship-group">
+          <h4>❄️ 冷凍宅配<small>小官網訂購用，會算進訂單金額</small></h4>
+          <div class="ship-fields">
+            <label class="ship-field">運費 <input class="fi fi-num" type="number" min="0" id="ship_home_fee" oninput="setTabDirty('shipping',true)"> 元</label>
+            <label class="ship-field">滿 <input class="fi fi-num" type="number" min="0" id="ship_home_free" oninput="setTabDirty('shipping',true)"> 元免運</label>
+            <label class="ship-field">貨到付款加收 <input class="fi fi-num" type="number" min="0" id="ship_home_cod" oninput="setTabDirty('shipping',true)"> 元</label>
+          </div>
+        </div>
+        <div class="ship-group">
+          <h4>🟢 好賣＋（全家）<small>只改小官網上的顯示</small></h4>
+          <div class="ship-fields">
+            <label class="ship-field">店到店運費 <input class="fi fi-num" type="number" min="0" id="ship_hmp_fee" oninput="setTabDirty('shipping',true)"> 元</label>
+            <label class="ship-field">冷凍滿 <input class="fi fi-num" type="number" min="0" id="ship_hmp_free" oninput="setTabDirty('shipping',true)"> 元免運</label>
+          </div>
+        </div>
+        <div class="ship-group">
+          <h4>🔴 賣貨便（7-11）<small>只改小官網上的顯示</small></h4>
+          <div class="ship-fields">
+            <label class="ship-field">店到店運費 <input class="fi fi-num" type="number" min="0" id="ship_myship_fee" oninput="setTabDirty('shipping',true)"> 元</label>
+            <label class="ship-field">冷凍滿 <input class="fi fi-num" type="number" min="0" id="ship_myship_free" oninput="setTabDirty('shipping',true)"> 元免運</label>
+          </div>
+        </div>
+        <div class="ship-group">
+          <h4>☀️ 常溫<small>好賣＋、賣貨便共用</small></h4>
+          <div class="ship-fields">
+            <label class="ship-field">運費 <input class="fi fi-num" type="number" min="0" id="ship_ambient_fee" oninput="setTabDirty('shipping',true)"> 元</label>
+            <label class="ship-field">滿 <input class="fi fi-num" type="number" min="0" id="ship_ambient_free" oninput="setTabDirty('shipping',true)"> 元免運</label>
+          </div>
+        </div>
+        <div class="ship-warn">⚠️ 好賣＋、賣貨便<b>平台本身</b>的運費，請到各自的賣家後台修改；這裡只會改小官網上顯示的數字。</div>
+      </div>
+    </div>
     </div>
   </div>
 </div>
@@ -338,12 +417,40 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;
 function imgSrc(img){ return (img&&img.startsWith('http'))?img:(img||''); }
 function getPAT(){ return localStorage.getItem('gh_pat')||''; }
 
-function setDirty(v){
-  dirty=v;
-  const btn=document.getElementById('saveBtn');
+// ── 分頁 ──────────────────────────────────────────────────────────────────────
+const TAB_DIRTY = { products:false, store:false, media:false, shipping:false };
+let currentTab = 'products';
+function anyDirty(){ return Object.values(TAB_DIRTY).some(Boolean); }
+function setTabDirty(tab,v){
+  TAB_DIRTY[tab]=v;
+  document.querySelector(`.tab[data-tab="${tab}"]`).classList.toggle('is-dirty',v);
+  refreshSaveBtn();
+}
+function refreshSaveBtn(){
+  const v=TAB_DIRTY[currentTab], btn=document.getElementById('saveBtn');
   btn.textContent=v?'💾 儲存變更 ●':'💾 儲存變更';
   btn.classList.toggle('dirty',v);
 }
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+tab));
+  document.getElementById('addProductBtn').style.display = tab==='products' ? '' : 'none';
+  refreshSaveBtn();
+  try{ localStorage.setItem('admin_tab',tab); }catch(e){}
+}
+async function saveCurrent(){
+  const btn=document.getElementById('saveBtn');
+  if(btn.disabled) return;
+  btn.disabled=true;
+  try{
+    if(currentTab==='products') await saveAll();
+    else if(currentTab==='store') await saveStoreInfo();
+    else if(currentTab==='media') await saveMedia();
+    else if(currentTab==='shipping') await saveShipping();
+  } finally { btn.disabled=false; }
+}
+function setDirty(v){ dirty=v; setTabDirty('products',v); }
 function showStatus(msg,type){
   const el=document.getElementById('statusBar');
   el.textContent=msg; el.className='status-bar '+type;
@@ -395,6 +502,14 @@ async function login(){
       }
     } catch(e){}
 
+    // 從 GitHub 讀取 shipping.json（運費設定，找不到就用預設值）
+    let ship = {};
+    try{
+      const shr = await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/shipping.json?t=${Date.now()}`);
+      if(shr.ok) ship = await shr.json();
+    } catch(e){}
+    fillShipping(ship);
+
     PASS = pass;
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminUI').style.display = '';
@@ -402,19 +517,21 @@ async function login(){
     renderProducts();
     renderMediaVideos();
     renderMediaPress();
+    let lastTab='products';
+    try{ lastTab=localStorage.getItem('admin_tab')||'products'; }catch(e){}
+    switchTab(TAB_DIRTY.hasOwnProperty(lastTab)?lastTab:'products');
   } catch(e){
     errEl.textContent = e.message || '連線失敗，請確認網路後再試';
   }
 }
 function logout(){
-  if((dirty||mediaDirty)&&!confirm('有未儲存的變更，確定要登出嗎？')) return;
+  if(anyDirty()&&!confirm('有未儲存的變更，確定要登出嗎？')) return;
   PASS='';
   document.getElementById('adminPassInput').value='';
   document.getElementById('loginError').textContent='';
   document.getElementById('adminUI').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
-  setDirty(false);
-  setMediaDirty(false);
+  Object.keys(TAB_DIRTY).forEach(t=>setTabDirty(t,false));
 }
 
 // ── 渲染商品列表 ──────────────────────────────────────────────────────────────
@@ -504,12 +621,7 @@ function extractYoutubeId(str){
   return str;
 }
 let mediaDirty = false;
-function setMediaDirty(v){
-  mediaDirty=v;
-  const btn=document.getElementById('mediaSaveBtn');
-  btn.textContent=v?'💾 儲存媒體報導 ●':'💾 儲存媒體報導';
-  btn.classList.toggle('dirty',v);
-}
+function setMediaDirty(v){ mediaDirty=v; setTabDirty('media',v); }
 function renderMediaVideos(){
   const list=document.getElementById('videoList');
   if(!mediaVideos.length){
@@ -579,8 +691,6 @@ async function saveMedia(){
     showStatus('❌ 尚未設定 GitHub Token，請點右上角「⚙️ 設定」完成設定','error');
     return;
   }
-  const btn = document.getElementById('mediaSaveBtn');
-  btn.disabled = true;
   showStatus('儲存媒體報導中，請稍候…','loading');
   try{
     const content = JSON.stringify({videos:mediaVideos, press:mediaPress}, null, 2);
@@ -611,8 +721,6 @@ async function saveMedia(){
     }
   } catch(ex){
     showStatus('❌ ' + ex.message,'error');
-  } finally{
-    btn.disabled = false;
   }
 }
 
@@ -664,6 +772,73 @@ async function saveAll(){
   }
 }
 
+// ── 運費設定 ──────────────────────────────────────────────────────────────────
+const SHIP_DEFAULT = {
+  home:    { fee:200, free:3500, cod:30 },
+  hmp:     { fee:99,  free:2500 },
+  myship:  { fee:129, free:3000 },
+  ambient: { fee:38,  free:1500 }
+};
+function fillShipping(cfg){
+  Object.entries(SHIP_DEFAULT).forEach(([g,fields])=>{
+    Object.entries(fields).forEach(([k,def])=>{
+      const v = cfg[g] && Number.isFinite(cfg[g][k]) ? cfg[g][k] : def;
+      document.getElementById(`ship_${g}_${k}`).value = v;
+    });
+  });
+}
+async function saveShipping(){
+  const pat = getPAT();
+  if(!pat){
+    showStatus('❌ 尚未設定 GitHub Token，請點右上角「⚙️ 設定」完成設定','error');
+    return;
+  }
+  const cfg = {};
+  for(const [g,fields] of Object.entries(SHIP_DEFAULT)){
+    cfg[g] = {};
+    for(const k of Object.keys(fields)){
+      const raw = document.getElementById(`ship_${g}_${k}`).value.trim();
+      const n = Number(raw);
+      if(raw==='' || !Number.isFinite(n) || n<0){
+        showStatus('❌ 運費欄位要填 0 以上的數字，請檢查後再儲存','error');
+        return;
+      }
+      cfg[g][k] = Math.round(n);
+    }
+  }
+  showStatus('儲存運費設定中，請稍候…','loading');
+  try{
+    const content = JSON.stringify(cfg, null, 2);
+    const base64 = btoa(unescape(encodeURIComponent(content)));
+    const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/shipping.json`;
+
+    let sha = null;
+    try{
+      const existing = await fetch(apiUrl, { headers: { Authorization: `Bearer ${pat}` } });
+      if(existing.ok){ const data = await existing.json(); sha = data.sha; }
+    } catch(e){}
+
+    const body = { message: `更新運費設定 (${new Date().toLocaleString('zh-TW')})`, content: base64 };
+    if(sha) body.sha = sha;
+
+    const res = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${pat}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if(res.ok){
+      setTabDirty('shipping',false);
+      showStatus('✅ 運費設定儲存成功！官網約 5 分鐘內更新','success');
+    } else {
+      const err = await res.json();
+      showStatus('❌ ' + (err.message || '保存失敗'),'error');
+    }
+  } catch(ex){
+    showStatus('❌ ' + ex.message,'error');
+  }
+}
+
 // ── 門市資訊 ──────────────────────────────────────────────────────────────────
 async function saveStoreInfo(){
   const pat = getPAT();
@@ -671,8 +846,6 @@ async function saveStoreInfo(){
     showStatus('❌ 尚未設定 GitHub Token，請點右上角「⚙️ 設定」完成設定','error');
     return;
   }
-  const btn = document.getElementById('storeSaveBtn');
-  btn.disabled = true;
   showStatus('儲存門市資訊中，請稍候…','loading');
   try{
     const storeInfo = {
@@ -704,6 +877,7 @@ async function saveStoreInfo(){
     });
 
     if(res.ok){
+      setTabDirty('store',false);
       showStatus('✅ 門市資訊儲存成功！官網將在幾秒內更新','success');
     } else {
       const err = await res.json();
@@ -711,8 +885,6 @@ async function saveStoreInfo(){
     }
   } catch(ex){
     showStatus('❌ ' + ex.message,'error');
-  } finally{
-    btn.disabled = false;
   }
 }
 
@@ -880,7 +1052,7 @@ function savePAT(){
   closeSettings();
 }
 
-window.addEventListener('beforeunload',e=>{ if(dirty||mediaDirty){ e.preventDefault(); e.returnValue=''; } });
+window.addEventListener('beforeunload',e=>{ if(anyDirty()){ e.preventDefault(); e.returnValue=''; } });
 </script>
 </body>
 </html>

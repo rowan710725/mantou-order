@@ -394,6 +394,11 @@
         .bank-row:last-child { border-bottom: none; }
         .bank-lbl { color: var(--text-muted); width: 100px; flex-shrink: 0; font-size: 0.9rem; }
         .bank-val { font-weight: 700; color: var(--brown-dark); letter-spacing: 0.5px; font-size: 1rem; }
+        .qr-box { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 0 auto 18px; max-width: 360px; }
+        .qr-img { display: block; width: 100%; max-width: 320px; margin: 0 auto 12px; border-radius: 10px; }
+        .qr-amount { font-size: 1.05rem; color: var(--brown-dark); margin-bottom: 8px; }
+        .qr-amount strong { color: #B8391C; font-size: 1.3rem; }
+        .qr-tip { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-top: 4px; }
         .pay-items { background: var(--cream-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin: 0 auto 24px; max-width: 360px; text-align: left; line-height: 1.9; }
         .pay-items-title { font-weight: 700; color: var(--brown-dark); margin-bottom: 4px; }
         .pay-notice { background: #FDFAE8; border: 1px solid #DDD08A; border-radius: 8px; padding: 20px; text-align: left; font-size: 0.95rem; color: #6A5800; line-height: 1.8; }
@@ -406,6 +411,13 @@
         .delivery-opt .opt-icon { font-size: 1.6rem; display: block; margin-bottom: 6px; }
         .delivery-opt .opt-label { font-size: 0.95rem; font-weight: 700; color: var(--brown-dark); display: block; }
         .delivery-opt .opt-note { font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 3px; }
+        #paymentToggleDelivery .delivery-opt { padding: 14px 6px; }
+        @media (max-width: 480px) {
+            #paymentToggleDelivery { gap: 8px; }
+            #paymentToggleDelivery .opt-icon { font-size: 1.35rem; }
+            #paymentToggleDelivery .opt-label { font-size: 0.88rem; }
+            #paymentToggleDelivery .opt-note { font-size: 0.7rem; }
+        }
         .delivery-opt.active { border-color: var(--gold); background: white; box-shadow: 0 0 0 3px rgba(201,168,112,0.2); }
         .pickup-notice { background: #EEF7EE; border: 1.5px solid #A5D6A7; border-radius: 8px; padding: 18px 20px; margin-bottom: 20px; font-size: 0.95rem; color: #2E7D32; line-height: 1.7; }
         .pickup-line-btn { display: inline-flex; align-items: center; gap: 7px; background: #06C755; color: white; border-radius: 50px; padding: 10px 22px; font-size: 0.92rem; font-weight: 700; text-decoration: none; margin-top: 12px; transition: background 0.2s; }
@@ -586,7 +598,7 @@
 </div>
 
 <!-- Trust Section -->
-<div class="feature-band" id="trust"><div class="feature-row"><div class="feature"><div class="feature-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></div><div><b>金牌獎肯定</b><small>堅果美味獲專業肯定</small></div></div><div class="feature"><div class="feature-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div><div><b>SGS 安心檢驗</b><small>不含塑化劑・不含毒澱粉</small></div></div><div class="feature"><div class="feature-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h11v10H2zM13 9h4l4 4v3h-8z"/><circle cx="6" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg></div><div><b>冷凍宅配</b><small>全程低溫・新鮮送達</small></div></div><div class="feature"><div class="feature-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v4H3zM5 13h14v8H5zM12 9v12M12 9C10 5 7 5 7 7s3 2 5 2zm0 0c2-4 5-4 5-2s-3 2-5 2z"/></svg></div><div><b>滿額免運</b><small>滿 $3,500 免運費</small></div></div></div></div>
+<div class="feature-band" id="trust"><div class="feature-row"><div class="feature"><div class="feature-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></div><div><b>金牌獎肯定</b><small>堅果美味獲專業肯定</small></div></div><div class="feature"><div class="feature-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div><div><b>SGS 安心檢驗</b><small>不含塑化劑・不含毒澱粉</small></div></div><div class="feature"><div class="feature-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h11v10H2zM13 9h4l4 4v3h-8z"/><circle cx="6" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg></div><div><b>冷凍宅配</b><small>全程低溫・新鮮送達</small></div></div><div class="feature"><div class="feature-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v4H3zM5 13h14v8H5zM12 9v12M12 9C10 5 7 5 7 7s3 2 5 2zm0 0c2-4 5-4 5-2s-3 2-5 2z"/></svg></div><div><b>滿額免運</b><small>滿 $<span data-ship="home.free">3,500</span> 免運費</small></div></div></div></div>
 <div class="trust-mini">⚠️ 方王媽媽堅果饅頭僅此一家，絕無分號，請小心詐騙　｜　<a href="https://www.google.com/maps/place/235%E5%8F%B0%E7%81%A3%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E5%92%8C%E5%8D%80%E7%AB%8B%E5%BE%B7%E8%A1%9798%E5%B7%B772%E8%99%9F" target="_blank">⭐ Google 評價</a></div>
 <div class="trust-section" style="display:none">
     <div class="trust-row">
@@ -658,7 +670,7 @@
             <label>配送方式 *</label>
             <div class="delivery-toggle">
                 <button class="delivery-opt active" id="optDelivery" onclick="setDelivery('delivery')">
-                    <span class="opt-icon">🚚</span><span class="opt-label">冷凍宅配</span><span class="opt-note">滿 3,500 免運</span>
+                    <span class="opt-icon">🚚</span><span class="opt-label">冷凍宅配</span><span class="opt-note">滿 <span data-ship="home.free">3,500</span> 免運</span>
                 </button>
                 <button class="delivery-opt" id="optPickup" onclick="setDelivery('pickup')">
                     <span class="opt-icon">🏠</span><span class="opt-label">自取</span><span class="opt-note">免運費</span>
@@ -671,7 +683,12 @@
                 <button class="delivery-opt active" id="optBank" onclick="setPayment('bank')">
                     <span class="opt-icon">🏦</span>
                     <span class="opt-label">銀行匯款</span>
-                    <span class="opt-note">下單後24小時內</span>
+                    <span class="opt-note">出貨前完成</span>
+                </button>
+                <button class="delivery-opt" id="optDigitalDelivery" onclick="setPayment('digital')">
+                    <span class="opt-icon">📱</span>
+                    <span class="opt-label">數位支付</span>
+                    <span class="opt-note">掃碼付款</span>
                 </button>
                 <button class="delivery-opt" id="optCOD" onclick="setPayment('cod')">
                     <span class="opt-icon">💵</span>
@@ -739,11 +756,20 @@
             </div>
             <div class="pay-notice">⚠️ 匯款完成後，請加入我們的 LINE 官方帳號並傳送：<br><br>1️⃣ <strong>帳號末 5 碼</strong><br>2️⃣ <strong>匯款金額</strong></div>
         </div>
+        <div id="payDigitalSection" style="display:none;">
+            <div class="qr-box">
+                <img src="pay-qr.jpg" alt="方王媽媽堅果饅頭 TWQR 收款碼" class="qr-img">
+                <div class="qr-amount">請輸入金額 <strong id="qrAmount">$0</strong></div>
+                <div class="qr-tip">可用全支付、台灣Pay、街口、悠遊付等支援 TWQR 的 App 掃描</div>
+                <div class="qr-tip">📱 用手機看這頁：長按圖片存到相簿，再從 App 的「掃描相簿圖片」付款</div>
+            </div>
+            <div class="pay-notice">⚠️ 付款完成後，請加入我們的 LINE 官方帳號並傳送：<br><br>1️⃣ <strong>付款成功畫面截圖</strong><br>2️⃣ <strong>訂單編號</strong></div>
+        </div>
         <div id="payCODSection" style="display:none;">
             <div class="pay-notice" style="background:#E8F5E9;border:1px solid #86EFAC;color:#2E7D32;line-height:2;">
                 💵 <strong>貨到付款</strong><br>
                 商品送達時，請準備現金交給配送員即可。<br>
-                代收服務費 <strong>$30</strong> 已含在訂單總金額內。<br>
+                代收服務費 <strong>$<span data-ship="home.cod">30</span></strong> 已含在訂單總金額內。<br>
                 如有問題請聯繫我們的 LINE 官方帳號。
             </div>
         </div>
@@ -792,15 +818,15 @@
         <div class="channel-card channel-wrapper">
             <div class="channel-overlay">
                 <div class="free-title">🚚 免運優惠</div>
-                <div class="free-row"><span class="free-cat">❄️ 冷凍商品</span><span class="free-rule">滿 <b>NT$2,500</b> 免運</span><span class="free-note">未滿運費 NT$99</span></div>
-                <div class="free-row"><span class="free-cat">☀️ 常溫商品</span><span class="free-rule">滿 <b>NT$1,500</b> 免運</span><span class="free-note">未滿運費 NT$38</span></div>
+                <div class="free-row"><span class="free-cat">❄️ 冷凍商品</span><span class="free-rule">滿 <b>NT$<span data-ship="hmp.free">2,500</span></b> 免運</span><span class="free-note">未滿運費 NT$<span data-ship="hmp.fee">99</span></span></div>
+                <div class="free-row"><span class="free-cat">☀️ 常溫商品</span><span class="free-rule">滿 <b>NT$<span data-ship="ambient.free">1,500</span></b> 免運</span><span class="free-note">未滿運費 NT$<span data-ship="ambient.fee">38</span></span></div>
                 <div class="free-coupon">🎁 近期好賣＋結帳區有免運券可領取</div>
             </div>
             <div class="channel-top">
                 <div class="channel-logo"><img src="logo-hmp.png" alt="好賣＋"></div>
                 <div class="channel-sub"><strong>全家取貨</strong><br>3-4 天到貨</div>
             </div>
-            <div class="channel-fee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9M3 9c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3M5 12v8h14v-8M10 20v-5h4v5"/></svg>店到店運費 <em class="fee-family">NT$99</em></div>
+            <div class="channel-fee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9M3 9c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3M5 12v8h14v-8M10 20v-5h4v5"/></svg>店到店運費 <em class="fee-family">NT$<span data-ship="hmp.fee">99</span></em></div>
             <div class="channel-links">
                 <a class="channel-link link-primary-family" href="https://famistore.famiport.com.tw/users/240902" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h3l2.5 12h11L21 7H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/><path d="M9 11h9"/></svg><span class="sep"></span>購買<span class="go">›</span></a>
             </div>
@@ -808,15 +834,15 @@
         <div class="channel-card channel-wrapper">
             <div class="channel-overlay">
                 <div class="free-title">🚚 免運優惠</div>
-                <div class="free-row"><span class="free-cat">❄️ 冷凍商品</span><span class="free-rule">滿 <b>NT$3,000</b> 免運</span><span class="free-note">未滿運費 NT$129</span></div>
-                <div class="free-row"><span class="free-cat">☀️ 常溫商品</span><span class="free-rule">滿 <b>NT$1,500</b> 免運</span><span class="free-note">未滿運費 NT$38</span></div>
+                <div class="free-row"><span class="free-cat">❄️ 冷凍商品</span><span class="free-rule">滿 <b>NT$<span data-ship="myship.free">3,000</span></b> 免運</span><span class="free-note">未滿運費 NT$<span data-ship="myship.fee">129</span></span></div>
+                <div class="free-row"><span class="free-cat">☀️ 常溫商品</span><span class="free-rule">滿 <b>NT$<span data-ship="ambient.free">1,500</span></b> 免運</span><span class="free-note">未滿運費 NT$<span data-ship="ambient.fee">38</span></span></div>
                 <div class="free-coupon">🎁 免運券可在賣貨便平台自動折抵</div>
             </div>
             <div class="channel-top">
                 <div class="channel-logo"><img src="logo-myship.png" alt="7-ELEVEN 賣貨便"></div>
                 <div class="channel-sub"><strong>7-11 取貨</strong><br>3-4 天到貨</div>
             </div>
-            <div class="channel-fee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9M3 9c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3M5 12v8h14v-8M10 20v-5h4v5"/></svg>店到店運費 <em class="fee-seven">NT$129</em></div>
+            <div class="channel-fee"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9M3 9c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3c0 1.7 1.3 3 3 3s3-1.3 3-3M5 12v8h14v-8M10 20v-5h4v5"/></svg>店到店運費 <em class="fee-seven">NT$<span data-ship="myship.fee">129</span></em></div>
             <div class="channel-links">
                 <a class="channel-link link-primary-seven" href="https://myship.7-11.com.tw/general/detail/GM2304147275126" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h3l2.5 12h11L21 7H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/><path d="M9 11h9"/></svg><span class="sep"></span>購買<span class="go">›</span></a>
             </div>
@@ -928,8 +954,8 @@ let PRODUCTS = [
 ];
 const SCRIPT_URL          = 'https://script.google.com/macros/s/AKfycbzdlmcAg8DkY8YmE9KNYO75HLB-WPrZmC2RX0mWhB40dyDNrQmPRw2kwmvSmj4XrS2A2w/exec';
 const LINE_ID             = '@a22255663';
-const FREE_SHIPPING_LIMIT = 3500;
-const SHIPPING_FEE        = 200;
+let FREE_SHIPPING_LIMIT = 3500;   // 預設值；實際以 shipping.json（後台「運費設定」）為準
+let SHIPPING_FEE        = 200;
 let qty = {};
 function initQty() { PRODUCTS.forEach(p => { if (qty[p.id] === undefined) qty[p.id] = 0; }); }
 initQty();
@@ -1027,7 +1053,7 @@ function renderCart() {
     `}).join('');
     let promoHTML = '';
     if (remain > 0) {
-        promoHTML += `<div class="cart-promo-row"><span class="ptag ptag-ship">滿額免運</span><span class="promo-txt">冷凍宅配滿 3,500 免運費！再買 <strong>NT$ ${remain.toLocaleString()}</strong> 即可享有</span><span class="promo-link">免運優惠</span></div>`;
+        promoHTML += `<div class="cart-promo-row"><span class="ptag ptag-ship">滿額免運</span><span class="promo-txt">冷凍宅配滿 ${FREE_SHIPPING_LIMIT.toLocaleString()} 免運費！再買 <strong>NT$ ${remain.toLocaleString()}</strong> 即可享有</span><span class="promo-link">免運優惠</span></div>`;
     } else {
         promoHTML += `<div class="cart-promo-row"><span class="ptag ptag-ship">滿額免運</span><span class="promo-txt">🎉 已達免運門檻！宅配免運費</span></div>`;
     }
@@ -1043,7 +1069,7 @@ function getSubtotal() {
         return s + qty[p.id] * currentPrice;
     }, 0);
 }
-const COD_FEE = 30;
+let COD_FEE = 30;
 let deliveryMode = 'delivery';
 let paymentMode  = 'bank';
 function setDelivery(mode) {
@@ -1053,7 +1079,7 @@ function setDelivery(mode) {
     document.getElementById('addressGroup').style.display    = mode === 'delivery' ? '' : 'none';
     document.getElementById('pickupTimeGroup').style.display = mode === 'pickup'   ? '' : 'none';
     document.getElementById('pickupNotice').style.display    = mode === 'pickup'   ? '' : 'none';
-    // 自取用「付現金／數位支付」，宅配用「銀行匯款／貨到付款」
+    // 自取用「付現金／數位支付」，宅配用「銀行匯款／數位支付／貨到付款」
     document.getElementById('paymentToggleDelivery').style.display = mode === 'delivery' ? '' : 'none';
     document.getElementById('paymentTogglePickup').style.display   = mode === 'pickup'   ? '' : 'none';
     setPayment(mode === 'pickup' ? 'cash' : 'bank');
@@ -1066,6 +1092,7 @@ function setPayment(mode) {
     document.getElementById('optCOD').classList.toggle('active', mode === 'cod');
     document.getElementById('optCash').classList.toggle('active', mode === 'cash');
     document.getElementById('optDigital').classList.toggle('active', mode === 'digital');
+    document.getElementById('optDigitalDelivery').classList.toggle('active', mode === 'digital');
     updateBar();
     updateOrderReviewIfVisible();
 }
@@ -1168,6 +1195,7 @@ async function submitOrder() {
         + itemsList.map(t => `<div>${esc(t).replace('×', ' × ')}</div>`).join('');
     document.getElementById('payAmount').textContent = '$' + orderData.total.toLocaleString() + amountNote;
     // 根據配送／付款方式顯示不同頁面
+    document.getElementById('payDigitalSection').style.display = 'none';
     if (deliveryMode === 'pickup') {
         document.getElementById('paySub').textContent = '訂單已確認！取貨時付款即可。';
         document.getElementById('payBankSection').style.display = 'none';
@@ -1179,6 +1207,13 @@ async function submitOrder() {
         document.getElementById('payBankSection').style.display = 'none';
         document.getElementById('payCODSection').style.display = '';
         document.getElementById('payPickupSection').style.display = 'none';
+    } else if (paymentMode === 'digital') {
+        document.getElementById('paySub').innerHTML = '請於<strong>出貨前</strong>用手機掃描下方 QR Code 完成付款';
+        document.getElementById('payBankSection').style.display = 'none';
+        document.getElementById('payCODSection').style.display = 'none';
+        document.getElementById('payPickupSection').style.display = 'none';
+        document.getElementById('payDigitalSection').style.display = '';
+        document.getElementById('qrAmount').textContent = '$' + orderData.total.toLocaleString();
     } else {
         document.getElementById('paySub').innerHTML = '請於<strong>出貨前</strong>完成匯款，並於官方 LINE 上面告知帳號後５碼';
         document.getElementById('payBankSection').style.display = '';
@@ -1304,6 +1339,26 @@ updateBar = function () {
     document.getElementById('cbShip').textContent = shipping === 0 ? '🎉 已達免運' : `再買 $${remain.toLocaleString()} 免運`;
 };
 renderProducts();
+// 運費設定：讀 GitHub 上的 shipping.json（後台「🚚 運費設定」儲存），讀不到就沿用預設值
+async function loadShipping() {
+    try {
+        const r = await fetch('https://raw.githubusercontent.com/rowan710725/mantou-order/main/shipping.json');
+        if (!r.ok) return;
+        const cfg = await r.json();
+        if (cfg.home) {
+            if (Number.isFinite(cfg.home.fee))  SHIPPING_FEE = cfg.home.fee;
+            if (Number.isFinite(cfg.home.free)) FREE_SHIPPING_LIMIT = cfg.home.free;
+            if (Number.isFinite(cfg.home.cod))  COD_FEE = cfg.home.cod;
+        }
+        document.querySelectorAll('[data-ship]').forEach(el => {
+            const [g, k] = el.dataset.ship.split('.');
+            const v = cfg[g] && cfg[g][k];
+            if (Number.isFinite(v)) el.textContent = v.toLocaleString();
+        });
+        refresh();
+    } catch (e) { console.log(e); }
+}
+loadShipping();
 async function loadProducts() {
   try {
     // 從 GitHub 讀取 products.json
