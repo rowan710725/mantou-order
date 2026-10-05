@@ -362,6 +362,88 @@
         .btn-next:hover { background: var(--gold-light); transform: translateY(-2px); }
         #formSection { display: none; }
         .form-card { background: white; border-radius: 8px; padding: 40px; border: 1.5px solid var(--border); }
+        /* 結帳畫面：隱藏首頁內容，只留結帳／成功頁，看起來像換到另一頁 */
+        .co-bar { display: none; }
+        body.checkout-mode > :not(.co-keep) { display: none !important; }
+        body.checkout-mode .co-bar { display: flex; align-items: center; position: sticky; top: 0; z-index: 400; height: 56px; padding: 0 16px;
+            background: rgba(250,245,236,0.97); backdrop-filter: blur(6px); border-bottom: 1px solid var(--border); }
+        .co-back { border: 1.5px solid var(--border); background: white; color: var(--brown-dark); border-radius: 20px; padding: 7px 14px;
+            font-size: 0.92rem; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; }
+        .co-back:hover { border-color: var(--gold); }
+        .co-title { position: absolute; left: 50%; transform: translateX(-50%); font-family: 'Noto Serif TC', serif; font-weight: 900; color: #3B2410; letter-spacing: 2px; font-size: 1.05rem; pointer-events: none; }
+        body.checkout-mode #formSection, body.checkout-mode #paySection { padding-top: 24px; }
+        .review-item.has-step { align-items: center; gap: 10px; }
+        .review-item .ri-name { flex: 1; min-width: 0; }
+        .review-item .ri-price { min-width: 64px; text-align: right; }
+        .review-item .stepper button { width: 30px; height: 28px; }
+        .review-item .stepper span { min-width: 28px; line-height: 28px; color: var(--text); }
+        /* ── 結帳頁新版排版 ── */
+        body.checkout-mode #formSection { max-width: 760px; }
+        .co-hero { position: relative; display: flex; align-items: center; min-height: 170px; margin: 0 0 18px; }
+        .co-hero-text { position: relative; z-index: 1; }
+        .co-hero-text h2 { font-family: 'Noto Serif TC', serif; font-size: 2.3rem; font-weight: 900; color: #3B2410; letter-spacing: 3px; margin-bottom: 10px; }
+        .co-hero-text p { color: var(--text-muted); font-size: 1rem; }
+        .co-heart { color: #C9844A; font-size: 1.2rem; }
+        .co-hero-art { position: absolute; right: -10px; top: -10px; bottom: -10px; width: 52%; pointer-events: none; }
+        .co-hero-art img { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 220px; height: 190px; object-fit: cover; border-radius: 50%;
+            -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); }
+        .co-tagline { position: absolute; right: 225px; top: 18px; transform: rotate(-12deg); font-family: 'Noto Serif TC', serif; font-weight: 700; color: #5C3A1E; font-size: 0.95rem; line-height: 1.5; text-align: center; z-index: 1; }
+        .co-card { background: white; border-radius: 16px; padding: 18px 20px; margin-bottom: 16px; box-shadow: 0 2px 14px rgba(90,60,20,0.07); border: 1px solid #EFE4D2; }
+        .co-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .co-card-head h3 { font-size: 1.25rem; font-weight: 900; color: #3B2410; letter-spacing: 1px; }
+        .co-card-head h3 em { color: #B8391C; font-style: normal; }
+        .co-h-emoji { font-size: 1.5rem; }
+        .co-h-ic { width: 30px; height: 30px; color: #5C3A1E; display: inline-flex; }
+        .co-h-ic svg, .co-in-ic svg, .co-clear svg { width: 100%; height: 100%; }
+        .co-clear { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; border: none; background: var(--cream); color: var(--brown-dark); border-radius: 10px; padding: 8px 12px; font-size: 0.85rem; font-weight: 700; font-family: inherit; cursor: pointer; }
+        .co-clear svg { width: 16px; height: 16px; }
+        .co-clear:hover { background: var(--cream-dark); }
+        .co-link { margin-left: auto; border: none; background: none; color: var(--brown); font-size: 0.88rem; text-decoration: underline; cursor: pointer; font-family: inherit; }
+        .co-shipinfo { display: none; background: var(--cream-card); border-radius: 10px; padding: 10px 14px; font-size: 0.86rem; color: var(--text); line-height: 1.8; margin-bottom: 12px; }
+        .co-shipinfo.show { display: block; }
+        #reviewItems .review-item { background: none; border-bottom: 1px solid #EFE4D2; padding: 12px 0; }
+        .ri-img { width: 64px; height: 56px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+        .ri-name b { display: block; color: #3B2410; font-size: 0.98rem; }
+        .ri-name small { display: block; color: var(--text-muted); font-size: 0.8rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .review-item .ri-price { color: #3B2410; font-weight: 700; }
+        .co-ship-row { align-items: center; gap: 10px; padding: 14px 0 !important; color: var(--text) !important; }
+        .co-ship-row > span:first-child { white-space: nowrap; }
+        .co-chip { background: #E3F0FB; color: #1E73BE; border-radius: 14px; padding: 3px 10px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+        .co-chip:empty { display: none; }
+        .co-chip.free { background: #E8F5E9; color: #2E7D32; }
+        #reviewShippingFee { margin-left: auto; font-weight: 700; color: #3B2410; }
+        .co-card .review-total { align-items: center; background: #FFF4D6; border-radius: 12px; padding: 12px 16px; margin-top: 6px; font-size: 1.15rem; }
+        .co-card .review-total .co-h-emoji { font-size: 1.3rem; margin-right: 8px; }
+        #reviewTotal { color: #C0271B; font-size: 1.7rem; font-weight: 900; }
+        .co-card .delivery-toggle { margin-bottom: 0; }
+        .co-card .delivery-opt { position: relative; border-radius: 12px; background: #FDFAF4; }
+        .co-card .delivery-opt.active { border: 2px solid #B8743A; background: white; box-shadow: none; }
+        .co-card .delivery-opt.active::after { content: '✓'; position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border-radius: 50%; background: #5C3A1E; color: white; font-size: 0.8rem; font-weight: 900; line-height: 24px; }
+        .co-card .pickup-notice { margin: 14px 0 0; }
+        .co-field { display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .co-field-top { align-items: start; }
+        .co-field-top label { padding-top: 12px; }
+        .co-field label { font-weight: 700; color: #3B2410; font-size: 1rem; }
+        .co-input { display: flex; align-items: stretch; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; background: white; transition: border-color 0.2s; }
+        .co-input:focus-within { border-color: var(--gold); }
+        .co-in-ic { width: 46px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--cream-card); border-right: 1px solid var(--border); color: #A08B74; padding: 12px; }
+        .co-field-top .co-in-ic { align-items: flex-start; }
+        .co-input input, .co-input textarea { flex: 1; min-width: 0; border: none; outline: none; padding: 13px 14px; font-size: 1rem; font-family: inherit; color: var(--text); background: white; resize: vertical; }
+        .co-err { color: #B8391C; font-size: 0.85rem; margin: -6px 0 8px 82px; min-height: 0; }
+        .co-err:empty { display: none; }
+        #formSection .btn-submit { border-radius: 14px; padding: 18px; font-size: 1.15rem; margin-top: 4px; }
+        @media (max-width: 560px) {
+            .co-hero { min-height: 150px; }
+            .co-hero-text h2 { font-size: 1.75rem; }
+            .co-hero-text p { font-size: 0.85rem; }
+            .co-hero-art img { width: 140px; height: 130px; right: -6px; }
+            .co-tagline { right: 100px; top: -4px; font-size: 0.72rem; }
+            .co-card { padding: 16px 14px; }
+            .ri-img { width: 52px; height: 46px; }
+            .co-field { grid-template-columns: 56px 1fr; }
+            .co-err { margin-left: 66px; }
+            #reviewTotal { font-size: 1.45rem; }
+        }
         .order-review { background: var(--cream-card); border-radius: 6px; padding: 20px; margin-bottom: 28px; border: 1px solid var(--border); }
         .review-title { font-weight: 700; color: var(--brown-dark); margin-bottom: 14px; font-size: 0.95rem; letter-spacing: 1px; }
         .review-item { display: flex; justify-content: space-between; font-size: 0.92rem; padding: 6px 0; color: var(--text-muted); }
@@ -552,7 +634,7 @@
 <body>
 
 <!-- LINE 歡迎彈窗 -->
-<div class="line-overlay" id="lineOverlay">
+<div class="line-overlay co-keep" id="lineOverlay">
     <div class="line-popup">
         <button class="line-popup-close" onclick="closeLinePopup()">✕</button>
         <div class="line-popup-logo">
@@ -567,6 +649,10 @@
 
 
 <!-- 頂部導覽列 -->
+<div class="co-bar co-keep" id="coBar">
+    <button class="co-back" id="coBack" onclick="coGoBack()">← 返回繼續購物</button>
+    <div class="co-title" id="coTitle">結帳</div>
+</div>
 <nav class="topnav">
     <div class="topnav-inner">
         <a class="nav-logo" href="#"><b>方王媽媽</b><span>堅果饅頭</span></a>
@@ -652,62 +738,46 @@
 </div>
 
 <!-- Order Form -->
-<div class="section" id="formSection">
-    <h2 class="sec-title">填寫訂購資訊</h2>
-    <p class="sec-sub">請確認訂單內容後填寫聯絡資料</p>
-    <div class="form-card">
-        <div class="order-review">
-            <div class="review-title">📦 您的訂單</div>
-            <div id="reviewItems"></div>
-            <hr class="review-divider">
-            <div class="review-item" id="reviewShipping">
-                <span>🚚 冷凍宅配運費</span><span id="reviewShippingFee">$200</span>
-            </div>
-            <hr class="review-divider">
-            <div class="review-total"><span>總計（含運）</span><span id="reviewTotal">$0</span></div>
+<div class="section co-keep" id="formSection">
+    <div class="co-hero">
+        <div class="co-hero-text">
+            <h2>填寫訂購資訊</h2>
+            <p>請確認訂單內容後填寫聯絡資料 <span class="co-heart">♥</span></p>
         </div>
-        <div class="form-group">
-            <label>配送方式 *</label>
-            <div class="delivery-toggle">
-                <button class="delivery-opt active" id="optDelivery" onclick="setDelivery('delivery')">
-                    <span class="opt-icon">🚚</span><span class="opt-label">冷凍宅配</span><span class="opt-note">滿 <span data-ship="home.free">3,500</span> 免運</span>
-                </button>
-                <button class="delivery-opt" id="optPickup" onclick="setDelivery('pickup')">
-                    <span class="opt-icon">🏠</span><span class="opt-label">自取</span><span class="opt-note">免運費</span>
-                </button>
-            </div>
+        <div class="co-hero-art" aria-hidden="true">
+            <div class="co-tagline">用真材實料<br>做出每天<br>想吃的好味道 ♥</div>
+            <img src="hmjg.jpeg" alt="">
         </div>
-        <div class="form-group" id="paymentGroup">
-            <label>付款方式 *</label>
-            <div class="delivery-toggle" id="paymentToggleDelivery">
-                <button class="delivery-opt active" id="optBank" onclick="setPayment('bank')">
-                    <span class="opt-icon">🏦</span>
-                    <span class="opt-label">銀行匯款</span>
-                    <span class="opt-note">出貨前完成</span>
-                </button>
-                <button class="delivery-opt" id="optDigitalDelivery" onclick="setPayment('digital')">
-                    <span class="opt-icon">📱</span>
-                    <span class="opt-label">數位支付</span>
-                    <span class="opt-note">掃碼付款</span>
-                </button>
-                <button class="delivery-opt" id="optCOD" onclick="setPayment('cod')">
-                    <span class="opt-icon">💵</span>
-                    <span class="opt-label">貨到付款</span>
-                    <span class="opt-note">送達時付款</span>
-                </button>
-            </div>
-            <div class="delivery-toggle" id="paymentTogglePickup" style="display:none;">
-                <button class="delivery-opt active" id="optCash" onclick="setPayment('cash')">
-                    <span class="opt-icon">💵</span>
-                    <span class="opt-label">付現金</span>
-                    <span class="opt-note">取貨時付款</span>
-                </button>
-                <button class="delivery-opt" id="optDigital" onclick="setPayment('digital')">
-                    <span class="opt-icon">📱</span>
-                    <span class="opt-label">數位支付</span>
-                    <span class="opt-note">取貨時付款</span>
-                </button>
-            </div>
+    </div>
+
+    <div class="co-card">
+        <div class="co-card-head">
+            <span class="co-h-emoji">📦</span><h3>您的訂單</h3>
+            <button type="button" class="co-clear" onclick="clearCart()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>清空購物車</button>
+        </div>
+        <div id="reviewItems"></div>
+        <div class="review-item co-ship-row" id="reviewShipping">
+            <span>🚚 冷凍宅配運費</span><span id="reviewShipChip" class="co-chip"></span><span id="reviewShippingFee">$200</span>
+        </div>
+        <div class="review-total"><span><span class="co-h-emoji">🧮</span>總計（含運）</span><span id="reviewTotal">$0</span></div>
+    </div>
+
+    <div class="co-card">
+        <div class="co-card-head">
+            <span class="co-h-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h11v10H2zM13 9h4l4 4v3h-8z"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></span><h3>配送方式 <em>*</em></h3>
+            <button type="button" class="co-link" onclick="toggleShipInfo()">配送說明 ⓘ</button>
+        </div>
+        <div class="co-shipinfo" id="shipInfo">
+            <div>🚚 <b>冷凍宅配</b>：運費 $<span data-ship="home.fee">200</span>，滿 $<span data-ship="home.free">3,500</span> 免運；選貨到付款加收 $<span data-ship="home.cod">30</span>。</div>
+            <div>🏠 <b>自取</b>：免運費，請先下單並透過 LINE 官方帳號確認取貨時間。</div>
+        </div>
+        <div class="delivery-toggle">
+            <button class="delivery-opt active" id="optDelivery" onclick="setDelivery('delivery')">
+                <span class="opt-icon">🚚</span><span class="opt-label">冷凍宅配</span><span class="opt-note">❄️ 滿 <span data-ship="home.free">3,500</span> 免運</span>
+            </button>
+            <button class="delivery-opt" id="optPickup" onclick="setDelivery('pickup')">
+                <span class="opt-icon">🏠</span><span class="opt-label">自取</span><span class="opt-note">免運費</span>
+            </button>
         </div>
         <div id="pickupNotice" style="display:none;">
             <div class="pickup-notice">
@@ -723,22 +793,52 @@
                 </a>
             </div>
         </div>
-        <div class="form-group"><label>姓名 *</label><input id="fName" type="text" placeholder="請輸入您的姓名"></div>
-        <div class="form-group">
-            <label>電話 *</label>
-            <input id="fPhone" type="tel" placeholder="09XXXXXXXX" maxlength="10"
-                   oninput="this.value=this.value.replace(/[^0-9]/g,''); document.getElementById('fPhoneError').textContent=validatePhone(this.value);">
-            <div id="fPhoneError" style="color:#B8391C;font-size:0.85rem;margin-top:6px;min-height:20px;"></div>
-        </div>
-        <div class="form-group" id="addressGroup"><label>收件地址 *</label><input id="fAddress" type="text" placeholder="請輸入完整收件地址（含縣市區里）"></div>
-        <div class="form-group" id="pickupTimeGroup" style="display:none;"><label>希望取貨時間 *</label><input id="fPickupTime" type="text" placeholder="例：5/10（六）上午 10:00 ~ 12:00"></div>
-        <div class="form-group"><label>備註</label><textarea id="fNote" rows="3" placeholder="如有特殊需求請在此說明"></textarea></div>
-        <button class="btn-submit" id="btnSubmit" onclick="submitOrder()">確認訂購</button>
     </div>
+
+    <div class="co-card" id="paymentGroup">
+        <div class="co-card-head"><span class="co-h-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></span><h3>付款方式 <em>*</em></h3></div>
+        <div class="delivery-toggle" id="paymentToggleDelivery">
+            <button class="delivery-opt active" id="optBank" onclick="setPayment('bank')">
+                <span class="opt-icon">🏦</span><span class="opt-label">銀行匯款</span><span class="opt-note">出貨前完成</span>
+            </button>
+            <button class="delivery-opt" id="optDigitalDelivery" onclick="setPayment('digital')">
+                <span class="opt-icon">📱</span><span class="opt-label">數位支付</span><span class="opt-note">掃碼付款</span>
+            </button>
+            <button class="delivery-opt" id="optCOD" onclick="setPayment('cod')">
+                <span class="opt-icon">💵</span><span class="opt-label">貨到付款</span><span class="opt-note">送達時付款</span>
+            </button>
+        </div>
+        <div class="delivery-toggle" id="paymentTogglePickup" style="display:none;">
+            <button class="delivery-opt active" id="optCash" onclick="setPayment('cash')">
+                <span class="opt-icon">💵</span><span class="opt-label">付現金</span><span class="opt-note">取貨時付款</span>
+            </button>
+            <button class="delivery-opt" id="optDigital" onclick="setPayment('digital')">
+                <span class="opt-icon">📱</span><span class="opt-label">數位支付</span><span class="opt-note">取貨時付款</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="co-card">
+        <div class="co-card-head"><span class="co-h-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span><h3>聯絡資訊 <em>*</em></h3></div>
+        <div class="co-field"><label for="fName">姓名</label>
+            <div class="co-input"><span class="co-in-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span><input id="fName" type="text" placeholder="請輸入您的姓名"></div></div>
+        <div class="co-field"><label for="fPhone">電話</label>
+            <div class="co-input"><span class="co-in-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></span><input id="fPhone" type="tel" placeholder="手機號碼，例：0912345678" maxlength="10"
+                   oninput="this.value=this.value.replace(/[^0-9]/g,''); document.getElementById('fPhoneError').textContent=validatePhone(this.value);"></div></div>
+        <div id="fPhoneError" class="co-err"></div>
+        <div class="co-field" id="addressGroup"><label for="fAddress">地址</label>
+            <div class="co-input"><span class="co-in-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.3-7-12a7 7 0 0 1 14 0c0 5.7-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></span><input id="fAddress" type="text" placeholder="完整收件地址（含縣市區）"></div></div>
+        <div class="co-field" id="pickupTimeGroup" style="display:none;"><label for="fPickupTime">取貨時間</label>
+            <div class="co-input"><span class="co-in-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><input id="fPickupTime" type="text" placeholder="例：5/10（六）上午 10:00 ~ 12:00"></div></div>
+        <div class="co-field co-field-top"><label for="fNote">備註</label>
+            <div class="co-input"><span class="co-in-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></span><textarea id="fNote" rows="3" placeholder="如有特殊需求請在此說明（選填）"></textarea></div></div>
+    </div>
+
+    <button class="btn-submit" id="btnSubmit" onclick="submitOrder()">確認訂購</button>
 </div>
 
 <!-- Payment -->
-<div class="section" id="paySection">
+<div class="section co-keep" id="paySection">
     <div class="pay-card">
         <div class="pay-check">✅</div>
         <div class="pay-title">訂單送出成功！</div>
@@ -789,7 +889,7 @@
 </div>
 
 <!-- 查詢訂單視窗 -->
-<div class="line-overlay" id="queryOverlay" onclick="if (event.target === this) closeQuery()">
+<div class="line-overlay co-keep" id="queryOverlay" onclick="if (event.target === this) closeQuery()">
 <div class="query-popup">
     <button class="line-popup-close" type="button" onclick="closeQuery()" aria-label="關閉">✕</button>
     <div class="sec-title">查詢我的訂單</div>
@@ -1015,8 +1115,8 @@ function renderProducts() {
         </div>
     `}).join('');
 }
-function changeQty(id, d) { qty[id] = Math.max(0, qty[id] + d); document.getElementById('q-' + id).textContent = qty[id]; refresh(); updateOrderReviewIfVisible(); }
-function removeItem(id) { qty[id] = 0; document.getElementById('q-' + id).textContent = '0'; refresh(); }
+function changeQty(id, d) { qty[id] = Math.max(0, (qty[id] || 0) + d); const el = document.getElementById('q-' + id); if (el) el.textContent = qty[id]; refresh(); updateOrderReviewIfVisible(); }
+function removeItem(id) { qty[id] = 0; const el = document.getElementById('q-' + id); if (el) el.textContent = '0'; refresh(); }
 function renderCart() {
     const sel = getSelected();
     const cs = document.getElementById('cartSection');
@@ -1126,14 +1226,20 @@ function renderOrderReview() {
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
         const displayName = variantName ? `${p.name}(${variantName})` : p.name;
         const codeDisplay = p.code ? ` [${p.code}]` : '';
-        return `<div class="review-item"><span>${displayName}${codeDisplay} × ${qty[p.id]}</span><span>$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
+        return `<div class="review-item has-step"><img class="ri-img" src="${esc(p.img)}" alt=""><span class="ri-name"><b>${esc(displayName)}${esc(codeDisplay)}</b>${p.desc ? `<small>${esc(p.desc)}</small>` : ''}</span>
+            <div class="stepper"><button type="button" onclick="reviewQty('${p.id}',-1)" aria-label="減少">−</button><span>${qty[p.id]}</span><button type="button" onclick="reviewQty('${p.id}',1)" aria-label="增加">＋</button></div>
+            <span class="ri-price">$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
     }).join('');
     const sub = getSubtotal(), shipping = getShipping(sub);
     const shippingFee = document.getElementById('reviewShippingFee');
     const shippingSpan = document.getElementById('reviewShipping').querySelector('span');
+    const chip = document.getElementById('reviewShipChip');
+    if (deliveryMode === 'pickup') { chip.textContent = ''; }
+    else if (shipping === 0) { chip.textContent = '🎉 已達免運'; chip.className = 'co-chip free'; }
+    else { chip.textContent = `❄️ 滿 ${FREE_SHIPPING_LIMIT.toLocaleString()} 免運`; chip.className = 'co-chip'; }
     if (deliveryMode === 'pickup') { shippingSpan.textContent = '🏠 自取'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
     else if (shipping === 0) { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '免運費'; shippingFee.style.color = '#27ae60'; }
-    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString() + '運費'; shippingFee.style.color = ''; }
+    else { shippingSpan.textContent = '🚚 冷凍宅配運費'; shippingFee.textContent = '$' + shipping.toLocaleString(); shippingFee.style.color = ''; }
     let codRow = document.getElementById('reviewCODRow');
     if (!codRow) {
         codRow = document.createElement('div');
@@ -1148,9 +1254,44 @@ function renderOrderReview() {
 function goToForm() {
     if (!getSelected().length) return;
     renderOrderReview();
-    const fs = document.getElementById('formSection');
-    fs.style.display = 'block';
-    setTimeout(() => fs.scrollIntoView({ behavior: 'smooth' }), 80);
+    document.getElementById('formSection').style.display = 'block';
+    document.getElementById('paySection').style.display = 'none';
+    enterCheckout('結帳', '← 返回繼續購物');
+}
+// 結帳畫面：同一頁切換，但有自己的網址 #checkout，手機返回鍵／滑動返回會回到首頁
+let orderDone = false;
+function enterCheckout(title, backText) {
+    document.getElementById('coTitle').textContent = title;
+    document.getElementById('coBack').textContent = backText;
+    document.body.classList.add('checkout-mode');
+    window.scrollTo(0, 0);
+    if (location.hash !== '#checkout') history.pushState({ checkout: true }, '', '#checkout');
+}
+function coGoBack() {
+    if (history.state && history.state.checkout) history.back();   // 交給 popstate 處理
+    else leaveCheckout();
+}
+function leaveCheckout() {
+    if (orderDone) { location.href = location.pathname; return; }  // 訂單送出後回首頁＝重新整理，購物車重新開始
+    document.body.classList.remove('checkout-mode');
+    document.getElementById('formSection').style.display = 'none';
+    refresh();
+    setTimeout(() => document.getElementById('products').scrollIntoView(), 0);
+}
+window.addEventListener('popstate', () => {
+    if (document.body.classList.contains('checkout-mode') && location.hash !== '#checkout') leaveCheckout();
+});
+if (location.hash === '#checkout') history.replaceState(null, '', location.pathname);  // 重新整理時購物車是空的，不停在結帳畫面
+function clearCart() {
+    if (!confirm('確定要清空購物車嗎？')) return;
+    getSelected().forEach(p => removeItem(p.id));
+    coGoBack();
+}
+function toggleShipInfo() { document.getElementById('shipInfo').classList.toggle('show'); }
+function reviewQty(id, d) {
+    if ((qty[id] || 0) + d <= 0) removeItem(id); else changeQty(id, d);
+    if (!getSelected().length) { coGoBack(); return; }   // 全部刪光就回首頁
+    renderOrderReview();
 }
 // 訂單編號：FW + 日期 - 時分 - 2 碼亂數，例 FW20261001-1832-47
 function makeOrderNo() {
@@ -1222,7 +1363,8 @@ async function submitOrder() {
     }
     const pay = document.getElementById('paySection');
     pay.style.display = 'block';
-    setTimeout(() => pay.scrollIntoView({ behavior: 'smooth' }), 80);
+    orderDone = true;
+    enterCheckout('訂購完成', '← 回首頁');
     btn.disabled = false; btn.textContent = '確認訂購';
     // 清空購物車，隱藏底部結帳列
     qty = {};
