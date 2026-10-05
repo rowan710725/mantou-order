@@ -510,6 +510,69 @@
         .pay-title { font-size: 1.5rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 6px; }
         .pay-sub { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 24px; }
         .pay-amount { font-size: 2.8rem; font-weight: 700; color: #B8391C; background: #FBF2EF; border-radius: 8px; padding: 14px 28px; display: inline-block; margin-bottom: 28px; border: 1px solid #E8C8BB; }
+        .bk-card { background: #FBF4EA; border-radius: 18px; padding: 22px; text-align: left; margin-bottom: 20px; border: 1px solid #EEDFC8; }
+        .bk-head { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .bk-head-ic { width: 58px; height: 58px; flex-shrink: 0; border-radius: 50%; background: #6B3A1F; color: #FBF4EA; display: flex; align-items: center; justify-content: center; }
+        .bk-head-ic svg { width: 30px; height: 30px; }
+        .bk-head h3 { font-family: 'Noto Serif TC', serif; font-size: 1.7rem; font-weight: 900; color: #3B2410; letter-spacing: 2px; margin-bottom: 4px; }
+        .bk-head p { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
+        .bk-body { display: flex; gap: 14px; align-items: stretch; }
+        .bk-rows { flex: 1.6; background: white; border-radius: 14px; padding: 4px 16px; }
+        .bk-row { display: flex; align-items: center; gap: 10px; padding: 13px 0; border-bottom: 1px solid #F0E6D6; }
+        .bk-row:last-child { border-bottom: none; }
+        .bk-ic { width: 22px; height: 22px; color: #6B3A1F; flex-shrink: 0; }
+        .bk-ic svg { width: 100%; height: 100%; }
+        .bk-lbl { width: 128px; flex-shrink: 0; color: var(--text-muted); font-size: 0.9rem; }
+        .bk-val { flex: 1; min-width: 0; font-weight: 900; color: #3B2410; font-size: 1.1rem; letter-spacing: 1px; }
+        .bk-big { font-size: 1.45rem; letter-spacing: 1.5px; }
+        .bk-copy { display: inline-flex; align-items: center; gap: 4px; border: none; background: #F6E9D8; color: #6B3A1F; border-radius: 16px; padding: 6px 12px; font-size: 0.82rem; font-weight: 700; font-family: inherit; cursor: pointer; flex-shrink: 0; transition: background 0.2s; }
+        .bk-copy:hover { background: #EFDCC2; }
+        .bk-copy svg, .bk-copyall svg { width: 15px; height: 15px; }
+        .bk-copy.done, .bk-copyall.done { background: #2E7D32; color: white; }
+        .bk-art { flex: 1; position: relative; min-height: 230px; border-radius: 14px; overflow: hidden; }
+        .bk-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.92;
+            -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 45%); mask-image: linear-gradient(180deg, transparent 0%, #000 45%); }
+        .bk-thanks { position: relative; z-index: 1; padding: 12px 12px 0; transform: rotate(-4deg); font-family: 'Noto Serif TC', serif; font-weight: 700; color: #3B2410; font-size: 0.92rem; line-height: 1.6; text-align: center; }
+        .bk-thanks span, .bk-bubble span { color: #D9534F; }
+        .bk-bubble { position: absolute; right: 10px; bottom: 10px; z-index: 1; background: white; border-radius: 16px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.6; color: #3B2410; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+        .bk-copyall { width: 100%; margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; border-radius: 14px; padding: 16px; background: linear-gradient(180deg, #C8692E, #A9521F); color: white; font-size: 1.15rem; font-weight: 700; letter-spacing: 2px; font-family: inherit; cursor: pointer; }
+        .bk-copyall svg { width: 22px; height: 22px; }
+        @media (max-width: 640px) {
+            .bk-card { padding: 16px 14px; }
+            .bk-head h3 { font-size: 1.35rem; }
+            .bk-head-ic { width: 46px; height: 46px; } .bk-head-ic svg { width: 24px; height: 24px; }
+            .bk-art { display: none; }
+            .bk-rows { padding: 2px 12px; }
+            .bk-row { flex-wrap: wrap; gap: 4px 8px; }
+            .bk-lbl { width: auto; flex: 1; }
+            .bk-copy { order: 3; }
+            .bk-val { order: 4; flex-basis: 100%; padding-left: 30px; }
+            .bk-big { font-size: 1.3rem; }
+        }
+        .steps-card { background: #FBF4EA; border-radius: 18px; padding: 18px 20px 20px; text-align: left; border: 1px solid #EEDFC8; margin-bottom: 20px; }
+        .steps-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .steps-head-ic { width: 30px; height: 30px; color: #8A4A23; }
+        .steps-head-ic svg { width: 100%; height: 100%; }
+        .steps-head h3 { font-size: 1.3rem; font-weight: 900; color: #3B2410; letter-spacing: 1px; }
+        .steps { display: flex; align-items: stretch; gap: 8px; }
+        .step { flex: 1; position: relative; display: flex; align-items: center; gap: 12px; background: #FDF0E2; border-radius: 14px; padding: 16px 14px 16px 18px; }
+        .st-no { position: absolute; top: 12px; left: 12px; width: 26px; height: 26px; border-radius: 50%; background: #C08A5A; color: white; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+        .st-ic { width: 54px; height: 54px; flex-shrink: 0; margin-left: 28px; }
+        .st-ic svg { width: 100%; height: 100%; }
+        .step b { display: block; font-size: 1.05rem; color: #3B2410; margin-bottom: 4px; }
+        .step small { display: block; font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+        .st-arrow { align-self: center; color: #B98A63; font-size: 2rem; line-height: 1; }
+        .steps-help { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; background: #FCE8E4; border-radius: 12px; padding: 12px 16px; font-size: 0.92rem; color: #3B2410; }
+        .sh-ic { width: 30px; height: 30px; border-radius: 50%; background: #D9473A; color: white; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .sh-link { color: #3B2410; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+        .sh-link img { width: 24px; height: 24px; }
+        .sh-or { color: var(--text-muted); }
+        @media (max-width: 760px) {
+            .steps { flex-direction: column; gap: 6px; }
+            .st-arrow { transform: rotate(90deg); font-size: 1.6rem; }
+            .st-ic { width: 46px; height: 46px; }
+            .steps-help { font-size: 0.86rem; }
+        }
         .bank-box { background: var(--cream-card); border-radius: 8px; padding: 20px; text-align: left; border: 1px solid var(--border); margin-bottom: 20px; }
         .bank-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
         .bank-row:last-child { border-bottom: none; }
@@ -888,13 +951,43 @@
         <div class="pay-sub" id="paySub">請於<strong>出貨前</strong>完成匯款，並於官方 LINE 上面告知帳號後５碼</div>
         <div class="pay-amount" id="payAmount">$0</div>
         <div id="payBankSection">
-            <div class="bank-box">
-                <div class="bank-row"><span class="bank-lbl">銀行代號</span><span class="bank-val">008</span></div>
-                <div class="bank-row"><span class="bank-lbl">銀行名稱</span><span class="bank-val">華南商業銀行 積穗分行</span></div>
-                <div class="bank-row"><span class="bank-lbl">帳號</span><span class="bank-val" style="font-size:1.05rem;letter-spacing:2px;">180-20-039358-8</span></div>
-                <div class="bank-row"><span class="bank-lbl">戶名</span><span class="bank-val">方王寶珠</span></div>
+            <div class="bk-card">
+                <div class="bk-head">
+                    <span class="bk-head-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 7v2h20V7zM4 11h3v7H4zm6.5 0h3v7h-3zM17 11h3v7h-3zM2 20h20v2H2z"/></svg></span>
+                    <div><h3>銀行轉帳付款</h3><p>請依下列帳戶資訊完成匯款，我們收到款項後會盡快為您安排出貨。</p></div>
+                </div>
+                <div class="bk-body">
+                    <div class="bk-rows">
+                    <div class="bk-row"><span class="bk-ic"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg></span><span class="bk-lbl">收款戶名</span><span class="bk-val">方王寶珠</span><button type="button" class="bk-copy" onclick="copyBank(this,'方王寶珠')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span>複製</span></button></div>
+                    <div class="bk-row"><span class="bk-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 7v2h20V7zM4 11h3v7H4zm6.5 0h3v7h-3zM17 11h3v7h-3zM2 20h20v2H2z"/></svg></span><span class="bk-lbl">銀行名稱（代碼）</span><span class="bk-val">華南銀行（008）</span><button type="button" class="bk-copy" onclick="copyBank(this,'008')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span>複製</span></button></div>
+                    <div class="bk-row"><span class="bk-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span><span class="bk-lbl">分　　行</span><span class="bk-val">積穗分行</span><button type="button" class="bk-copy" onclick="copyBank(this,'積穗分行')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span>複製</span></button></div>
+                    <div class="bk-row"><span class="bk-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm-1 4v2h20V9zm3 6v1.5h5V15z" fill-rule="evenodd"/></svg></span><span class="bk-lbl">匯款帳號</span><span class="bk-val bk-big">180200393588</span><button type="button" class="bk-copy" onclick="copyBank(this,'180200393588')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span>複製</span></button></div>
+                    </div>
+                    <div class="bk-art" aria-hidden="true">
+                        <div class="bk-thanks">感謝您的訂購<br>讓我們繼續做出<br>好吃又安心的饅頭 <span>♥</span></div>
+                        <img src="zp.jpeg" alt="">
+                        <div class="bk-bubble">收到款項後<br>我們會盡快<br>為您安排出貨<br>謝謝！<span>♥</span></div>
+                    </div>
+                </div>
+                <button type="button" class="bk-copyall" onclick="copyBank(this,'ALL')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span>一鍵複製所有帳戶資訊</span></button>
             </div>
-            <div class="pay-notice">⚠️ 匯款完成後，請加入我們的 LINE 官方帳號並傳送：<br><br>1️⃣ <strong>帳號末 5 碼</strong><br>2️⃣ <strong>匯款金額</strong></div>
+            <div class="steps-card">
+                <div class="steps-head"><span class="steps-head-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 2h6a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V3a1 1 0 0 1 1-1zm0 2v2h6V4zM8 11v1.6h8V11zm0 4v1.6h8V15z" fill-rule="evenodd"/></svg></span><h3>匯款後怎麼做？</h3></div>
+                <div class="steps">
+                    <div class="step"><span class="st-no">1</span><span class="st-ic"><svg viewBox="0 0 48 48" fill="none" stroke="#2E3A46" stroke-width="2.6" stroke-linejoin="round"><rect x="5" y="7" width="38" height="34" rx="4" fill="#C9D3DB"/><rect x="11" y="13" width="26" height="22" rx="2" fill="#EAF1F5"/><path d="M28 18.5c-1-1.3-2.5-1.8-4-1.8-2.3 0-4 1.2-4 3s1.6 2.5 4 3 4 1.3 4 3.2-1.8 3-4 3c-1.7 0-3.3-.6-4.3-2M24 14.5v2.2M24 29.6v2.4" stroke="#1E8E3E"/></svg></span><div><b>完成匯款</b><small>依上方帳戶資訊進行匯款</small></div></div>
+                    <span class="st-arrow" aria-hidden="true">›</span>
+                    <div class="step"><span class="st-no">2</span><span class="st-ic"><svg viewBox="0 0 48 48" fill="none" stroke="#2E3A46" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M33 26v14a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3h20a3 3 0 0 1 3 3v3" fill="#fff"/><path d="M13 15h14M13 22h10M13 29h7"/><path d="M40.5 13.5a3 3 0 0 1 4.2 4.2L29 33.4l-6 1.8 1.8-6z" fill="#9FB7C8"/></svg></span><div><b>告知帳號末五碼</b><small>到官方 LINE 傳送匯款帳號末五碼與金額</small></div></div>
+                    <span class="st-arrow" aria-hidden="true">›</span>
+                    <div class="step"><span class="st-no">3</span><span class="st-ic"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#34A853"/><path d="M15 24.5l6.5 6.5L34 18" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>我們核對款項</b><small>確認後會盡快為您安排出貨，並透過 LINE 通知您</small></div></div>
+                </div>
+                <div class="steps-help">
+                    <span class="sh-ic">!</span>
+                    <span>若有任何付款相關問題，歡迎與我們聯絡</span>
+                    <a href="tel:0222255663" class="sh-link">📞 02-2225-5663</a>
+                    <span class="sh-or">或</span>
+                    <a class="sh-link sh-line" id="stepsLineLink" href="#" target="_blank">官方 LINE <img src="line-icon.png" alt=""> @a22255663</a>
+                </div>
+            </div>
         </div>
         <div id="payDigitalSection" style="display:none;">
             <div class="qr-box">
@@ -1104,6 +1197,7 @@ document.getElementById('navLine').href = lineUrl;
 document.getElementById('lineAddBtn').href    = lineUrl;
 document.getElementById('linePopupBtn').href  = lineUrl;
 document.getElementById('pickupLineBtn').href = lineUrl;
+document.getElementById('stepsLineLink').href = lineUrl;
 
 function closeLinePopup() { document.getElementById('lineOverlay').classList.remove('show'); }
 // 一開始不要求加入 LINE（改為訂購時要求）
@@ -1323,6 +1417,18 @@ window.addEventListener('popstate', () => {
     if (document.body.classList.contains('checkout-mode') && location.hash !== '#checkout') leaveCheckout();
 });
 if (location.hash === '#checkout') history.replaceState(null, '', location.pathname);  // 重新整理時購物車是空的，不停在結帳畫面
+// 匯款資訊：一鍵複製
+function copyBank(btn, text) {
+    if (text === 'ALL') text = '收款戶名：方王寶珠\n銀行：華南銀行（008）\n分行：積穗分行\n匯款帳號：180200393588';
+    const label = btn.querySelector('span'), old = label.textContent;
+    const done = () => { btn.classList.add('done'); label.textContent = '已複製'; setTimeout(() => { btn.classList.remove('done'); label.textContent = old; }, 1600); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done) {
+    const t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+    (document.getElementById('paySection') || document.body).appendChild(t); t.select(); try { document.execCommand('copy'); done(); } catch (e) {} t.remove();
+}
 function clearCart() {
     if (!confirm('確定要清空購物車嗎？')) return;
     getSelected().forEach(p => removeItem(p.id));
