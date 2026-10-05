@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>媒體報導｜方王媽媽堅果饅頭</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --cream:       #F7F0E2;
@@ -86,22 +86,100 @@
             .media-hero h1 { font-size: 1.4rem; }
             .yt-grid { grid-template-columns: 1fr; }
         }
+
+        /* ── 新版排版 ── */
+        body { background: #FAF4EA; }
+        .mh-top { max-width: 1100px; margin: 0 auto; padding: 18px 20px 0; }
+        .mh-top .back-link { margin: 0; background: white; border-color: var(--border); color: var(--brown-dark); font-weight: 700; }
+        .mh-hero { position: relative; max-width: 1100px; margin: 10px auto 0; padding: 26px 24px; min-height: 170px; border-radius: 22px; overflow: hidden;
+            background: linear-gradient(100deg, #FBEFDF 0%, #F8E7D0 55%, #F3DABA 100%); display: flex; align-items: center; }
+        .mh-leaf { position: absolute; color: #E6C9A3; opacity: .6; width: 90px; }
+        .mh-text { position: relative; z-index: 1; }
+        .mh-title { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+        .mh-tv { width: 52px; height: 52px; flex-shrink: 0; }
+        .mh-title h1 { font-family: 'Noto Serif TC', serif; font-size: 2.4rem; font-weight: 900; color: #5A2E14; letter-spacing: 4px; margin: 0; }
+        .mh-title h1::after { display: none; }
+        .mh-text p { color: #6B4A30; font-size: 0.98rem; line-height: 1.7; margin: 0; }
+        .mh-art { position: absolute; right: 0; top: 0; bottom: 0; width: 46%; pointer-events: none; }
+        .mh-art img { position: absolute; right: -20px; top: 50%; transform: translateY(-50%); width: 300px; height: 230px; object-fit: cover; border-radius: 50%;
+            -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); }
+        .mh-quote { position: absolute; right: 300px; top: 26px; transform: rotate(-6deg); font-family: 'Noto Serif TC', serif; font-weight: 700; color: #5A2E14; font-size: 1rem; line-height: 1.7; text-align: center; }
+        .mh-quote span { color: #D9534F; }
+
+        .mf-bar { max-width: 1100px; margin: 22px auto 0; padding: 0 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .mf-chip { display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid #E8D7BF; background: white; color: #5A2E14; border-radius: 22px;
+            padding: 9px 20px; font-size: 0.98rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: all .2s; }
+        .mf-chip:hover { border-color: var(--gold); }
+        .mf-chip.active { background: #6B3A1F; border-color: #6B3A1F; color: white; }
+        .mf-chip small { font-weight: 500; opacity: .75; }
+
+        .yt-section { max-width: 1100px; padding: 18px 20px 6px; }
+        .yt-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .yt-card { background: white; border: none; border-radius: 16px; box-shadow: 0 3px 16px rgba(90,60,20,.09); transition: transform .2s, box-shadow .2s; }
+        .yt-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(90,60,20,.16); }
+        .yt-thumb { position: relative; width: 100%; padding-top: 56.25%; background: #000; cursor: pointer; border: none; display: block; }
+        .yt-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+        .yt-card:hover .yt-thumb img { transform: scale(1.04); }
+        .yt-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.35)); }
+        .yt-play { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 64px; height: 44px; z-index: 1; }
+        .yt-card iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+        .yt-body { display: flex; align-items: center; gap: 12px; padding: 12px 14px 14px; }
+        .yt-logo { width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 900; font-size: 0.85rem; letter-spacing: 0; }
+        .yt-info { flex: 1; min-width: 0; }
+        .yt-title { font-size: 1rem; font-weight: 900; color: #3B2410; margin-bottom: 2px; }
+        .yt-sub { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .yt-tag { flex-shrink: 0; font-size: 0.76rem; font-weight: 700; color: #7A5230; background: #F6EBDB; border-radius: 14px; padding: 4px 10px; }
+
+        .media-wall { max-width: 1100px; padding: 18px 20px 50px; }
+        .media-group-title { font-size: 1.05rem; color: #6B3A1F; border-left-color: #C08A5A; margin: 6px 0 14px; letter-spacing: 1px; }
+        .media-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
+        .media-card { background: white; border: none; border-radius: 14px; box-shadow: 0 3px 14px rgba(90,60,20,.08); }
+        .media-thumb { height: 130px; }
+        .media-name { font-size: 0.9rem; padding: 10px; }
+        .is-hidden { display: none !important; }
+
+        @media (max-width: 760px) {
+            .mh-hero { padding: 20px 18px; min-height: 0; margin: 10px 16px 0; }
+            .mh-title h1 { font-size: 1.8rem; letter-spacing: 2px; }
+            .mh-tv { width: 42px; height: 42px; }
+            .mh-text p { font-size: 0.85rem; }
+            .mh-art { display: none; }
+            .mf-bar { gap: 8px; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+            .mf-chip { padding: 8px 14px; font-size: 0.9rem; white-space: nowrap; }
+            .yt-grid { grid-template-columns: 1fr; }
+            .media-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .media-thumb { height: 110px; }
+        }
     </style>
 </head>
 <body>
 
-<div class="media-hero">
-    <a class="back-link" href="index.html">← 返回首頁</a>
-    <h1>媒體報導</h1>
-    <p>十多年來受到各大新聞、雜誌與影音媒體採訪報導</p>
+<div class="mh-top"><a class="back-link" href="index.html">← 返回首頁</a></div>
+<div class="mh-hero">
+    <span class="mh-leaf" style="left:-18px;bottom:-14px;transform:rotate(10deg)" aria-hidden="true"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M10 90C30 60 55 40 90 20"/><path d="M30 68c-8-10-6-22 2-28 6 10 6 20-2 28zM48 52c-8-10-6-22 2-28 6 10 6 20-2 28zM66 38c-8-10-6-22 2-28 6 10 6 20-2 28zM34 64c10 4 22 0 28-8-10-4-20-2-28 8zM52 48c10 4 22 0 28-8-10-4-20-2-28 8z"/></svg></span>
+    <div class="mh-text">
+        <div class="mh-title"><svg class="mh-tv" viewBox="0 0 48 48"><rect x="4" y="11" width="40" height="31" rx="8" fill="#D9473A"/><path d="M17 4l7 7 7-7" fill="none" stroke="#D9473A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 20v13l11-6.5z" fill="#fff"/></svg><h1>媒體報導</h1></div>
+        <p>十多年來受到各大新聞、雜誌與影音媒體採訪報導<br>感謝大家對方王媽媽堅果饅頭的肯定與支持！</p>
+    </div>
+    <div class="mh-art" aria-hidden="true">
+        <div class="mh-quote">謝謝各大媒體的報導<br>讓更多人認識<br>方王媽媽堅果饅頭 <span>♥</span></div>
+        <img src="hmjg.jpeg" alt="">
+    </div>
 </div>
 
-<div class="yt-section">
-    <div class="media-group-title">影音報導</div>
+<div class="mf-bar" id="mfBar">
+    <button class="mf-chip active" data-f="all">▶ 全部</button>
+    <button class="mf-chip" data-f="news">📺 電視新聞</button>
+    <button class="mf-chip" data-f="show">🎤 節目專訪</button>
+    <button class="mf-chip" data-f="press">📰 報章雜誌</button>
+</div>
+
+<div class="yt-section" id="ytSection">
     <div class="yt-grid" id="ytGrid"></div>
 </div>
 
-<div class="media-wall">
+<div class="media-wall" id="pressSection">
     <div class="media-group">
         <div class="media-group-title">新聞 / 雜誌</div>
         <div class="media-grid" id="group1"></div>
@@ -145,23 +223,48 @@ async function loadMediaContent() {
   } catch (e) { console.log('媒體內容載入失敗', e); }
 }
 
+const PLAY_SVG = '<svg class="yt-play" viewBox="0 0 68 48"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.3.3 34 .3 34 .3s-21.3 0-26.5 1.4a8.5 8.5 0 0 0-6 6C.1 13 .1 24 .1 24s0 11 1.4 16.3a8.5 8.5 0 0 0 6 6C12.7 47.7 34 47.7 34 47.7s21.3 0 26.5-1.4a8.5 8.5 0 0 0 6-6C67.9 35 67.9 24 67.9 24s0-11-1.4-16.3z" fill="#E33"/><path d="M27 34l18-10-18-10z" fill="#fff"/></svg>';
+const LOGO_COLORS = ['#2F7D4F','#C0392B','#1F5FA8','#8E44AD','#D35400','#16A085','#B7950B','#7A5230'];
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+// 分類：說明裡有「新聞」→ 電視新聞，其他 → 節目專訪
+function videoKind(v) { return /新聞/.test((v.sub || '') + (v.title || '')) && !/節目/.test(v.sub || '') ? 'news' : 'show'; }
+function logoText(title) { return (title || '').replace(/(新聞|TV|台)$/,'').slice(0, 2); }
+
 function renderVideos(videos) {
   const ytGrid = document.getElementById('ytGrid');
   ytGrid.innerHTML = '';
-  videos.forEach(v => {
+  videos.forEach((v, i) => {
+    const kind = videoKind(v);
     const card = document.createElement('div');
     card.className = 'yt-card';
+    card.dataset.kind = kind;
+    const color = LOGO_COLORS[[...(v.title || '')].reduce((a, c) => a + c.charCodeAt(0), 0) % LOGO_COLORS.length];
     card.innerHTML = `
-      <div class="yt-frame-wrap">
-        <iframe src="https://www.youtube.com/embed/${v.id}" title="${v.title}" loading="lazy" allowfullscreen></iframe>
-      </div>
+      <button class="yt-thumb" type="button" aria-label="播放 ${esc(v.title)}">
+        <img src="https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/hqdefault.jpg" alt="" loading="lazy">${PLAY_SVG}
+      </button>
       <div class="yt-body">
-        <div class="yt-title">${v.title}</div>
-        <div class="yt-sub">${v.sub}</div>
+        <span class="yt-logo" style="background:${color}">${esc(logoText(v.title))}</span>
+        <div class="yt-info"><div class="yt-title">${esc(v.title)}</div><div class="yt-sub">${esc(v.sub)}</div></div>
+        <span class="yt-tag">${kind === 'news' ? '電視新聞' : '節目專訪'}</span>
       </div>`;
+    // 點了才載入 YouTube 播放器，頁面不會一次載 12 個影片而變慢
+    card.querySelector('.yt-thumb').addEventListener('click', e => {
+      const box = e.currentTarget;
+      box.innerHTML = `<iframe src="https://www.youtube.com/embed/${encodeURIComponent(v.id)}?autoplay=1" title="${esc(v.title)}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    });
     ytGrid.appendChild(card);
   });
 }
+
+document.getElementById('mfBar').addEventListener('click', e => {
+  const chip = e.target.closest('.mf-chip'); if (!chip) return;
+  const f = chip.dataset.f;
+  document.querySelectorAll('.mf-chip').forEach(c => c.classList.toggle('active', c === chip));
+  document.getElementById('ytSection').classList.toggle('is-hidden', f === 'press');
+  document.getElementById('pressSection').classList.toggle('is-hidden', f === 'news' || f === 'show');
+  document.querySelectorAll('.yt-card').forEach(c => c.classList.toggle('is-hidden', (f === 'news' || f === 'show') && c.dataset.kind !== f));
+});
 
 function renderPress(press) {
   ['group1','group2','group3'].forEach(id => { document.getElementById(id).innerHTML = ''; });
@@ -170,7 +273,7 @@ function renderPress(press) {
     const el = document.getElementById(elId);
     const btn = document.createElement('button');
     btn.className = 'media-card';
-    btn.innerHTML = `<div class="media-thumb"><img src="${item.img}" alt="${item.name}" loading="lazy"></div><div class="media-name">${item.name}</div>`;
+    btn.innerHTML = `<div class="media-thumb"><img src="${esc(item.img)}" alt="${esc(item.name)}" loading="lazy"></div><div class="media-name">${esc(item.name)}</div>`;
     btn.addEventListener('click', () => openLB(item.img, item.name));
     el.appendChild(btn);
   });
