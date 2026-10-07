@@ -255,5 +255,18 @@
     "ori": 40,
     "img": "flt35.jpeg",
     "active": true
+  },
+  {
+    "id": "new_1791370279028",
+    "name": "乳酪原絲(小)",
+    "desc": "60g 裝，濃郁乳酪風味",
+    "code": "",
+    "variant1_name": "一包60g",
+    "variant1_price": 130,
+    "variant2_name": "2包優惠",
+    "variant2_price": 250,
+    "ori": 150,
+    "img": "lulc.png",
+    "active": true
   }
 ]
