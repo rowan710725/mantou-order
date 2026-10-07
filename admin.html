@@ -79,8 +79,8 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 
 /* ── 商品表格 ── */
 .products-table{background:white;border-radius:10px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 2px 16px rgba(90,60,20,0.07);}
-.table-header{display:grid;grid-template-columns:60px 100px 60px 1fr 62px 66px 62px 66px 64px 90px 76px 44px 44px;gap:8px;padding:12px 12px;background:var(--brown-dark);color:white;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
-.product-row{display:grid;grid-template-columns:60px 100px 60px 1fr 62px 66px 62px 66px 64px 90px 76px 44px 44px;gap:8px;padding:12px 12px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
+.table-header{display:grid;grid-template-columns:60px 1.2fr 1.6fr 96px 70px;gap:8px;padding:12px 12px;background:var(--brown-dark);color:white;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
+.product-row{display:grid;grid-template-columns:60px 1.2fr 1.6fr 96px 70px;gap:8px;padding:12px 12px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
 .product-row:last-child{border-bottom:none;}
 .product-row:hover{background:var(--cream);}
 .product-row.inactive{opacity:0.45;}
@@ -93,6 +93,14 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 .fi-num{text-align:center;font-weight:700;}
 .fi-img{font-size:0.78rem;}
 .toggle-wrap{display:flex;justify-content:center;}
+.row-img{width:56px;height:56px;border-radius:8px;object-fit:cover;border:1.5px solid var(--border);display:block;}
+.row-name{font-weight:700;color:var(--brown-dark);}
+.row-name small{display:block;font-weight:400;color:var(--text-muted);font-size:0.78rem;margin-top:2px;}
+.row-specs{font-size:0.85rem;line-height:1.6;}
+.row-specs s{color:var(--text-muted);font-size:0.78rem;margin-left:4px;}
+.row-state{font-size:0.8rem;text-align:center;}
+.row-state.off{color:#C62828;}
+.ro-tip{background:#FFF8E8;border:1px solid #F0D9A8;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.88rem;color:#7A4B00;}
 .hot-sel{padding:8px 4px;cursor:pointer;}
 .hot-sel.hot-on{background:#FFF3C4;border-color:#E9B53B;color:#7A4B00;}
 .toggle{width:44px;height:24px;border-radius:12px;background:#ccc;position:relative;cursor:pointer;border:none;flex-shrink:0;transition:background 0.25s;}
@@ -150,7 +158,11 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
   .tab-bar-inner{flex-wrap:wrap;}
   .tab-actions{width:100%;justify-content:flex-end;}
   .table-header{display:none;}
-  .product-row{grid-template-columns:76px 1fr 44px;gap:8px;padding:14px;}
+  .product-row{grid-template-columns:56px 1fr auto;gap:6px 10px;padding:14px;}
+  .product-row .row-img{grid-row:1/4;}
+  .product-row .row-name,.product-row .row-specs{grid-column:2/4;}
+  .product-row .hot-sel{grid-column:2;width:110px;}
+  .product-row .row-state{grid-column:3;text-align:right;}
   .video-row{grid-template-columns:1fr 44px;}
   .press-row{grid-template-columns:76px 1fr 44px;}
 }
@@ -196,7 +208,6 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
         <button class="tab" data-tab="shipping" onclick="switchTab('shipping')">🚚 運費設定<span class="dot">●</span></button>
       </div>
       <div class="tab-actions">
-        <button class="hdr-btn hdr-add" id="addProductBtn" onclick="addProduct()">＋ 新增品項</button>
         <button class="hdr-btn hdr-save" id="saveBtn" onclick="saveCurrent()">💾 儲存變更</button>
       </div>
     </div>
@@ -206,7 +217,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 
   <div class="admin-body">
     <div class="tip" id="patTip" style="display:none">
-      ⚠️ 尚未設定 GitHub Token，照片上傳功能尚未啟用。請點右上角「⚙️ 設定」完成設定。
+      ⚠️ 尚未設定 GitHub Token，目前無法存檔。請點右上角「⚙️ 設定」完成設定。
     </div>
 
     <div class="panel" id="panel-store">
@@ -230,18 +241,12 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
     </div>
 
     <div class="panel" id="panel-products">
+    <div class="ro-tip">📌 商品的名稱、價格、照片、上下架，請到電腦上的「<b>彙整後台 → 商品管理</b>」修改，存檔後會自動同步到這裡。這裡只設定首頁「人氣熱銷」排名。</div>
     <div class="products-table">
       <div class="table-header">
-        <div>照片</div><div>品名</div><div>編碼</div><div>描述</div>
-        <div style="text-align:center">規格1<br>名稱</div>
-        <div style="text-align:center">規格1<br>價格</div>
-        <div style="text-align:center">規格2<br>名稱</div>
-        <div style="text-align:center">規格2<br>價格</div>
-        <div style="text-align:center">原價</div>
-        <div>圖片路徑</div>
-        <div style="text-align:center">熱銷<br>排名</div>
-        <div style="text-align:center">上架</div>
-        <div></div>
+        <div>照片</div><div>品名</div><div>規格／價格</div>
+        <div style="text-align:center">熱銷排名</div>
+        <div style="text-align:center">狀態</div>
       </div>
       <div id="productList">
         <div class="loading-row">🔄 載入商品清單中…</div>
@@ -318,7 +323,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 <div class="modal-overlay" id="imgModal" style="display:none"
      onclick="if(event.target===this) closeImgModal()">
   <div class="modal-box">
-    <h3 id="imgModalTitle">📷 修改商品圖片</h3>
+    <h3 id="imgModalTitle">📷 修改報導截圖</h3>
     <img class="img-preview" id="imgPreview" src="" alt="圖片預覽">
 
     <!-- 直接上傳區 -->
@@ -364,7 +369,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
     <div class="settings-section">
       <h4>Personal Access Token（PAT）</h4>
       <div class="settings-desc">
-        設定後可直接從後台上傳商品照片到 GitHub，不需要手動進 GitHub 上傳。
+        設定後才能存檔（熱銷排名、門市資訊、媒體報導、運費）和上傳報導截圖，不需要手動進 GitHub 上傳。
         Token 只存在你的瀏覽器本機，不會傳到其他地方。
       </div>
 
@@ -402,14 +407,12 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQK7qmgvTWXd8FzlPKudn-kuKGbFvGkDB3oJeH2RmUWF-WfoGKQzGPpQ535SFEGYE/exec';
 const GH_OWNER   = 'rowan710725';
 const GH_REPO    = 'mantou-order';
 
 let PASS = '', products = [], dirty = false, editingImgIdx = -1;
 let selectedFile = null;
 let mediaVideos = [], mediaPress = [];
-let imgModalMode = 'product'; // 'product' | 'media'
 const MEDIA_GROUPS = ['新聞/雜誌', '旅遊/生活風格', '團購/宅配'];
 
 // ── 工具 ──────────────────────────────────────────────────────────────────────
@@ -435,7 +438,6 @@ function switchTab(tab){
   currentTab=tab;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+tab));
-  document.getElementById('addProductBtn').style.display = tab==='products' ? '' : 'none';
   refreshSaveBtn();
   try{ localStorage.setItem('admin_tab',tab); }catch(e){}
 }
@@ -538,44 +540,24 @@ function logout(){
 function renderProducts(){
   const list=document.getElementById('productList');
   if(!products.length){
-    list.innerHTML='<div class="loading-row">目前沒有商品，點上方「新增品項」來新增</div>';
+    list.innerHTML='<div class="loading-row">目前沒有商品</div>';
     return;
   }
+  const money=v=>'$'+Number(v||0).toLocaleString();
   list.innerHTML=products.map((p,i)=>`
     <div class="product-row ${p.active?'':'inactive'}" id="row-${i}">
-      <div class="row-img-wrap" onclick="openImgModal(${i})">
-        <img src="${esc(imgSrc(p.img))}" alt="${esc(p.name)}"
-             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2276%22 height=%2276%22><rect fill=%22%23EDE0C4%22 width=%2276%22 height=%2276%22/><text x=%2238%22 y=%2246%22 text-anchor=%22middle%22 font-size=%2230%22>🥟</text></svg>'">
-        <div class="row-img-overlay">點擊<br>修改圖片</div>
+      <img class="row-img" src="${esc(imgSrc(p.img))}" alt="${esc(p.name)}"
+           onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2256%22 height=%2256%22><rect fill=%22%23EDE0C4%22 width=%2256%22 height=%2256%22/><text x=%2228%22 y=%2236%22 text-anchor=%22middle%22 font-size=%2224%22>🥟</text></svg>'">
+      <div class="row-name">${esc(p.name)}${p.code?` [${esc(p.code)}]`:''}<small>${esc(p.desc)}</small></div>
+      <div class="row-specs">
+        ${esc(p.variant1_name||'')} ${money(p.variant1_price||p.price)}${p.ori?`<s>${money(p.ori)}</s>`:''}
+        ${p.variant2_name?`<br>${esc(p.variant2_name)} ${money(p.variant2_price)}`:''}
       </div>
-      <input class="fi" type="text" value="${esc(p.name)}" placeholder="品名"
-             oninput="products[${i}].name=this.value;setDirty(true)">
-      <input class="fi fi-num" type="text" value="${esc(p.code||'')}" placeholder="編碼(英文數字)"
-             oninput="products[${i}].code=this.value.toUpperCase();setDirty(true)">
-      <input class="fi" type="text" value="${esc(p.desc)}" placeholder="描述"
-             oninput="products[${i}].desc=this.value;setDirty(true)">
-      <input class="fi fi-num" type="text" value="${esc(p.variant1_name||'')}" placeholder="規格1"
-             oninput="products[${i}].variant1_name=this.value;setDirty(true)">
-      <input class="fi fi-num" type="number" value="${p.variant1_price||0}" min="0" placeholder="價格"
-             oninput="products[${i}].variant1_price=Number(this.value)||0;setDirty(true)">
-      <input class="fi fi-num" type="text" value="${esc(p.variant2_name||'')}" placeholder="規格2"
-             oninput="products[${i}].variant2_name=this.value;setDirty(true)">
-      <input class="fi fi-num" type="number" value="${p.variant2_price||0}" min="0" placeholder="價格"
-             oninput="products[${i}].variant2_price=Number(this.value)||0;setDirty(true)">
-      <input class="fi fi-num" type="number" value="${p.ori}" min="0"
-             oninput="products[${i}].ori=Number(this.value)||0;setDirty(true)">
-      <input class="fi fi-img" type="text" value="${esc(p.img)}" placeholder="檔名或網址"
-             oninput="products[${i}].img=this.value;setDirty(true);refreshThumb(${i})">
       <select class="fi fi-num hot-sel ${p.hot?'hot-on':''}" title="首頁「人氣熱銷」排名" onchange="setHot(${i},this.value)">
         <option value="">—</option>
         ${[1,2,3,4,5].map(n=>`<option value="${n}" ${p.hot===n?'selected':''}>No.${n}</option>`).join('')}
       </select>
-      <div class="toggle-wrap">
-        <button class="toggle ${p.active?'on':''}"
-                title="${p.active?'已上架（點擊下架）':'已下架（點擊上架）'}"
-                onclick="toggleActive(${i})"></button>
-      </div>
-      <button class="del-btn" onclick="deleteProduct(${i})" title="刪除">🗑</button>
+      <div class="row-state ${p.active?'':'off'}">${p.active?'上架中':'已下架'}</div>
     </div>
   `).join('');
 }
@@ -587,29 +569,6 @@ function setHot(i, val){
   if (n) products[i].hot = n; else delete products[i].hot;
   setDirty(true);
   renderProducts();
-}
-
-function refreshThumb(i){
-  const row=document.getElementById('row-'+i);
-  if(row){ const img=row.querySelector('.row-img-wrap img'); if(img) img.src=imgSrc(products[i].img)||''; }
-}
-function toggleActive(i){
-  products[i].active=!products[i].active; setDirty(true);
-  const row=document.getElementById('row-'+i);
-  if(row){
-    row.classList.toggle('inactive',!products[i].active);
-    const t=row.querySelector('.toggle');
-    if(t){ t.classList.toggle('on',products[i].active); t.title=products[i].active?'已上架（點擊下架）':'已下架（點擊上架）'; }
-  }
-}
-function deleteProduct(i){
-  if(!confirm('確定刪除「'+(products[i].name||'此品項')+'」嗎？')) return;
-  products.splice(i,1); setDirty(true); renderProducts();
-}
-function addProduct(){
-  products.push({id:'new_'+Date.now(),name:'',desc:'',code:'',variant1_name:'',variant1_price:0,variant2_name:'',variant2_price:0,ori:0,img:'',active:true});
-  setDirty(true); renderProducts();
-  document.getElementById('productList').lastElementChild?.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
 // ── 媒體報導：影音 ─────────────────────────────────────────────────────────────
@@ -726,6 +685,8 @@ async function saveMedia(){
 
 // ── 儲存 ──────────────────────────────────────────────────────────────────────
 async function saveAll(){
+  // 只存「熱銷排名」：先抓 GitHub 上最新的 products.json（彙整後台可能剛同步過價格），
+  // 只改每個商品的 hot 欄位再寫回去，其他欄位一律以最新內容為準，不會被這個頁面蓋掉。
   showStatus('儲存中，請稍候…','loading');
   const pat = getPAT();
   if(!pat){
@@ -733,36 +694,30 @@ async function saveAll(){
     return;
   }
   try{
-    const content = JSON.stringify(products, null, 2);
-    const base64 = btoa(unescape(encodeURIComponent(content)));
     const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/products.json`;
+    const existing = await fetch(apiUrl + '?t=' + Date.now(), { headers: { Authorization: `Bearer ${pat}` }, cache: 'no-store' });
+    if(!existing.ok) throw new Error('讀取最新商品資料失敗');
+    const meta = await existing.json();
+    const latest = JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\n/g,'')))));
+    const hotById = {};
+    products.forEach(p => { if(p.hot) hotById[p.id] = p.hot; });
+    latest.forEach(p => { if(hotById[p.id]) p.hot = hotById[p.id]; else delete p.hot; });
 
-    // 先取得現有檔案的 sha（如果存在）
-    let sha = null;
-    try{
-      const existing = await fetch(apiUrl, { headers: { Authorization: `Bearer ${pat}` } });
-      if(existing.ok){
-        const data = await existing.json();
-        sha = data.sha;
-      }
-    } catch(e){}
-
-    // 推送到 GitHub
-    const body = {
-      message: `更新商品資料 (${new Date().toLocaleString('zh-TW')})`,
-      content: base64
-    };
-    if(sha) body.sha = sha;
-
+    const content = JSON.stringify(latest, null, 2);
     const res = await fetch(apiUrl, {
       method: 'PUT',
       headers: { Authorization: `Bearer ${pat}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        message: `更新熱銷排名 (${new Date().toLocaleString('zh-TW')})`,
+        content: btoa(unescape(encodeURIComponent(content))),
+        sha: meta.sha
+      })
     });
-
     if(res.ok){
+      products = latest;
+      renderProducts();
       setDirty(false);
-      showStatus('✅ 儲存成功！官網商品將在幾秒內更新','success');
+      showStatus('✅ 儲存成功！首頁熱銷將在幾秒內更新','success');
     } else {
       const err = await res.json();
       showStatus('❌ ' + (err.message || '保存失敗'),'error');
@@ -889,25 +844,8 @@ async function saveStoreInfo(){
 }
 
 // ── 圖片彈窗 ──────────────────────────────────────────────────────────────────
-function openImgModal(i){
-  imgModalMode='product'; editingImgIdx=i; selectedFile=null;
-  document.getElementById('imgModalTitle').textContent='📷 修改商品圖片';
-  const img=products[i].img||'';
-  document.getElementById('imgInput').value=img;
-  document.getElementById('imgPreview').src=imgSrc(img)||placeholder();
-  document.getElementById('imgFile').value='';
-  document.getElementById('uploadBtn').style.display='none';
-  document.getElementById('uploadStatus').className='upload-status';
-  document.getElementById('uploadStatus').textContent='';
-  // PAT 提示
-  const hasPAT=!!getPAT();
-  document.getElementById('noPATNote').style.display=hasPAT?'none':'';
-  document.getElementById('uploadSection').style.opacity=hasPAT?'1':'0.5';
-  document.getElementById('uploadSection').style.pointerEvents=hasPAT?'':'none';
-  document.getElementById('imgModal').style.display='flex';
-}
 function openMediaImgModal(i){
-  imgModalMode='media'; editingImgIdx=i; selectedFile=null;
+  editingImgIdx=i; selectedFile=null;
   document.getElementById('imgModalTitle').textContent='📷 修改報導截圖';
   const img=mediaPress[i].img||'';
   document.getElementById('imgInput').value=img;
@@ -931,13 +869,8 @@ function updateImgPreview(){
 function confirmImg(){
   if(editingImgIdx<0) return;
   const val=document.getElementById('imgInput').value.trim();
-  if(imgModalMode==='media'){
-    mediaPress[editingImgIdx].img=val;
-    setMediaDirty(true); renderMediaPress();
-  } else {
-    products[editingImgIdx].img=val;
-    setDirty(true); renderProducts();
-  }
+  mediaPress[editingImgIdx].img=val;
+  setMediaDirty(true); renderMediaPress();
   closeImgModal();
 }
 
@@ -996,7 +929,7 @@ async function uploadPhoto(){
     const dataUrl=await compressImage(selectedFile,900,0.85);
     const base64=dataUrl.split(',')[1];
     const filename=sanitizeFilename(selectedFile.name);
-    const filepath=imgModalMode==='media' ? `media/press/${filename}` : filename;
+    const filepath=`media/press/${filename}`;
     const apiUrl=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${filepath}`;
 
     // 如果同名檔案已存在，取得 sha 才能更新
@@ -1006,7 +939,7 @@ async function uploadPhoto(){
       if(check.ok){ const ex=await check.json(); sha=ex.sha; }
     } catch(e){}
 
-    const body={message:`上傳${imgModalMode==='media'?'媒體報導截圖':'商品照片'}：${filepath}`,content:base64};
+    const body={message:`上傳媒體報導截圖：${filepath}`,content:base64};
     if(sha) body.sha=sha;
 
     const res=await fetch(apiUrl,{
