@@ -146,7 +146,7 @@
   {
     "id": "bean",
     "name": "黑糖辣Q豆乾",
-    "code": "DG",
+    "code": "BEAN",
     "desc": "250g 裝，Q彈入味",
     "variant1_name": "一包250g ",
     "variant1_price": 110,
@@ -260,7 +260,7 @@
     "id": "new_1791370279028",
     "name": "乳酪原絲(小)",
     "desc": "60g 裝，濃郁乳酪風味",
-    "code": "",
+    "code": "CHS60",
     "variant1_name": "一包60g",
     "variant1_price": 130,
     "variant2_name": "2包優惠",
