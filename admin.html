@@ -128,6 +128,14 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 .toggle.on::after{left:23px;}
 .del-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid #E0D0BC;background:white;color:#B8A080;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;margin:auto;transition:all 0.2s;}
 .del-btn:hover{background:#FFEBEE;border-color:#EF9A9A;color:#C62828;}
+.detail-btn{display:inline-block;margin-top:6px;padding:4px 10px;border:1px solid var(--gold);border-radius:14px;background:white;color:var(--brown-dark);font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;}
+.detail-btn.empty{border-style:dashed;color:var(--text-muted);}
+.dt-box{max-width:620px !important;}
+.dt-box textarea.modal-input{min-height:84px;resize:vertical;line-height:1.6;}
+.dt-feat{display:grid;grid-template-columns:150px 1fr;gap:8px;}
+.dt-feat .modal-input{margin-bottom:8px;}
+.dt-sec{font-size:0.85rem;font-weight:700;color:var(--brown-dark);margin:6px 0 10px;padding-top:10px;border-top:1px dashed var(--border);}
+@media(max-width:600px){ .dt-feat{grid-template-columns:1fr;gap:0;} }
 .loading-row{text-align:center;padding:48px;color:var(--text-muted);font-size:1rem;}
 
 /* ── 彈窗共用 ── */
@@ -261,7 +269,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
     </div>
 
     <div class="panel" id="panel-products">
-    <div class="ro-tip">📌 商品的名稱、價格、照片、上下架，請到電腦上的「<b>彙整後台 → 商品管理</b>」修改，存檔後會自動同步到這裡。這裡只設定首頁「人氣熱銷」排名。</div>
+    <div class="ro-tip">📌 商品的名稱、價格、照片、上下架，請到電腦上的「<b>彙整後台 → 商品管理</b>」修改，存檔後會自動同步到這裡。這裡設定首頁「人氣熱銷」排名，和每個商品的「📖 商品詳情」（官網點商品進去看到的介紹、成分）。</div>
     <div class="products-table">
       <div class="table-header">
         <div>照片</div><div>品名</div><div>規格／價格</div>
@@ -347,6 +355,42 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
       </div>
     </div>
     </div>
+  </div>
+</div>
+
+<!-- ── 商品詳情彈窗 ── -->
+<div class="modal-overlay" id="detailModal" style="display:none">
+  <div class="modal-box dt-box">
+    <h3 id="dtTitle">📖 商品詳情</h3>
+    <label class="field-label">小標籤（照片旁的咖啡色小字，例：六種堅果 · 鹹甜交織）</label>
+    <input class="modal-input" id="dt_tag" type="text">
+    <div class="dt-sec">商品詳情</div>
+    <label class="field-label">標題</label>
+    <input class="modal-input" id="dt_title" type="text">
+    <label class="field-label">介紹文字</label>
+    <textarea class="modal-input" id="dt_text"></textarea>
+    <label class="field-label">特色（最多 3 個，不用的留空）</label>
+    <div class="dt-feat"><input class="modal-input" id="dt_f1t" placeholder="特色 1 標題"><input class="modal-input" id="dt_f1d" placeholder="說明"></div>
+    <div class="dt-feat"><input class="modal-input" id="dt_f2t" placeholder="特色 2 標題"><input class="modal-input" id="dt_f2d" placeholder="說明"></div>
+    <div class="dt-feat"><input class="modal-input" id="dt_f3t" placeholder="特色 3 標題"><input class="modal-input" id="dt_f3d" placeholder="說明"></div>
+    <div class="dt-sec">商品資訊（不用的留空就不會顯示）</div>
+    <label class="field-label">規格</label>
+    <input class="modal-input" id="dt_spec" type="text" placeholder="例：150g／顆，每包 5 顆">
+    <label class="field-label">賞味期／保存</label>
+    <input class="modal-input" id="dt_shelf" type="text" placeholder="例：冷藏 5 天／冷凍 60 天">
+    <label class="field-label">食用方法</label>
+    <input class="modal-input" id="dt_usage" type="text">
+    <div class="dt-sec">商品成分</div>
+    <label class="field-label">成分</label>
+    <textarea class="modal-input" id="dt_ingredients"></textarea>
+    <label class="field-label">過敏原</label>
+    <input class="modal-input" id="dt_allergens" type="text" placeholder="例：本產品含有牛奶、堅果類、大豆及含麩質之穀物…">
+    <div id="dtErr" style="color:#C62828;font-size:0.85rem;font-weight:600;margin-bottom:8px;"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeDetailEditor()">取消</button>
+      <button class="btn-confirm" id="dtSaveBtn" onclick="saveDetail()">💾 儲存並上線</button>
+    </div>
+    <div style="text-align:center;margin-top:12px;font-size:0.82rem;"><a id="dtView" target="_blank" style="color:var(--brown);">👀 看官網上的樣子 ›</a></div>
   </div>
 </div>
 
@@ -580,7 +624,8 @@ function renderProducts(){
     <div class="product-row ${p.active?'':'inactive'}" id="row-${i}">
       <img class="row-img" src="${esc(imgSrc(p.img))}" alt="${esc(p.name)}"
            onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2256%22 height=%2256%22><rect fill=%22%23EDE0C4%22 width=%2256%22 height=%2256%22/><text x=%2228%22 y=%2236%22 text-anchor=%22middle%22 font-size=%2224%22>🥟</text></svg>'">
-      <div class="row-name">${esc(p.name)}${p.code?` [${esc(p.code)}]`:''}<small>${esc(p.desc)}</small></div>
+      <div class="row-name">${esc(p.name)}${p.code?` [${esc(p.code)}]`:''}<small>${esc(p.desc)}</small>
+        <button class="detail-btn ${p.detail?'':'empty'}" onclick="openDetailEditor(${i})">📖 ${p.detail?'編輯商品詳情':'新增商品詳情'}</button></div>
       <div class="row-specs">
         ${esc(p.variant1_name||'')} ${money(p.variant1_price)}${p.ori?`<s>${money(p.ori)}</s>`:''}
         ${p.variant2_name?`<br>${esc(p.variant2_name)} ${money(p.variant2_price)}`:''}
@@ -757,6 +802,60 @@ async function saveAll(){
   } catch(ex){
     showStatus('❌ ' + ex.message,'error');
   }
+}
+
+
+// ── 商品詳情（官網點商品進去看到的介紹、成分）：存在 products.json 每個商品的 detail 欄位 ──
+const DT_FIELDS=['tag','title','text','spec','shelf','usage','ingredients','allergens'];
+let dtIndex=-1;
+function openDetailEditor(i){
+  dtIndex=i;
+  const p=products[i], d=p.detail||{};
+  document.getElementById('dtTitle').textContent='📖 '+p.name+'｜商品詳情';
+  DT_FIELDS.forEach(k=>document.getElementById('dt_'+k).value=d[k]||'');
+  [1,2,3].forEach(n=>{
+    const f=(d.features||[])[n-1]||{};
+    document.getElementById(`dt_f${n}t`).value=f.t||'';
+    document.getElementById(`dt_f${n}d`).value=f.d||'';
+  });
+  document.getElementById('dtErr').textContent='';
+  document.getElementById('dtView').href='https://www.a22255663.com.tw/?p='+encodeURIComponent(p.id);
+  document.getElementById('detailModal').style.display='flex';
+}
+function closeDetailEditor(){ document.getElementById('detailModal').style.display='none'; }
+async function saveDetail(){
+  const p=products[dtIndex];
+  const d={};
+  DT_FIELDS.forEach(k=>{ const v=document.getElementById('dt_'+k).value.trim(); if(v) d[k]=v; });
+  const feats=[1,2,3].map(n=>({t:document.getElementById(`dt_f${n}t`).value.trim(), d:document.getElementById(`dt_f${n}d`).value.trim()})).filter(f=>f.t||f.d);
+  if(feats.length) d.features=feats;
+  const pat=getPAT();
+  const errEl=document.getElementById('dtErr'); errEl.textContent='';
+  if(!pat){ errEl.textContent='❌ 尚未設定 GitHub Token，請先到右上角「⚙️ 設定」完成設定'; return; }
+  const btn=document.getElementById('dtSaveBtn'); btn.disabled=true; btn.textContent='儲存中…';
+  try{
+    // 先抓 GitHub 最新的 products.json，只改這個商品的 detail，其他欄位（價格、熱銷）以最新為準
+    const apiUrl=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/products.json`;
+    const existing=await fetch(apiUrl+'?t='+Date.now(),{headers:{Authorization:`Bearer ${pat}`},cache:'no-store'});
+    if(!existing.ok) throw new Error('讀取最新商品資料失敗');
+    const meta=await existing.json();
+    const latest=JSON.parse(decodeURIComponent(escape(atob(meta.content.replace(/\n/g,'')))));
+    const target=latest.find(x=>x.id===p.id);
+    if(!target) throw new Error('找不到這個商品，請重新整理再試');
+    if(Object.keys(d).length) target.detail=d; else delete target.detail;
+    const res=await fetch(apiUrl,{method:'PUT',headers:{Authorization:`Bearer ${pat}`,'Content-Type':'application/json'},
+      body:JSON.stringify({message:`更新商品詳情：${p.name} (${new Date().toLocaleString('zh-TW')})`,
+        content:btoa(unescape(encodeURIComponent(JSON.stringify(latest,null,2)))),sha:meta.sha})});
+    if(!res.ok){ const err=await res.json(); throw new Error(err.message||'保存失敗'); }
+    const hot={}; products.forEach(x=>{ if(x.hot) hot[x.id]=x.hot; });   // 熱銷排名還沒按儲存的，保留畫面上的選擇
+    latest.forEach(x=>{ if(hot[x.id]) x.hot=hot[x.id]; else delete x.hot; });
+    products=latest;
+    renderProducts();
+    closeDetailEditor();
+    showStatus('✅ 「'+p.name+'」商品詳情已儲存，官網約 5 分鐘內更新','success');
+  } catch(ex){
+    errEl.textContent='❌ '+ex.message;
+  } finally { btn.disabled=false; btn.textContent='💾 儲存並上線'; }
 }
 
 // ── 運費設定 ──────────────────────────────────────────────────────────────────

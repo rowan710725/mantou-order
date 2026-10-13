@@ -736,13 +736,75 @@
             .cart-img { width:64px; height:64px; }
             .cart-item { gap:10px; padding:14px 14px; }
         }
+
+        /* ════════ 商品詳情頁（點商品照片／名稱進來，網址 ?p=商品id） ════════ */
+        #pdView { display: none; }
+        body.detail-mode > :not(.pd-keep) { display: none !important; }
+        body.detail-mode #pdView { display: block; }
+        .shop-img img, .shop-name { cursor: pointer; }
+        .shop-more { align-self: flex-start; margin: -4px 0 8px; font-size: .82rem; color: var(--brown); font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+        .pd-wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; }
+        .pd-crumb { font-size: .85rem; color: var(--text-muted); padding: 16px 0; }
+        .pd-crumb a { color: var(--brown); cursor: pointer; text-decoration: none; }
+        .pd-hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 36px; align-items: start; }
+        .pd-hero > img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; border: 1.5px solid var(--border); display: block; background: var(--cream-dark); }
+        .pd-info h1 { font-family: 'Noto Serif TC', serif; font-size: 2.2rem; font-weight: 900; color: #3B2410; letter-spacing: 3px; }
+        .pd-chip { display: inline-block; margin: 12px 0 14px; padding: 5px 16px; border-radius: 20px; background: var(--brown); color: #fff; font-size: .9rem; letter-spacing: 1px; }
+        .pd-lead { line-height: 1.85; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-top: 12px; }
+        .pd-spec { color: var(--text-muted); font-size: .92rem; margin: 14px 0 6px; }
+        .pd-price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px; }
+        .pd-price b { font-size: 2rem; color: #B8391C; } .pd-price s { color: #C0AB95; } .pd-price small { color: var(--text-muted); }
+        .pd-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .pd-row > label { width: 44px; color: var(--text-muted); font-size: .92rem; }
+        .pd-v { padding: 9px 18px; border: 1px solid var(--border); background: #fff; border-radius: 6px; font-family: inherit; font-size: .92rem; color: var(--text); cursor: pointer; }
+        .pd-v.on { border-color: var(--brown); background: #FFF6E6; color: var(--brown-dark); font-weight: 700; box-shadow: inset 0 0 0 1px var(--brown); }
+        .pd-add { width: 100%; border: none; border-radius: 30px; padding: 14px; font-size: 1.08rem; font-weight: 700; letter-spacing: 4px; font-family: inherit; color: #fff; cursor: pointer;
+            background: linear-gradient(180deg, #A8361E, #7A2212); box-shadow: 0 4px 12px rgba(122,34,18,.3); margin-top: 4px; }
+        .pd-add.added { background: #5C8A4A; box-shadow: none; }
+        .pd-note { margin-top: 12px; font-size: .85rem; color: var(--text-muted); text-align: center; }
+        .pd-title { display: flex; align-items: center; gap: 18px; margin: 48px 0 22px; }
+        .pd-title:before, .pd-title:after { content: ""; flex: 1; height: 1px; background: var(--border); }
+        .pd-title h2 { font-family: 'Noto Serif TC', serif; font-size: 1.5rem; letter-spacing: 6px; color: #3B2410; }
+        .pd-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+        .pd-detail.solo { grid-template-columns: 1fr; max-width: 760px; margin: 0 auto; }
+        .pd-detail h3 { font-family: 'Noto Serif TC', serif; font-size: 1.45rem; color: var(--brown-dark); margin-bottom: 12px; line-height: 1.5; }
+        .pd-detail p { line-height: 1.95; }
+        .pd-feats { background: var(--cream-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 22px; }
+        .pd-feat { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px dashed var(--border); }
+        .pd-feat:last-child { border: none; }
+        .pd-ic { flex: none; width: 46px; height: 46px; border-radius: 50%; background: #FBF1E2; display: flex; align-items: center; justify-content: center; color: var(--brown); }
+        .pd-ic svg, .pd-box h4 svg { width: 24px; height: 24px; }
+        .pd-feat b { display: block; color: var(--brown-dark); margin-bottom: 4px; }
+        .pd-feat span { font-size: .92rem; line-height: 1.7; }
+        .pd-boxes { display: grid; grid-template-columns: 1fr 1.4fr; gap: 20px; }
+        .pd-boxes.solo { grid-template-columns: 1fr; }
+        .pd-box { background: #fff; border: 1.5px solid var(--border); border-radius: 10px; padding: 22px 24px; }
+        .pd-box h4 { display: flex; align-items: center; gap: 10px; font-family: 'Noto Serif TC', serif; font-size: 1.2rem; color: var(--brown-dark); margin-bottom: 14px; }
+        .pd-box h4 svg { color: var(--brown); }
+        .pd-box table { border-collapse: collapse; width: 100%; }
+        .pd-box td { padding: 8px 0; border-bottom: 1px solid #F0E6D2; font-size: .95rem; line-height: 1.6; vertical-align: top; }
+        .pd-box td:first-child { color: var(--text-muted); width: 76px; }
+        .pd-box p { line-height: 1.9; }
+        .pd-allergy { margin-top: 12px; font-size: .85rem; color: #9A5A1E; background: #FFF4DE; border-radius: 6px; padding: 8px 12px; line-height: 1.6; }
+        .pd-more { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .pd-more a { background: #fff; border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; color: var(--brown-dark); font-weight: 700; cursor: pointer; text-decoration: none; }
+        .pd-more img { width: 100%; height: 120px; object-fit: cover; display: block; }
+        .pd-more div { padding: 10px 12px; font-size: .95rem; display: flex; justify-content: space-between; gap: 6px; }
+        .pd-more em { font-style: normal; color: #B8391C; white-space: nowrap; }
+        @media (max-width: 760px) {
+            .pd-wrap { padding: 0 16px 30px; }
+            .pd-hero, .pd-detail, .pd-boxes { grid-template-columns: 1fr; gap: 18px; }
+            .pd-info h1 { font-size: 1.75rem; }
+            .pd-more { grid-template-columns: repeat(2, 1fr); }
+            .pd-title { margin: 34px 0 16px; } .pd-title h2 { font-size: 1.25rem; letter-spacing: 4px; }
+        }
     </style>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <!-- LINE 歡迎彈窗 -->
-<div class="line-overlay co-keep" id="lineOverlay">
+<div class="line-overlay co-keep pd-keep" id="lineOverlay">
     <div class="line-popup">
         <button class="line-popup-close" onclick="closeLinePopup()">✕</button>
         <div class="line-popup-logo">
@@ -761,9 +823,9 @@
     <button class="co-back" id="coBack" onclick="coGoBack()">← 返回繼續購物</button>
     <div class="co-title" id="coTitle">結帳</div>
 </div>
-<nav class="topnav">
+<nav class="topnav pd-keep">
     <div class="topnav-inner">
-        <a class="nav-logo" href="#"><b>方王媽媽</b><span>堅果饅頭</span></a>
+        <a class="nav-logo" href="#" onclick="if (document.body.classList.contains('detail-mode')) { event.preventDefault(); closeDetail(true); window.scrollTo(0, 0); }"><b>方王媽媽</b><span>堅果饅頭</span></a>
         <div class="nav-links">
             <a onclick="showTab('all')">商品選購</a>
             <a href="#trust">安心保證</a>
@@ -785,6 +847,9 @@
     </div>
     <div class="nav-search" id="navSearch"><input id="navSearchInput" type="search" placeholder="搜尋商品，例如：招牌、地瓜、蜂梨糖" oninput="filterProducts(this.value)"></div>
 </nav>
+
+<!-- 商品詳情頁（openDetail 產生內容） -->
+<div class="pd-keep" id="pdView"></div>
 
 <!-- Banner -->
 <div style="line-height:0;">
@@ -1028,7 +1093,7 @@
 </div>
 
 <!-- 查詢訂單視窗 -->
-<div class="line-overlay co-keep" id="queryOverlay" onclick="if (event.target === this) closeQuery()">
+<div class="line-overlay co-keep pd-keep" id="queryOverlay" onclick="if (event.target === this) closeQuery()">
 <div class="query-popup">
     <button class="line-popup-close" type="button" onclick="closeQuery()" aria-label="關閉">✕</button>
     <div class="sec-title">查詢我的訂單</div>
@@ -1089,15 +1154,15 @@
     </div>
 </div>
 
-<footer>
+<footer class="pd-keep">
     <div class="f-logo">🥟 方王媽媽堅果饅頭</div>
     <p style="font-size:1.2rem;">官方 LINE：@a22255663　　訂購電話：02-2225-5663</p>
     <p style="font-size:1.2rem;">地址：新北市中和區立德街 98 巷 72 號</p>
     <p>天然食材・手工製作・新鮮直送<br>© 2026 方王媽媽堅果饅頭 版權所有<br><span style="font-size:0.75rem;color:#999;margin-top:8px;display:block;">v2.0.1 (2026.09.01 - 規格選擇系統)</span></p>
 </footer>
 
-<div class="drawer-mask" id="drawerMask" onclick="closeCart()"></div>
-<aside class="drawer" id="drawer">
+<div class="drawer-mask pd-keep" id="drawerMask" onclick="closeCart()"></div>
+<aside class="drawer pd-keep" id="drawer">
     <div class="drawer-head"><h3>🛒 購物車 <small id="drawerCount" style="font-size:.9rem"></small></h3><button onclick="closeCart()" aria-label="關閉">✕</button></div>
     <div class="drawer-list" id="drawerList"></div>
     <div class="drawer-foot" id="drawerFoot">
@@ -1109,7 +1174,7 @@
     </div>
 </aside>
 
-<div class="cart-bar" id="cartBar">
+<div class="cart-bar pd-keep" id="cartBar">
     <div class="cart-bar-inner">
         <div class="cb-count" onclick="openCart()"><img id="cbImg" src="" alt="">已選 <b id="cbCount">0</b> 項商品 ⌃</div>
         <div class="cb-thumbs" id="cbThumbs"></div>
@@ -1421,6 +1486,7 @@ function leaveCheckout() {
 }
 window.addEventListener('popstate', () => {
     if (document.body.classList.contains('checkout-mode') && location.hash !== '#checkout') leaveCheckout();
+    syncDetailFromUrl();
 });
 if (location.hash === '#checkout') history.replaceState(null, '', location.pathname);  // 重新整理時購物車是空的，不停在結帳畫面
 // 匯款資訊：一鍵複製
@@ -1556,10 +1622,11 @@ function shopCard(p) {
         `<button class="shop-variant ${n === v ? 'active' : ''}" onclick="pickVariant('${p.id}',${n})">${p[`variant${n}_name`]}</button>`).join('');
     return `
     <div class="shop-card">
-        <div class="shop-img">${rank ? `<div class="hot-badge">熱銷 <em>No.${rank}</em></div>` : ''}<img src="${p.img}" alt="${p.name}"></div>
+        <div class="shop-img">${rank ? `<div class="hot-badge">熱銷 <em>No.${rank}</em></div>` : ''}<img src="${p.img}" alt="${p.name}" onclick="openDetail('${p.id}')"></div>
         <div class="shop-body">
-            <div class="shop-name">${p.name}</div>
+            <div class="shop-name" onclick="openDetail('${p.id}')">${p.name}</div>
             <div class="shop-desc">${p.desc || ''}</div>
+            ${p.detail ? `<a class="shop-more" onclick="openDetail('${p.id}')">看商品詳情 ›</a>` : ''}
             ${variants ? `<div class="shop-variants">${variants}</div>` : ''}
             <div class="shop-row">
                 <div class="shop-price">NT$ <big>${Number(price).toLocaleString()}</big><small> /${unitOf(p, v)}</small>${v === 1 && p.ori > price ? `<s>$${p.ori}</s>` : ''}</div>
@@ -1578,6 +1645,7 @@ renderProducts = function () {
     document.getElementById('productGrid').innerHTML = currentTab === 'all' ? PRODUCTS.map(shopCard).join('') : '';
 };
 function showTab(t) {
+    if (document.body.classList.contains('detail-mode')) closeDetail(true);
     currentTab = t;
     document.getElementById('tabHot').style.display = t === 'hot' ? '' : 'none';
     document.getElementById('tabAll').style.display = t === 'all' ? '' : 'none';
@@ -1669,6 +1737,7 @@ async function loadProducts() {
         initSelectedVariant();
         renderProducts();
         refresh();
+        syncDetailFromUrl();
         return;
       }
     }
@@ -1716,6 +1785,99 @@ function selectVariant(productId, btn) {
 
   refresh(); // 刷新购物车显示
   updateOrderReviewIfVisible();
+}
+// ── 商品詳情頁：同一頁切換，網址 ?p=商品id（可以直接分享），返回鍵回到首頁原本的位置 ──
+const PD_ICONS = [
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="12" rx="6" ry="9" transform="rotate(35 12 12)"/><path d="M8 17l8-10"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19c0-8 6-14 15-14-1 9-6 15-15 14z"/><path d="M5 19l8-8"/></svg>'
+];
+const PD_INFO_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M8 10h8M8 14h8M8 18h5"/></svg>';
+let pdId = null, pdScrollY = 0;
+function pdEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
+function pdIsBread(p) { return /饅頭|迷你|綜合包/.test(p.name); }
+function renderDetail() {
+    const p = PRODUCTS.find(x => x.id === pdId);
+    if (!p) return;
+    const d = p.detail || {};
+    pending[p.id] = pending[p.id] || 1;
+    const v = selectedVariant[p.id] || 1;
+    const price = linePrice(p);
+    const variants = [1, 2].filter(n => p[`variant${n}_name`] && p[`variant${n}_price`]);
+    const feats = (d.features || []).filter(f => f && (f.t || f.d));
+    const info = [['規格', d.spec], ['賞味期', d.shelf], ['食用', d.usage]].filter(r => r[1]);
+    const others = PRODUCTS.filter(x => x.id !== p.id && pdIsBread(x) === pdIsBread(p))
+        .sort((a, b) => (HOT_RANK[a.id] || 99) - (HOT_RANK[b.id] || 99)).slice(0, 4);
+    document.getElementById('pdView').innerHTML = `
+    <div class="pd-wrap">
+        <div class="pd-crumb"><a onclick="closeDetail(true);window.scrollTo(0,0)">首頁</a> ／ <a onclick="showTab('all')">商品選購</a> ／ ${pdEsc(p.name)}</div>
+        <section class="pd-hero">
+            <img src="${pdEsc(p.img)}" alt="${pdEsc(p.name)}">
+            <div class="pd-info">
+                <h1>${pdEsc(p.name)}</h1>
+                ${d.tag ? `<span class="pd-chip">${pdEsc(d.tag)}</span>` : ''}
+                <p class="pd-lead">${pdEsc(p.desc)}</p>
+                ${d.spec ? `<div class="pd-spec">${pdEsc(d.spec)}</div>` : ''}
+                <div class="pd-price"><b>NT$${Number(price).toLocaleString()}</b>${v === 1 && p.ori > price ? `<s>$${p.ori}</s>` : ''}<small>/ ${unitOf(p, v)}</small></div>
+                ${variants.length ? `<div class="pd-row"><label>規格</label>${variants.map(n =>
+                    `<button class="pd-v ${n === v ? 'on' : ''}" onclick="pdPick(${n})">${pdEsc(p[`variant${n}_name`])}${variants.length > 1 ? ` $${Number(p[`variant${n}_price`]).toLocaleString()}` : ''}</button>`).join('')}</div>` : ''}
+                <div class="pd-row"><label>數量</label><div class="stepper"><button onclick="pdStep(-1)">−</button><span id="pdQty">${pending[p.id]}</span><button onclick="pdStep(1)">＋</button></div></div>
+                <button class="pd-add" id="pdAdd" onclick="pdAddCart()">加入購物車</button>
+                <div class="pd-note">滿 $${FREE_SHIPPING_LIMIT.toLocaleString()} 免運 ・ 可和饅頭一起寄送</div>
+            </div>
+        </section>
+        ${d.title || d.text || feats.length ? `
+        <div class="pd-title"><h2>商品詳情</h2></div>
+        <section class="pd-detail ${feats.length ? '' : 'solo'}">
+            <div>${d.title ? `<h3>${pdEsc(d.title)}</h3>` : ''}${d.text ? `<p>${pdEsc(d.text)}</p>` : ''}</div>
+            ${feats.length ? `<div class="pd-feats">${feats.map((f, i) => `<div class="pd-feat"><div class="pd-ic">${PD_ICONS[i % 3]}</div><div><b>${pdEsc(f.t)}</b><span>${pdEsc(f.d)}</span></div></div>`).join('')}</div>` : ''}
+        </section>` : ''}
+        ${info.length || d.ingredients ? `
+        <div class="pd-title"><h2>${d.ingredients ? '商品資訊 ・ 成分' : '商品資訊'}</h2></div>
+        <section class="pd-boxes ${info.length && d.ingredients ? '' : 'solo'}">
+            ${info.length ? `<div class="pd-box"><h4>${PD_INFO_IC}商品資訊</h4><table>${info.map(r => `<tr><td>${r[0]}</td><td>${pdEsc(r[1])}</td></tr>`).join('')}</table></div>` : ''}
+            ${d.ingredients ? `<div class="pd-box"><h4>${PD_ICONS[2]}商品成分</h4><p>${pdEsc(d.ingredients)}</p>${d.allergens ? `<div class="pd-allergy">⚠️ 過敏原：${pdEsc(d.allergens)}</div>` : ''}</div>` : ''}
+        </section>` : ''}
+        ${others.length ? `
+        <div class="pd-title"><h2>${pdIsBread(p) ? '看看其他口味' : '看看其他商品'}</h2></div>
+        <section class="pd-more">${others.map(o => `<a onclick="openDetail('${o.id}')"><img src="${pdEsc(o.img)}" alt="${pdEsc(o.name)}"><div><span>${pdEsc(o.name)}</span><em>$${Number(resolvePrice(o.variant1_price, o.variant1_price)).toLocaleString()}</em></div></a>`).join('')}</section>` : ''}
+    </div>`;
+}
+function openDetail(id, push = true) {
+    if (!PRODUCTS.find(x => x.id === id)) return;
+    if (!document.body.classList.contains('detail-mode')) pdScrollY = window.scrollY;
+    pdId = id;
+    renderDetail();
+    document.body.classList.add('detail-mode');
+    document.title = PRODUCTS.find(x => x.id === id).name + '｜方王媽媽堅果饅頭';
+    window.scrollTo(0, 0);
+    if (push) history.pushState({ pd: id }, '', location.pathname + '?p=' + encodeURIComponent(id));
+}
+function closeDetail(push) {
+    if (!document.body.classList.contains('detail-mode')) return;
+    document.body.classList.remove('detail-mode');
+    document.title = PD_TITLE;
+    pdId = null;
+    renderProducts();
+    if (push) history.pushState(null, '', location.pathname);
+    else setTimeout(() => window.scrollTo(0, pdScrollY), 0);
+}
+function syncDetailFromUrl() {
+    const id = new URLSearchParams(location.search).get('p');
+    if (id && PRODUCTS.find(x => x.id === id)) { if (id !== pdId) openDetail(id, false); }
+    else closeDetail(false);
+}
+const PD_TITLE = document.title;
+function pdPick(n) { selectedVariant[pdId] = n; renderDetail(); refresh(); }
+function pdStep(d) { pending[pdId] = Math.max(1, (pending[pdId] || 1) + d); document.getElementById('pdQty').textContent = pending[pdId]; }
+function pdAddCart() {
+    qty[pdId] = (qty[pdId] || 0) + (pending[pdId] || 1);
+    pending[pdId] = 1;
+    refresh();
+    document.getElementById('pdQty').textContent = 1;
+    const b = document.getElementById('pdAdd');
+    b.classList.add('added'); b.textContent = '✓ 已加入購物車';
+    setTimeout(() => { b.classList.remove('added'); b.textContent = '加入購物車'; }, 1400);
 }
 loadProducts();
 loadStoreInfo();
