@@ -8,7 +8,6 @@
     "variant1_price": 300,
     "variant2_name": "無糖４包組",
     "variant2_price": 1200,
-    "price": 300,
     "ori": 325,
     "img": "zp.jpeg",
     "active": true,
@@ -23,7 +22,6 @@
     "variant1_price": 300,
     "variant2_name": "無糖４包組",
     "variant2_price": 1200,
-    "price": 300,
     "ori": 325,
     "img": "yj.jpeg",
     "active": true
@@ -37,7 +35,6 @@
     "variant1_price": 300,
     "variant2_name": "無糖４包組",
     "variant2_price": 1200,
-    "price": 300,
     "ori": 325,
     "img": "rc.jpeg",
     "active": true
@@ -51,7 +48,6 @@
     "variant1_price": 300,
     "variant2_name": "無糖４包組",
     "variant2_price": 1200,
-    "price": 300,
     "ori": 325,
     "img": "hm.jpeg",
     "active": true,
@@ -66,7 +62,6 @@
     "variant1_price": 300,
     "variant2_name": "無糖４包組",
     "variant2_price": 1200,
-    "price": 300,
     "ori": 325,
     "img": "yghm.jpeg",
     "active": true,
@@ -81,7 +76,6 @@
     "variant1_price": 275,
     "variant2_name": "無糖４包組",
     "variant2_price": 1100,
-    "price": 275,
     "ori": 300,
     "img": "jg.jpeg",
     "active": true,
@@ -96,7 +90,6 @@
     "variant1_price": 275,
     "variant2_name": "無糖４包組",
     "variant2_price": 1100,
-    "price": 275,
     "ori": 300,
     "img": "hmjg.jpeg",
     "active": true
@@ -110,7 +103,6 @@
     "variant1_price": 275,
     "variant2_name": "無糖４包組",
     "variant2_price": 1100,
-    "price": 275,
     "ori": 300,
     "img": "dg.jpeg",
     "active": true
@@ -124,7 +116,6 @@
     "variant1_price": 1920,
     "variant2_name": "",
     "variant2_price": 0,
-    "price": 449,
     "ori": 2000,
     "img": "mimi2.jpg",
     "active": true
@@ -138,7 +129,6 @@
     "variant1_price": 280,
     "variant2_name": "",
     "variant2_price": 0,
-    "price": 280,
     "ori": 300,
     "img": "flt.jpeg",
     "active": true
@@ -152,7 +142,6 @@
     "variant1_price": 110,
     "variant2_name": "2包優惠",
     "variant2_price": 200,
-    "price": 110,
     "ori": 150,
     "img": "bean.jpeg",
     "active": true
@@ -166,7 +155,6 @@
     "variant1_price": 110,
     "variant2_name": "2包優惠",
     "variant2_price": 200,
-    "price": 110,
     "ori": 150,
     "img": "sw.jpeg",
     "active": true
@@ -180,7 +168,6 @@
     "variant1_price": 310,
     "variant2_name": "",
     "variant2_price": 0,
-    "price": 100,
     "ori": 320,
     "img": "chatgpt_image_2026_9_16____03_46_33.png",
     "active": true,
@@ -195,7 +182,6 @@
     "variant1_price": 110,
     "variant2_name": "2包優惠",
     "variant2_price": 200,
-    "price": 110,
     "ori": 150,
     "img": "raisin.jpeg",
     "active": true
@@ -209,7 +195,6 @@
     "variant1_price": 190,
     "variant2_name": "",
     "variant2_price": 0,
-    "price": 190,
     "ori": 220,
     "img": "cran.jpeg",
     "active": true
@@ -223,7 +208,6 @@
     "variant1_price": 390,
     "variant2_name": "",
     "variant2_price": 0,
-    "price": 350,
     "ori": 400,
     "img": "chs.jpeg",
     "active": true
@@ -237,7 +221,6 @@
     "variant1_price": 110,
     "variant2_name": "2包優惠",
     "variant2_price": 200,
-    "price": 110,
     "ori": 150,
     "img": "mush.jpeg",
     "active": true
@@ -251,7 +234,6 @@
     "variant1_price": 35,
     "variant2_name": "３包優惠",
     "variant2_price": 100,
-    "price": 35,
     "ori": 40,
     "img": "flt35.jpeg",
     "active": true

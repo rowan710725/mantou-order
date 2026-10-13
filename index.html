@@ -1215,8 +1215,8 @@ function renderProducts() {
         const hasVariant2 = p.variant2_name && p.variant2_price;
         const hasAnyVariant = hasVariant1 || hasVariant2;
         const defaultVariant = p.variant1_name || '標準';
-        const defaultPrice = resolvePrice(p.variant1_price, p.price);
-        const priceDisplay = hasAnyVariant ? (hasVariant2 ? `$${defaultPrice}~$${p.variant2_price}` : `$${defaultPrice}`) : `$${p.price}`;
+        const defaultPrice = resolvePrice(p.variant1_price, p.variant1_price);
+        const priceDisplay = hasAnyVariant ? (hasVariant2 ? `$${defaultPrice}~$${p.variant2_price}` : `$${defaultPrice}`) : `$${p.variant1_price}`;
         const priceUnit = hasAnyVariant ? '' : '/ 包';
 
         return `
@@ -1266,8 +1266,8 @@ function renderCart() {
     const remain = FREE_SHIPPING_LIMIT - sub;
     document.getElementById('cartItemsList').innerHTML = sel.map(p => {
         const variantNum = selectedVariant[p.id] || 1;
-        const variant1Price = resolvePrice(p.variant1_price, p.price);
-        const variant2Price = resolvePrice(p.variant2_price, p.price);
+        const variant1Price = resolvePrice(p.variant1_price, p.variant1_price);
+        const variant2Price = resolvePrice(p.variant2_price, p.variant1_price);
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
         const displayName = variantName ? `${p.name}(${variantName})` : p.name;
@@ -1303,8 +1303,8 @@ function renderCart() {
 function getSubtotal() {
     return PRODUCTS.reduce((s, p) => {
         const variantNum = selectedVariant[p.id] || 1;
-        const variant1Price = resolvePrice(p.variant1_price, p.price);
-        const variant2Price = resolvePrice(p.variant2_price, p.price);
+        const variant1Price = resolvePrice(p.variant1_price, p.variant1_price);
+        const variant2Price = resolvePrice(p.variant2_price, p.variant1_price);
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
         return s + qty[p.id] * currentPrice;
     }, 0);
@@ -1360,8 +1360,8 @@ function renderOrderReview() {
     const sel = getSelected();
     document.getElementById('reviewItems').innerHTML = sel.map(p => {
         const variantNum = selectedVariant[p.id] || 1;
-        const variant1Price = resolvePrice(p.variant1_price, p.price);
-        const variant2Price = resolvePrice(p.variant2_price, p.price);
+        const variant1Price = resolvePrice(p.variant1_price, p.variant1_price);
+        const variant2Price = resolvePrice(p.variant2_price, p.variant1_price);
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
         const displayName = variantName ? `${p.name}(${variantName})` : p.name;
@@ -1550,7 +1550,7 @@ function unitOf(p, v) {
 function shopCard(p) {
     pending[p.id] = pending[p.id] || 1;
     const v = selectedVariant[p.id] || 1;
-    const price = v === 2 ? p.variant2_price : resolvePrice(p.variant1_price, p.price);
+    const price = v === 2 ? p.variant2_price : resolvePrice(p.variant1_price, p.variant1_price);
     const rank = HOT_RANK[p.id];
     const variants = [1, 2].filter(n => p[`variant${n}_name`] && p[`variant${n}_price`]).map(n =>
         `<button class="shop-variant ${n === v ? 'active' : ''}" onclick="pickVariant('${p.id}',${n})">${p[`variant${n}_name`]}</button>`).join('');
@@ -1588,7 +1588,7 @@ function showTab(t) {
     document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
 }
 // ── 購物車抽屜 ──
-function linePrice(p) { const v = selectedVariant[p.id] || 1; return v === 2 ? resolvePrice(p.variant2_price, p.price) : resolvePrice(p.variant1_price, p.price); }
+function linePrice(p) { const v = selectedVariant[p.id] || 1; return v === 2 ? resolvePrice(p.variant2_price, p.variant1_price) : resolvePrice(p.variant1_price, p.variant1_price); }
 function openCart() { renderDrawer(); document.getElementById('drawer').classList.add('show'); document.getElementById('drawerMask').classList.add('show'); }
 function closeCart() { document.getElementById('drawer').classList.remove('show'); document.getElementById('drawerMask').classList.remove('show'); }
 function drawerQty(id, d) { if ((qty[id] || 0) + d <= 0) removeItem(id); else changeQty(id, d); renderDrawer(); }
