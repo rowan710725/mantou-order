@@ -1,0 +1,19 @@
+{
+  "home": {
+    "fee": 250,
+    "free": 3500,
+    "cod": 30
+  },
+  "hmp": {
+    "fee": 99,
+    "free": 2500
+  },
+  "myship": {
+    "fee": 129,
+    "free": 3000
+  },
+  "ambient": {
+    "fee": 38,
+    "free": 1500
+  }
+}
