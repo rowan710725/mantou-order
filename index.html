@@ -454,6 +454,12 @@
         .co-card .delivery-opt:hover .opt-icon { transform: translateY(-2px); }
         .co-card .delivery-opt.active .opt-icon { --ic-accent: #E9B53B; background: #FFF1CF; color: #5C3A1E; }
         .co-card .opt-label { font-size: 1.02rem; }
+        /* 宅配付款選項：顯示由哪家物流配送（銀行匯款／數位支付＝黑貓，貨到付款＝宅配通） */
+        .opt-carrier { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 2px 5px; margin-top: 6px; }
+        .opt-carrier img { height: 26px; width: auto; max-width: 100%; }
+        .opt-carrier img[src*="pelican"] { height: 32px; }  /* 宅配通標誌上方有小字，放大一點才跟黑貓一樣醒目 */
+        .opt-carrier span { font-size: 0.8rem; font-weight: 700; color: var(--brown-dark); }
+        @media (max-width: 480px) { .opt-carrier { gap: 3px; } .opt-carrier img { height: auto; width: 100%; max-width: 110px; } .opt-carrier span { font-size: 0.72rem; } }
         @media (max-width: 480px) {
             .co-card .delivery-opt .opt-icon { width: 58px; height: 58px; }
             .co-card .delivery-opt .opt-icon svg { width: 38px; height: 38px; }
@@ -902,13 +908,13 @@
         <div class="co-card-head"><span class="co-h-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></span><h3>付款方式 <em>*</em></h3></div>
         <div class="delivery-toggle" id="paymentToggleDelivery">
             <button class="delivery-opt active" id="optBank" onclick="setPayment('bank')">
-                <span class="opt-icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18L24 7l19 11z" fill="var(--ic-accent)"/><path d="M10 22v13M18 22v13M30 22v13M38 22v13"/><rect x="5" y="37" width="38" height="5" rx="1.5" fill="#fff"/><circle cx="24" cy="14" r="2" fill="#fff" stroke="none"/></svg></span><span class="opt-label">銀行匯款</span><span class="opt-note">出貨前完成</span>
+                <span class="opt-icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18L24 7l19 11z" fill="var(--ic-accent)"/><path d="M10 22v13M18 22v13M30 22v13M38 22v13"/><rect x="5" y="37" width="38" height="5" rx="1.5" fill="#fff"/><circle cx="24" cy="14" r="2" fill="#fff" stroke="none"/></svg></span><span class="opt-label">銀行匯款</span><span class="opt-carrier"><img src="logo-tcat.png" alt="黑貓宅急便"><span>配送</span></span><span class="opt-note">出貨前完成匯款</span>
             </button>
             <button class="delivery-opt" id="optDigitalDelivery" onclick="setPayment('digital')">
-                <span class="opt-icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="3" width="24" height="42" rx="5" fill="#fff"/><rect x="16" y="11" width="16" height="16" rx="2" fill="var(--ic-accent)" stroke="none"/><path d="M19 14h4v4h-4zM25 14h4v4h-4zM19 20h4v4h-4zM26 21h2v2h-2z" fill="#fff" stroke="none"/><path d="M20 38h8"/><path d="M20 7h8" stroke-width="1.8"/></svg></span><span class="opt-label">數位支付</span><span class="opt-note">掃碼付款</span>
+                <span class="opt-icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="3" width="24" height="42" rx="5" fill="#fff"/><rect x="16" y="11" width="16" height="16" rx="2" fill="var(--ic-accent)" stroke="none"/><path d="M19 14h4v4h-4zM25 14h4v4h-4zM19 20h4v4h-4zM26 21h2v2h-2z" fill="#fff" stroke="none"/><path d="M20 38h8"/><path d="M20 7h8" stroke-width="1.8"/></svg></span><span class="opt-label">數位支付</span><span class="opt-carrier"><img src="logo-tcat.png" alt="黑貓宅急便"><span>配送</span></span><span class="opt-note">掃碼完成付款</span>
             </button>
             <button class="delivery-opt" id="optCOD" onclick="setPayment('cod')">
-                <span class="opt-icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="12" width="40" height="24" rx="4" fill="var(--ic-accent)"/><rect x="8" y="16" width="32" height="16" rx="2.5" fill="#fff" stroke-width="1.6"/><circle cx="24" cy="24" r="5"/><path d="M24 21.5v5M22.5 23h3" stroke-width="1.6"/><circle cx="13" cy="24" r="1.3" fill="currentColor" stroke="none"/><circle cx="35" cy="24" r="1.3" fill="currentColor" stroke="none"/></svg></span><span class="opt-label">貨到付款</span><span class="opt-note">送達時付款</span>
+                <span class="opt-icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="12" width="40" height="24" rx="4" fill="var(--ic-accent)"/><rect x="8" y="16" width="32" height="16" rx="2.5" fill="#fff" stroke-width="1.6"/><circle cx="24" cy="24" r="5"/><path d="M24 21.5v5M22.5 23h3" stroke-width="1.6"/><circle cx="13" cy="24" r="1.3" fill="currentColor" stroke="none"/><circle cx="35" cy="24" r="1.3" fill="currentColor" stroke="none"/></svg></span><span class="opt-label">貨到付款</span><span class="opt-carrier"><img src="logo-pelican.png" alt="宅配通"><span>配送</span></span><span class="opt-note">收到商品時付款</span>
             </button>
         </div>
         <div class="delivery-toggle" id="paymentTogglePickup" style="display:none;">
