@@ -542,9 +542,11 @@ async function login(){
   const errEl=document.getElementById('loginError');
   errEl.textContent='驗證中…';
   try{
-    // 簡單的前端密碼驗證
-    const CORRECT_PASS = 'fanwang2026';
-    if(pass !== CORRECT_PASS){
+    // 簡單的前端密碼驗證：原始碼只放密碼的 SHA-256，不放密碼本身（repo 是公開的）
+    const PASS_HASH = 'f8d1860b9f1fa3ac45ff0e359f70b6bb010936b82ed0ab69187b2223ffa305bc';
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pass));
+    const hash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    if(hash !== PASS_HASH){
       errEl.textContent='密碼錯誤，請再試一次';
       return;
     }
