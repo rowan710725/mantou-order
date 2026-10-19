@@ -1737,7 +1737,7 @@ function openMiniPicker(id) {
     Object.assign(mf, { id, picked: [], ns: false, n: 1 });
     let box = document.getElementById('mfBox');
     if (!box) {
-        box = document.createElement('div'); box.id = 'mfBox';
+        box = document.createElement('div'); box.id = 'mfBox'; box.className = 'pd-keep';   // 商品詳情頁會藏掉沒有 pd-keep 的東西
         document.body.appendChild(box);
     }
     box.innerHTML = `<div class="mf-mask" onclick="closeMiniPicker()"></div>
