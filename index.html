@@ -1206,7 +1206,7 @@ function validatePhone(v) {
 /** 同時更新購物車與底部 bar */
 function refresh() { renderCart(); updateBar(); updateCartBadge(); }
 function updateCartBadge() {
-    const n = PRODUCTS.reduce((sum, p) => sum + (qty[p.id] || 0), 0);
+    const n = getSelected().reduce((sum, p) => sum + qty[p.id], 0);
     const b = document.getElementById('cartBadge');
     b.textContent = n; b.classList.toggle('show', n > 0);
 }
@@ -1330,7 +1330,7 @@ function renderCart() {
     const sub = getSubtotal();
     const remain = FREE_SHIPPING_LIMIT - sub;
     document.getElementById('cartItemsList').innerHTML = sel.map(p => {
-        const variantNum = selectedVariant[p.id] || 1;
+        const variantNum = p.v || selectedVariant[p.id] || 1;
         const variant1Price = resolvePrice(p.variant1_price, p.variant1_price);
         const variant2Price = resolvePrice(p.variant2_price, p.variant1_price);
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
@@ -1366,8 +1366,8 @@ function renderCart() {
     document.getElementById('cartSubAmt').textContent = 'NT$ ' + sub.toLocaleString();
 }
 function getSubtotal() {
-    return PRODUCTS.reduce((s, p) => {
-        const variantNum = selectedVariant[p.id] || 1;
+    return getSelected().reduce((s, p) => {
+        const variantNum = p.v;
         const variant1Price = resolvePrice(p.variant1_price, p.variant1_price);
         const variant2Price = resolvePrice(p.variant2_price, p.variant1_price);
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
@@ -1408,7 +1408,16 @@ function updateOrderReviewIfVisible() {
 function getShipping(s) { if (deliveryMode === 'pickup') return 0; return s >= FREE_SHIPPING_LIMIT ? 0 : SHIPPING_FEE; }
 function getCODFee()    { return (deliveryMode !== 'pickup' && paymentMode === 'cod') ? COD_FEE : 0; }
 function getFinalTotal() { const s = getSubtotal(); return s + getShipping(s) + getCODFee(); }
-function getSelected() { return PRODUCTS.filter(p => qty[p.id] > 0); }
+// 購物車以「商品id~規格」為一筆（例 zp~1、zp~2），同口味原味、無糖可以各買
+function cartKey(id, v) { return id + '~' + (v || 1); }
+function getSelected() {
+    const lines = [];
+    PRODUCTS.forEach(p => [1, 2].forEach(v => {
+        const k = cartKey(p.id, v);
+        if (qty[k] > 0) lines.push(Object.assign({}, p, { id: k, pid: p.id, v }));
+    }));
+    return lines;
+}
 function updateBar() {
     const sub = getSubtotal(), shipping = getShipping(sub), remain = FREE_SHIPPING_LIMIT - sub;
     document.getElementById('barTotal').textContent = '$' + sub.toLocaleString();
@@ -1424,7 +1433,7 @@ function updateBar() {
 function renderOrderReview() {
     const sel = getSelected();
     document.getElementById('reviewItems').innerHTML = sel.map(p => {
-        const variantNum = selectedVariant[p.id] || 1;
+        const variantNum = p.v || selectedVariant[p.id] || 1;
         const variant1Price = resolvePrice(p.variant1_price, p.variant1_price);
         const variant2Price = resolvePrice(p.variant2_price, p.variant1_price);
         const currentPrice = variantNum === 2 ? variant2Price : variant1Price;
@@ -1535,7 +1544,7 @@ async function submitOrder() {
     const paymentTextMap = { bank: '銀行匯款', cod: '貨到付款', cash: '付現金', digital: '數位支付' };
     const payment = paymentTextMap[paymentMode] || '銀行匯款';
     const itemsList = getSelected().map(p => {
-        const variantNum = selectedVariant[p.id] || 1;
+        const variantNum = p.v || selectedVariant[p.id] || 1;
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
         const displayName = variantName ? `${p.name}(${variantName})` : p.name;
         return `${displayName}×${qty[p.id]}`;
@@ -1656,7 +1665,7 @@ function showTab(t) {
     document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
 }
 // ── 購物車抽屜 ──
-function linePrice(p) { const v = selectedVariant[p.id] || 1; return v === 2 ? resolvePrice(p.variant2_price, p.variant1_price) : resolvePrice(p.variant1_price, p.variant1_price); }
+function linePrice(p) { const v = p.v || selectedVariant[p.id] || 1; return v === 2 ? resolvePrice(p.variant2_price, p.variant1_price) : resolvePrice(p.variant1_price, p.variant1_price); }
 function openCart() { renderDrawer(); document.getElementById('drawer').classList.add('show'); document.getElementById('drawerMask').classList.add('show'); }
 function closeCart() { document.getElementById('drawer').classList.remove('show'); document.getElementById('drawerMask').classList.remove('show'); }
 function drawerQty(id, d) { if ((qty[id] || 0) + d <= 0) removeItem(id); else changeQty(id, d); renderDrawer(); }
@@ -1664,7 +1673,7 @@ function renderDrawer() {
     const sel = getSelected(), sub = getSubtotal(), shipping = getShipping(sub);
     document.getElementById('drawerCount').textContent = sel.length ? `（${sel.length} 項）` : '';
     document.getElementById('drawerList').innerHTML = sel.length ? sel.map(p => {
-        const v = selectedVariant[p.id] || 1, price = linePrice(p);
+        const v = p.v, price = linePrice(p);
         return `<div class="d-item"><img src="${p.img}" alt="${p.name}">
             <div><div class="d-name">${p.name}</div><div class="d-spec">規格：${p['variant' + v + '_name'] || '標準'}</div><div class="d-unit">NT$ ${price.toLocaleString()} / ${unitOf(p, v)}</div></div>
             <div class="d-right"><b>NT$ ${(price * qty[p.id]).toLocaleString()}</b>
@@ -1682,7 +1691,8 @@ function renderDrawer() {
 function pickVariant(id, n) { selectedVariant[id] = n; renderProducts(); refresh(); }
 function stepPending(id, d) { pending[id] = Math.max(1, pending[id] + d); document.getElementById('pd-' + id).textContent = pending[id]; }
 function addToCart(id) {
-    qty[id] = (qty[id] || 0) + pending[id];
+    const k = cartKey(id, selectedVariant[id]);
+    qty[k] = (qty[k] || 0) + pending[id];
     pending[id] = 1;
     refresh(); renderProducts();
     const b = document.getElementById('add-' + id);
@@ -1871,7 +1881,8 @@ const PD_TITLE = document.title;
 function pdPick(n) { selectedVariant[pdId] = n; renderDetail(); refresh(); }
 function pdStep(d) { pending[pdId] = Math.max(1, (pending[pdId] || 1) + d); document.getElementById('pdQty').textContent = pending[pdId]; }
 function pdAddCart() {
-    qty[pdId] = (qty[pdId] || 0) + (pending[pdId] || 1);
+    const k = cartKey(pdId, selectedVariant[pdId]);
+    qty[k] = (qty[k] || 0) + (pending[pdId] || 1);
     pending[pdId] = 1;
     refresh();
     document.getElementById('pdQty').textContent = 1;
