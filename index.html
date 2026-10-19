@@ -798,6 +798,33 @@
             .pd-more { grid-template-columns: repeat(2, 1fr); }
             .pd-title { margin: 34px 0 16px; } .pd-title h2 { font-size: 1.25rem; letter-spacing: 4px; }
         }
+        /* 客製化迷你饅頭：選口味視窗（手機從下方滑出、電腦置中） */
+        .mf-pick { width: 100%; border: 1.5px solid #7A2E1C; color: #7A2E1C; background: #fff; border-radius: 22px; padding: 10px; font-weight: 700; font-size: .92rem; cursor: pointer; font-family: inherit; }
+        .mf-pick:hover { background: #FBF3EC; }
+        .mf-chosen { font-size: .78rem; color: #2E7D32; font-weight: 700; margin: 0 0 6px; line-height: 1.5; }
+        .mf-mask { position: fixed; inset: 0; background: rgba(40,25,10,.45); z-index: 9998; display: none; }
+        .mf-sheet { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 460px; max-width: calc(100% - 32px); background: #fff; border-radius: 20px; padding: 18px 18px 22px; z-index: 9999; box-shadow: 0 10px 40px rgba(0,0,0,.2); display: none; }
+        .mf-open .mf-mask, .mf-open .mf-sheet { display: block; }
+        .mf-head { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+        .mf-head img { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; }
+        .mf-head b { display: block; color: #3b2412; font-size: 1.02rem; } .mf-head span { color: #B3261E; font-weight: 700; }
+        .mf-x { margin-left: auto; align-self: flex-start; border: 0; background: none; font-size: 22px; color: #8a7560; cursor: pointer; }
+        .mf-t { font-size: .95rem; font-weight: 700; color: #5C3A1E; } .mf-t em { color: #C0392B; font-style: normal; font-size: .8rem; }
+        .mf-s { font-size: .8rem; color: #8a7560; margin: 2px 0 10px; }
+        .mf-g { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+        .mf-c { border: 1.5px solid #E2D3BB; background: #FBF7F0; border-radius: 18px; padding: 8px 0; font-size: .85rem; color: #5C3A1E; text-align: center; white-space: nowrap; cursor: pointer; font-family: inherit; }
+        .mf-c.on { background: #5C3A1E; border-color: #5C3A1E; color: #fff; }
+        .mf-row { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 12px; border-top: 1px solid #EFE6D8; color: #5C3A1E; font-size: .9rem; }
+        .mf-ns { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+        .mf-ns i { width: 20px; height: 20px; border: 1.5px solid #C9B28F; border-radius: 5px; display: inline-block; font-style: normal; text-align: center; line-height: 18px; font-size: 13px; }
+        .mf-ns.on i { background: #5C3A1E; border-color: #5C3A1E; color: #fff; }
+        .mf-r { margin-top: 10px; font-size: .85rem; color: #2E7D32; font-weight: 700; min-height: 1.3em; }
+        .mf-go { margin-top: 12px; width: 100%; border: 0; border-radius: 24px; padding: 13px; font-size: 1rem; font-weight: 700; color: #fff; background: linear-gradient(#A0402A,#7A2E1C); cursor: pointer; font-family: inherit; }
+        .mf-go:disabled { background: #cfc4b5; cursor: not-allowed; }
+        .d-flavor { font-size: .8rem; color: #5C3A1E; font-weight: 700; }
+        @media (max-width: 760px) {
+            .mf-sheet { left: 0; right: 0; top: auto; bottom: 0; transform: none; width: auto; max-width: none; border-radius: 20px 20px 0 0; box-shadow: 0 -6px 24px rgba(0,0,0,.15); }
+        }
     </style>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 </head>
@@ -1341,7 +1368,7 @@ function renderCart() {
             <button class="cart-del" onclick="removeItem('${p.id}')" title="移除">🗑</button>
             <img class="cart-img" src="${p.img}" alt="${p.name}" onerror="this.style.opacity='0';this.onerror=null;">
             <div class="cart-body">
-                <div class="cart-name">${displayName}</div>
+                <div class="cart-name">${displayName}${p.flavorText ? `<br><small>口味：${p.flavorText}</small>` : ''}</div>
                 <div class="cart-prices">
                     <span class="cart-ori">NT$ ${p.ori}</span>
                     <span class="cart-now">NT$ ${currentPrice}</span>
@@ -1410,11 +1437,16 @@ function getCODFee()    { return (deliveryMode !== 'pickup' && paymentMode === '
 function getFinalTotal() { const s = getSubtotal(); return s + getShipping(s) + getCODFee(); }
 // 購物車以「商品id~規格」為一筆（例 zp~1、zp~2），同口味原味、無糖可以各買
 function cartKey(id, v) { return id + '~' + (v || 1); }
+// 客製化迷你饅頭再加口味：mini~1~招牌+紅莓~1（最後的 1＝無糖），不同口味分開算
 function getSelected() {
     const lines = [];
-    PRODUCTS.forEach(p => [1, 2].forEach(v => {
-        const k = cartKey(p.id, v);
-        if (qty[k] > 0) lines.push(Object.assign({}, p, { id: k, pid: p.id, v }));
+    PRODUCTS.forEach(p => Object.keys(qty).forEach(k => {
+        if (!(qty[k] > 0)) return;
+        const [pid, v, fl, ns] = k.split('~');
+        if (pid !== p.id || !v) return;
+        const line = Object.assign({}, p, { id: k, pid: p.id, v: Number(v) });
+        if (fl) line.flavorText = fl.split('+').join('＋') + (ns === '1' ? '（無糖）' : '');
+        lines.push(line);
     }));
     return lines;
 }
@@ -1440,7 +1472,7 @@ function renderOrderReview() {
         const variantName = variantNum === 2 ? (p.variant2_name || '') : (p.variant1_name || '');
         const displayName = variantName ? `${p.name}(${variantName})` : p.name;
         const codeDisplay = p.code ? ` [${p.code}]` : '';
-        return `<div class="review-item has-step"><img class="ri-img" src="${esc(p.img)}" alt=""><span class="ri-name"><b>${esc(displayName)}${esc(codeDisplay)}</b>${p.desc ? `<small>${esc(p.desc)}</small>` : ''}</span>
+        return `<div class="review-item has-step"><img class="ri-img" src="${esc(p.img)}" alt=""><span class="ri-name"><b>${esc(displayName)}${esc(codeDisplay)}</b>${p.flavorText ? `<small style="white-space:normal;color:#5C3A1E;font-weight:700">口味：${esc(p.flavorText)}</small>` : p.desc ? `<small>${esc(p.desc)}</small>` : ''}</span>
             <div class="stepper"><button type="button" onclick="reviewQty('${p.id}',-1)" aria-label="減少">−</button><span>${qty[p.id]}</span><button type="button" onclick="reviewQty('${p.id}',1)" aria-label="增加">＋</button></div>
             <span class="ri-price">$${(currentPrice*qty[p.id]).toLocaleString()}</span></div>`;
     }).join('');
@@ -1531,7 +1563,9 @@ async function submitOrder() {
     const name = document.getElementById('fName').value.trim();
     const phone = document.getElementById('fPhone').value.trim();
     const address = deliveryMode === 'pickup' ? '【自取】' + (document.getElementById('fPickupTime').value.trim() || '') : document.getElementById('fAddress').value.trim();
-    const note = document.getElementById('fNote').value.trim();
+    const miniLines = getSelected().filter(p => p.flavorText);
+    const miniNote = miniLines.length ? '【迷你口味】' + miniLines.map(p => p.flavorText + (miniLines.length > 1 || qty[p.id] > 1 ? `×${qty[p.id]}組` : '')).join('；') : '';
+    const note = [miniNote, document.getElementById('fNote').value.trim()].filter(Boolean).join(' ');
     if (!name) { alert('請填寫姓名！'); return; }
     if (deliveryMode === 'delivery' && !document.getElementById('fAddress').value.trim()) { alert('請填寫收件地址！'); return; }
     if (deliveryMode === 'pickup' && !document.getElementById('fPickupTime').value.trim()) { alert('請填寫希望取貨時間！'); return; }
@@ -1639,9 +1673,10 @@ function shopCard(p) {
             ${variants ? `<div class="shop-variants">${variants}</div>` : ''}
             <div class="shop-row">
                 <div class="shop-price">NT$ <big>${Number(price).toLocaleString()}</big><small> /${unitOf(p, v)}</small>${v === 1 && p.ori > price ? `<s>$${p.ori}</s>` : ''}</div>
-                <div class="stepper"><button onclick="stepPending('${p.id}',-1)">−</button><span id="pd-${p.id}">${pending[p.id]}</span><button onclick="stepPending('${p.id}',1)">＋</button></div>
+                ${isMini(p) ? '' : `<div class="stepper"><button onclick="stepPending('${p.id}',-1)">−</button><span id="pd-${p.id}">${pending[p.id]}</span><button onclick="stepPending('${p.id}',1)">＋</button></div>`}
             </div>
-            <button class="add-btn" id="add-${p.id}" onclick="addToCart('${p.id}')">${CART_SVG} 加入購物車</button>
+            ${isMini(p) ? `${miniInCart(p.id)}<button class="mf-pick" onclick="openMiniPicker('${p.id}')">選口味 ›</button>`
+                        : `<button class="add-btn" id="add-${p.id}" onclick="addToCart('${p.id}')">${CART_SVG} 加入購物車</button>`}
             <span id="q-${p.id}" style="display:none">${qty[p.id] || 0}</span>
         </div>
     </div>`;
@@ -1675,7 +1710,7 @@ function renderDrawer() {
     document.getElementById('drawerList').innerHTML = sel.length ? sel.map(p => {
         const v = p.v, price = linePrice(p);
         return `<div class="d-item"><img src="${p.img}" alt="${p.name}">
-            <div><div class="d-name">${p.name}</div><div class="d-spec">規格：${p['variant' + v + '_name'] || '標準'}</div><div class="d-unit">NT$ ${price.toLocaleString()} / ${unitOf(p, v)}</div></div>
+            <div><div class="d-name">${p.name}</div><div class="d-spec">規格：${p['variant' + v + '_name'] || '標準'}</div>${p.flavorText ? `<div class="d-flavor">口味：${p.flavorText}</div>` : ''}<div class="d-unit">NT$ ${price.toLocaleString()} / ${unitOf(p, v)}</div></div>
             <div class="d-right"><b>NT$ ${(price * qty[p.id]).toLocaleString()}</b>
                 <div class="stepper"><button onclick="drawerQty('${p.id}',-1)">−</button><span>${qty[p.id]}</span><button onclick="drawerQty('${p.id}',1)">＋</button></div>
                 <button class="d-del" onclick="removeItem('${p.id}');renderDrawer()">🗑 移除</button></div></div>`;
@@ -1687,6 +1722,64 @@ function renderDrawer() {
     const hint = document.getElementById('dfHint'), remain = FREE_SHIPPING_LIMIT - sub;
     hint.textContent = shipping === 0 ? '🎉 已達免運！' : `🚚 再買 NT$ ${remain.toLocaleString()} 就免運`;
     hint.className = 'df-hint' + (shipping === 0 ? '' : ' paid');
+}
+// ── 客製化迷你饅頭：選口味視窗（1～2 種，選 2 種各一半；可勾無糖）──
+const MINI_FLAVORS = ['招牌', '堅果', '芋堅', '紅堅', '地瓜', '優格紅莓', '乳酪', '紅莓'];
+const mf = { id: '', picked: [], ns: false, n: 1 };
+function isMini(p) { return p.id === 'mini'; }
+function miniInCart(id) {
+    const ls = getSelected().filter(l => l.pid === id && l.flavorText);
+    return ls.length ? `<div class="mf-chosen">${ls.map(l => `✓ 已加入：${l.flavorText}×${qty[l.id]}`).join('<br>')}</div>` : '';
+}
+function openMiniPicker(id) {
+    const p = PRODUCTS.find(x => x.id === id);
+    if (!p) return;
+    Object.assign(mf, { id, picked: [], ns: false, n: 1 });
+    let box = document.getElementById('mfBox');
+    if (!box) {
+        box = document.createElement('div'); box.id = 'mfBox';
+        document.body.appendChild(box);
+    }
+    box.innerHTML = `<div class="mf-mask" onclick="closeMiniPicker()"></div>
+    <div class="mf-sheet" role="dialog" aria-label="選口味">
+        <div class="mf-head"><img src="${p.img}" alt=""><div><b>${p.name}</b><span>NT$ ${Number(p.variant1_price).toLocaleString()}</span> / ${p.variant1_name || '一組'}</div>
+            <button class="mf-x" onclick="closeMiniPicker()" aria-label="關閉">✕</button></div>
+        <div class="mf-t">選口味 <em>（必選）</em></div>
+        <div class="mf-s">可選 1～2 種，選 2 種就各一半（一組 40 顆小饅頭）</div>
+        <div class="mf-g" id="mfGrid"></div>
+        <div class="mf-row"><span>數量（組）</span>
+            <div class="stepper"><button onclick="mf.n=Math.max(1,mf.n-1);drawMiniPicker()">−</button><span id="mfN">1</span><button onclick="mf.n++;drawMiniPicker()">＋</button></div></div>
+        <div class="mf-r" id="mfR"></div>
+        <button class="mf-go" id="mfGo" onclick="addMini()"></button>
+    </div>`;
+    document.body.classList.add('mf-open');
+    drawMiniPicker();
+}
+function closeMiniPicker() { document.body.classList.remove('mf-open'); }
+function toggleMiniFlavor(f) {
+    const i = mf.picked.indexOf(f);
+    if (i >= 0) mf.picked.splice(i, 1);
+    else { mf.picked.push(f); if (mf.picked.length > 2) mf.picked.shift(); }   // 選第 3 種就把最早選的取消
+    drawMiniPicker();
+}
+function drawMiniPicker() {
+    const p = PRODUCTS.find(x => x.id === mf.id);
+    document.getElementById('mfGrid').innerHTML = MINI_FLAVORS.map(f =>
+        `<button class="mf-c ${mf.picked.includes(f) ? 'on' : ''}" onclick="toggleMiniFlavor('${f}')">${f}</button>`).join('');
+    document.getElementById('mfN').textContent = mf.n;
+    const k = mf.picked.length;
+    document.getElementById('mfR').textContent = k ? `✓ 已選：${mf.picked.join('＋')}${mf.ns ? '（無糖）' : ''}・${k === 2 ? '每種各 20 顆' : '40 顆都是同一種'}` : '';
+    const go = document.getElementById('mfGo');
+    go.disabled = !k;
+    go.textContent = k ? `加入購物車　NT$ ${(Number(p.variant1_price) * mf.n).toLocaleString()}` : '請先選口味';
+}
+function addMini() {
+    if (!mf.picked.length) return;
+    const k = [mf.id, 1, mf.picked.join('+'), mf.ns ? 1 : 0].join('~');
+    qty[k] = (qty[k] || 0) + mf.n;
+    closeMiniPicker();
+    refresh(); renderProducts();
+    if (document.body.classList.contains('detail-mode')) renderDetail();
 }
 function pickVariant(id, n) { selectedVariant[id] = n; renderProducts(); refresh(); }
 function stepPending(id, d) { pending[id] = Math.max(1, pending[id] + d); document.getElementById('pd-' + id).textContent = pending[id]; }
@@ -1831,8 +1924,9 @@ function renderDetail() {
                 <div class="pd-price"><b>NT$${Number(price).toLocaleString()}</b>${v === 1 && p.ori > price ? `<s>$${p.ori}</s>` : ''}<small>/ ${unitOf(p, v)}</small></div>
                 ${variants.length ? `<div class="pd-row"><label>規格</label>${variants.map(n =>
                     `<button class="pd-v ${n === v ? 'on' : ''}" onclick="pdPick(${n})">${pdEsc(p[`variant${n}_name`])}${variants.length > 1 ? ` $${Number(p[`variant${n}_price`]).toLocaleString()}` : ''}</button>`).join('')}</div>` : ''}
+                ${isMini(p) ? `${miniInCart(p.id)}<button class="pd-add" onclick="openMiniPicker('${p.id}')">選口味 ›</button>` : `
                 <div class="pd-row"><label>數量</label><div class="stepper"><button onclick="pdStep(-1)">−</button><span id="pdQty">${pending[p.id]}</span><button onclick="pdStep(1)">＋</button></div></div>
-                <button class="pd-add" id="pdAdd" onclick="pdAddCart()">加入購物車</button>
+                <button class="pd-add" id="pdAdd" onclick="pdAddCart()">加入購物車</button>`}
                 <div class="pd-note">滿 $${FREE_SHIPPING_LIMIT.toLocaleString()} 免運 ・ 可和饅頭一起寄送</div>
             </div>
         </section>
@@ -1906,7 +2000,7 @@ function openQuery() {
 function closeQuery() {
     document.getElementById('queryOverlay').classList.remove('show');
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeQuery(); closeCart(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeQuery(); closeCart(); closeMiniPicker(); } });
 function updateQueryBtn() {
     const v   = document.getElementById('queryPhone').value;
     const msg = validatePhone(v);
