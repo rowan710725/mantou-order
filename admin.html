@@ -1123,7 +1123,28 @@ window.addEventListener('beforeunload',e=>{ if(anyDirty()){ e.preventDefault(); 
 <script>
 // ── 📝 快速建單：貼上客人的 LINE 訊息 → 辨識 → 確認後用跟小官網一樣的方式送單（2026-10-13）──
 const QO_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdlmcAg8DkY8YmE9KNYO75HLB-WPrZmC2RX0mWhB40dyDNrQmPRw2kwmvSmj4XrS2A2w/exec';
-let QO = null;   // 目前辨識結果 {name, phone, mode, address, payment, note, items:[{id, v, qty}], warns:[], claimed}
+let QO = null;   // 目前辨識結果 {name, phone, mode, address, pickDate, payment, note, items:[{id, v, qty}], warns:[], claimed}
+
+// 10-22 自取的取貨日：今天／明天／後天、週六、下週二、10/25、10月25日 → 'YYYY-MM-DD'（找不到回傳 ''）
+function qoIso(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function qoMD(iso){ if(!iso) return ''; const d=new Date(iso+'T00:00:00'); return `${d.getMonth()+1}/${d.getDate()}（${'日一二三四五六'[d.getDay()]}）`; }
+function qoPickDate(text){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const add=n=>{ const d=new Date(today); d.setDate(d.getDate()+n); return qoIso(d); };
+  const t=text.replace(/09\d{2}[-\s]?\d{3}[-\s]?\d{3}/g,'');
+  let m=t.match(/(?<!\d)(1[0-2]|0?[1-9])\s*(?:\/|月)\s*(3[01]|[12]\d|0?[1-9])(?![\d顆個包組盒罐袋份入])/);
+  if(m){ let d=new Date(today.getFullYear(), +m[1]-1, +m[2]); if((d-today)/864e5 < -300) d.setFullYear(d.getFullYear()+1);
+    const gap=(d-today)/864e5; if(gap>=-7&&gap<=60) return qoIso(d); }   // 太遠的多半不是取貨日（例如數量 2/3）
+  m=t.match(/(下)?(?:週|周|星期|禮拜)([一二三四五六日天])/);
+  if(m){ const w='日一二三四五六'.indexOf(m[2]==='天'?'日':m[2]);
+    if(m[1]){ const mon=((1-today.getDay()+7)%7)||7; return add(mon+(w===0?6:w-1)); }   // 下週＝下一個星期一開始的那週
+    return add((w-today.getDay()+7)%7); }
+  if(/大後天/.test(t)) return add(3);
+  if(/後天/.test(t)) return add(2);
+  if(/明天|明日/.test(t)) return add(1);
+  if(/今天|今日/.test(t)) return add(0);
+  return '';
+}
 
 // 商品簡稱：長的先比，避免「紅莓堅果」被當成「紅莓」
 const QO_ALIASES = [
@@ -1152,7 +1173,7 @@ function qoParse(raw){
   const warns=[], notes=[];
   let text=String(raw||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/\r/g,'');
   const lines=text.split('\n').map(s=>s.trim());
-  const r={name:'',phone:'',mode:'delivery',address:'',payment:'',note:'',items:[],warns,claimed:null};
+  const r={name:'',phone:'',mode:'delivery',address:'',pickDate:'',payment:'',note:'',items:[],warns,claimed:null};
   // 電話
   const pm=text.match(/09\d{2}[-\s]?\d{3}[-\s]?\d{3}/); if(pm) r.phone=pm[0].replace(/\D/g,'');
   // 有標籤的欄位（值在同一行或下一行）
@@ -1162,7 +1183,8 @@ function qoParse(raw){
   let addr=labelVal(/^(宅配地址|收件地址|寄送地址|送貨地址|地址)/);
   if(!addr){ const i=lines.findIndex(l=>/^(\S{2}[縣市])\S*[路街道段巷弄號村里]/.test(l)); if(i>=0){ addr=lines[i]; used.add(i);} }
   if(addr){ const nm=addr.match(/[（(](?:備註[：:])?([^）)]*)[）)]/); if(nm){ notes.push(nm[1].trim()); addr=addr.replace(nm[0],'').trim(); } r.address=addr; }
-  if(/自取|門市取|到店取|自己拿|現場取/.test(text)){ r.mode='pickup'; }
+  if(/自取|門市取|到店取|自己拿|現場取|來拿|來取|過去拿/.test(text)){ r.mode='pickup'; }
+  r.pickDate=qoPickDate(text);
   // 付款
   if(/街口|line\s*pay|全支付|掃碼|QR|電子支付|數位支付|悠遊付|icash/i.test(text)) r.payment='digital';
   else if(/貨到付款|到付|貨到/.test(text)) r.payment='cod';
@@ -1221,7 +1243,8 @@ function qoParse(raw){
     });
   });
   if(!r.name) warns.push('沒找到姓名，請自己填');
-  if(!r.phone) warns.push('沒找到手機號碼，請自己填');
+  if(!r.phone&&r.mode!=='pickup') warns.push('沒找到手機號碼，請自己填');
+  if(r.mode==='pickup'&&!r.pickDate) warns.push('沒找到取貨日，請自己選');
   if(r.mode==='delivery'&&!r.address) warns.push('沒找到地址；如果是自取請改成自取');
   if(!r.items.length) warns.push('沒找到任何商品');
   r.note=notes.filter(Boolean).join('；');
@@ -1249,11 +1272,13 @@ function qoRender(){
   box.innerHTML=`
   <div class="qo-form">
     <div class="qo-row"><label>姓名<input class="fi" id="qoName" value="${esc(QO.name)}" oninput="QO.name=this.value"></label>
-      <label>電話<input class="fi" id="qoPhone" value="${esc(QO.phone)}" inputmode="numeric" oninput="QO.phone=this.value"></label></div>
+      <label>電話<input class="fi" id="qoPhone" value="${esc(QO.phone)}" inputmode="numeric" placeholder="${QO.mode==='pickup'?'自取可不填':''}" oninput="QO.phone=this.value"></label></div>
     <div class="qo-row qo-radios">配送
       <label><input type="radio" name="qoMode" ${QO.mode==='delivery'?'checked':''} onchange="QO.mode='delivery';qoRender()"> 宅配</label>
       <label><input type="radio" name="qoMode" ${QO.mode==='pickup'?'checked':''} onchange="QO.mode='pickup';qoRender()"> 自取</label></div>
-    <label class="qo-wide">${QO.mode==='pickup'?'希望取貨時間':'地址'}<input class="fi" id="qoAddr" value="${esc(QO.address)}" oninput="QO.address=this.value"></label>
+    ${QO.mode==='pickup'?`<div class="qo-row"><label>取貨日<input class="fi" type="date" id="qoPickDate" value="${esc(QO.pickDate)}" onchange="QO.pickDate=this.value;qoRender()"></label>
+      <span style="align-self:flex-end;padding-bottom:8px;color:#8a6d4e;">${qoMD(QO.pickDate)}</span></div>`:''}
+    <label class="qo-wide">${QO.mode==='pickup'?'取貨時間（例：下午 3 點，可不填）':'地址'}<input class="fi" id="qoAddr" value="${esc(QO.address)}" oninput="QO.address=this.value"></label>
     <div class="qo-items">
       ${QO.items.map((it,i)=>{ const p=qoProd(it.id); return `<div class="qo-item">
         <select class="fi" onchange="QO.items[${i}].id=this.value;QO.items[${i}].v=1;qoRender()">${prodOpts(it.id)}</select>
@@ -1282,7 +1307,8 @@ function qoRecognize(){
 async function qoSubmit(){
   const btn=document.getElementById('qoSubmit'), msg=document.getElementById('qoMsg');
   if(!QO.name.trim()) { msg.textContent='請填姓名'; return; }
-  if(!/^09\d{8}$/.test(QO.phone.replace(/\D/g,''))) { msg.textContent='請填 10 碼手機號碼'; return; }
+  const phoneDigits=QO.phone.replace(/\D/g,'');
+  if(!(QO.mode==='pickup'&&!phoneDigits) && !/^09\d{8}$/.test(phoneDigits)) { msg.textContent=QO.mode==='pickup'?'手機號碼不對（自取可以空著）':'請填 10 碼手機號碼'; return; }
   if(QO.mode==='delivery'&&!QO.address.trim()) { msg.textContent='請填地址'; return; }
   if(!QO.items.length) { msg.textContent='還沒有品項'; return; }
   if(btn.dataset.armed!=='1'){ btn.dataset.armed='1'; btn.textContent='再按一次確定送出'; msg.textContent='送出後會寫進訂單並發通知'; return; }
@@ -1290,8 +1316,9 @@ async function qoSubmit(){
   const t=qoTotals(), d=new Date(), pad=n=>String(n).padStart(2,'0');
   const orderNo=`FW${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}-${pad(Math.floor(Math.random()*100))}`;
   const payText={bank:'銀行匯款',cod:'貨到付款',cash:'付現金',digital:'數位支付'}[QO.payment];
-  const params=new URLSearchParams({ action:'submitOrder', name:QO.name.trim(), phone:QO.phone.replace(/\D/g,''),
-    address: QO.mode==='pickup' ? '【自取】'+QO.address.trim() : QO.address.trim(),
+  // 自取沒留電話送「未留」（GAS 一定要有電話才寫入）；取貨日寫進地址，彙整後台工作台會讀
+  const params=new URLSearchParams({ action:'submitOrder', name:QO.name.trim(), phone:phoneDigits||'未留',
+    address: QO.mode==='pickup' ? `【自取${QO.pickDate?' '+qoMD(QO.pickDate):''}】`+QO.address.trim() : QO.address.trim(),
     items: QO.items.map(it=>{ const p=qoProd(it.id); return `${qoLabel(p,it.v)}×${it.qty}`; }).join('、'),
     total:t.total, shipping:t.ship+t.codFee, payment:payText,
     note: '【LINE代客下單】'+(QO.note.trim()?' '+QO.note.trim():''),
