@@ -1123,6 +1123,15 @@ window.addEventListener('beforeunload',e=>{ if(anyDirty()){ e.preventDefault(); 
 <script>
 // ── 📝 快速建單：貼上客人的 LINE 訊息 → 辨識 → 確認後用跟小官網一樣的方式送單（2026-10-13）──
 const QO_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdlmcAg8DkY8YmE9KNYO75HLB-WPrZmC2RX0mWhB40dyDNrQmPRw2kwmvSmj4XrS2A2w/exec';
+// 10-24 運費從「運費設定」分頁的欄位讀（彙整後台版本從 shipping.json 讀）
+let SHIP = {};
+function qoShip(){ const g=id=>+document.getElementById(id).value||0;
+  SHIP={hmp:{fee:g('ship_hmp_fee'),free:g('ship_hmp_free')},myship:{fee:g('ship_myship_fee'),free:g('ship_myship_free')}}; }
+// 10-24 店到店（客人要我們幫忙在好賣+／賣貨便下單）：mode 'hmp'／'myship'，address＝取件門市，運費可改（QO.shipFee）
+const QO_STORE = { hmp: '好賣+店到店', myship: '賣貨便店到店' };
+const QO_MINI_FLAVORS = [['優格紅莓','優格紅莓'],['優格','優格紅莓'],['紅莓堅果','紅堅'],['紅堅','紅堅'],['芋頭堅果','芋堅'],['芋堅','芋堅'],['芋頭','芋堅'],
+  ['招牌','招牌'],['堅果','堅果'],['地瓜','地瓜'],['乳酪','乳酪'],['起司','乳酪'],['紅莓','紅莓']];
+function qoIsStore(m){ return m==='hmp'||m==='myship'; }
 let QO = null;   // 目前辨識結果 {name, phone, mode, address, pickDate, payment, note, items:[{id, v, qty}], warns:[], claimed}
 
 // 10-22 自取的取貨日：今天／明天／後天、週六、下週二、10/25、10月25日 → 'YYYY-MM-DD'（找不到回傳 ''）
@@ -1170,6 +1179,7 @@ function qoPrice(p,v){ return v===2 ? (p.variant2_price||0) : (p.variant1_price|
 function qoLabel(p,v){ const n=(v===2?p.variant2_name:p.variant1_name)||''; return n.trim()?`${p.name}(${n.trim()})`:p.name; }
 
 function qoParse(raw){
+  qoShip();
   const warns=[], notes=[];
   let text=String(raw||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/\r/g,'');
   const lines=text.split('\n').map(s=>s.trim());
@@ -1184,6 +1194,18 @@ function qoParse(raw){
   if(!addr){ const i=lines.findIndex(l=>/^(\S{2}[縣市])\S*[路街道段巷弄號村里]/.test(l)); if(i>=0){ addr=lines[i]; used.add(i);} }
   if(addr){ const nm=addr.match(/[（(](?:備註[：:])?([^）)]*)[）)]/); if(nm){ notes.push(nm[1].trim()); addr=addr.replace(nm[0],'').trim(); } r.address=addr; }
   if(/自取|門市取|到店取|自己拿|現場取|來拿|來取|過去拿/.test(text)){ r.mode='pickup'; }
+  // 店到店：有「XX店」一行、或寫店到店／全家／7-11／好賣／賣貨便；+99＝好賣+、+129＝賣貨便
+  else {
+    const si=lines.findIndex((l,i)=>!used.has(i)&&/^(全家|7-?11|統一超商|小七)?\s*[\u4e00-\u9fa5A-Za-z0-9]{1,8}門?市?店$/.test(l)&&!/本店|門市取/.test(l));
+    if(si>=0||/店到店|超商取|全家|7-?11|小七|統一超商|賣貨便|好賣/.test(text)){
+      const fees=(SHIP.hmp||{}).fee, feem=(SHIP.myship||{}).fee;
+      r.mode = /賣貨便|7-?11|小七|統一超商/.test(text)||(feem&&new RegExp('\\+\\s*'+feem+'(?!\\d)').test(text)) ? 'myship' : 'hmp';
+      if(!/好賣|賣貨便|全家|7-?11|小七|統一超商/.test(text)&&!(fees&&new RegExp('\\+\\s*'+fees+'(?!\\d)').test(text))&&!(feem&&new RegExp('\\+\\s*'+feem+'(?!\\d)').test(text)))
+        warns.push('看不出是好賣+還是賣貨便，先選好賣+，請確認');
+      if(si>=0){ r.address=lines[si]; used.add(si); }
+      else r.address='';
+    }
+  }
   r.pickDate=qoPickDate(text);
   // 付款
   if(/街口|line\s*pay|全支付|掃碼|QR|電子支付|數位支付|悠遊付|icash/i.test(text)) r.payment='digital';
@@ -1195,6 +1217,9 @@ function qoParse(raw){
   lines.forEach((line,i)=>{
     if(used.has(i)||!line) return;
     let l=line.replace(/^\s*(\d+[、.．)]|[-•・])\s*/,'').replace(/^品項[：:]?/,'');
+    if(/迷你/.test(l)){ l=l.replace(/[（(]([^）)]*)[）)]/g,(all,inner)=>{   // 10-24 客製迷你組(招牌+優格) → 口味寫進備註【迷你口味】
+      const fl=[]; let rest=inner; QO_MINI_FLAVORS.forEach(([w,n])=>{ const k=rest.indexOf(w); if(k>=0){ fl.push([k,n]); rest=rest.split(w).join('＿'.repeat(w.length)); } }); fl.sort((x,y)=>x[0]-y[0]); fl.splice(0,fl.length,...fl.map(x=>x[1]));
+      if(!fl.length) return all; (r.miniFlavors=r.miniFlavors||[]).push(fl.join('+')); return ''; }); }
     const hits=[]; let rest=l;
     QO_ALIASES.forEach(([w,id])=>{ let k=rest.indexOf(w); while(k>=0){ hits.push({pos:k,w,id}); rest=rest.slice(0,k)+'＿'.repeat(w.length)+rest.slice(k+w.length); k=rest.indexOf(w); } });
     if(!hits.length){
@@ -1234,6 +1259,11 @@ function qoParse(raw){
           if(packs%1){ warns.push(`${p.name} ${n}${unit} 不是 5 的倍數，先算 ${Math.ceil(packs)} 包`); packs=Math.ceil(packs); }
           r.items.push({id,v:1,qty:packs,src:seg});
         }
+      } else if(id==='mini'&&(unit==='包'||unit==='顆')){   // 迷你一組 N 包：「4包」＝1 組
+        const per=+(String(p.variant1_name||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).match(/(\d+)\s*包/)||[])[1]||1;
+        let sets=unit==='顆'?n/(per*10):n/per;
+        if(sets%1){ warns.push(`迷你 ${n}${unit} 不是整組，先算 ${Math.ceil(sets)} 組`); sets=Math.ceil(sets); }
+        r.items.push({id,v:1,qty:sets,src:seg});
       } else {
         const k=qoBundle(p);
         if(/優惠/.test(seg)&&k){ r.items.push({id,v:2,qty:n,src:seg}); }
@@ -1246,16 +1276,24 @@ function qoParse(raw){
   if(!r.phone&&r.mode!=='pickup') warns.push('沒找到手機號碼，請自己填');
   if(r.mode==='pickup'&&!r.pickDate) warns.push('沒找到取貨日，請自己選');
   if(r.mode==='delivery'&&!r.address) warns.push('沒找到地址；如果是自取請改成自取');
+  if(qoIsStore(r.mode)&&!r.address) warns.push('沒找到取件門市，請自己填');
+  if(r.miniFlavors&&r.miniFlavors.length) notes.unshift('【迷你口味】'+r.miniFlavors.join('；'));
   if(!r.items.length) warns.push('沒找到任何商品');
   r.note=notes.filter(Boolean).join('；');
   return r;
 }
 
 function qoTotals(){
+  qoShip();
   const sub=QO.items.reduce((s,it)=>{ const p=qoProd(it.id); return s+(p?qoPrice(p,it.v)*it.qty:0); },0);
   const fee=+document.getElementById('ship_home_fee').value||0, free=+document.getElementById('ship_home_free').value||0, cod=+document.getElementById('ship_home_cod').value||0;
+  if(qoIsStore(QO.mode)){   // 店到店：預設照小官網運費設定，可以手動改
+    const st=SHIP[QO.mode]||{}, def=(st.free&&sub>=st.free)?0:(st.fee||0);
+    const ship=QO.shipFee!=null&&QO.shipFee!=='' ? +QO.shipFee||0 : def;
+    return {sub, ship, codFee:0, total: sub+ship, free: st.free||0, def};
+  }
   const ship = QO.mode==='pickup' ? 0 : (sub>=free ? 0 : fee);
-  const codFee = (QO.mode!=='pickup'&&QO.payment==='cod') ? cod : 0;
+  const codFee = (QO.mode==='delivery'&&QO.payment==='cod') ? cod : 0;
   return {sub, ship, codFee, total: sub+ship+codFee, free};
 }
 
@@ -1264,21 +1302,23 @@ function qoRender(){
   if(!QO){ box.innerHTML=''; return; }
   const prodOpts=(sel)=>products.filter(p=>p.active!==false).map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.name)}</option>`).join('');
   const t=qoTotals();
-  const payOpts = QO.mode==='pickup' ? [['cash','付現金'],['digital','數位支付']] : [['bank','銀行匯款'],['digital','數位支付'],['cod','貨到付款']];
+  const payOpts = QO.mode==='pickup' ? [['cash','付現金'],['digital','數位支付']] : qoIsStore(QO.mode) ? [['bank','銀行匯款'],['digital','數位支付']] : [['bank','銀行匯款'],['digital','數位支付'],['cod','貨到付款']];
   if(!payOpts.some(o=>o[0]===QO.payment)) QO.payment=payOpts[0][0];
   const warns=[...QO.warns];
   if(QO.claimed && QO.claimed!==t.total) warns.push(`客人自己算的是 $${QO.claimed.toLocaleString()}，系統算的是 $${t.total.toLocaleString()}，請跟客人確認`);
-  if(QO.mode!=='pickup'&&t.ship&&t.free-t.sub>0&&t.free-t.sub<=300) warns.push(`再買 $${(t.free-t.sub).toLocaleString()} 就免運，可以提醒客人`);
+  if(QO.mode!=='pickup'&&t.ship&&(QO.shipFee==null||QO.shipFee==='')&&t.free-t.sub>0&&t.free-t.sub<=300) warns.push(`再買 $${(t.free-t.sub).toLocaleString()} 就免運，可以提醒客人`);
   box.innerHTML=`
   <div class="qo-form">
     <div class="qo-row"><label>姓名<input class="fi" id="qoName" value="${esc(QO.name)}" oninput="QO.name=this.value"></label>
       <label>電話<input class="fi" id="qoPhone" value="${esc(QO.phone)}" inputmode="numeric" placeholder="${QO.mode==='pickup'?'自取可不填':''}" oninput="QO.phone=this.value"></label></div>
     <div class="qo-row qo-radios">配送
       <label><input type="radio" name="qoMode" ${QO.mode==='delivery'?'checked':''} onchange="QO.mode='delivery';qoRender()"> 宅配</label>
-      <label><input type="radio" name="qoMode" ${QO.mode==='pickup'?'checked':''} onchange="QO.mode='pickup';qoRender()"> 自取</label></div>
+      <label><input type="radio" name="qoMode" ${QO.mode==='pickup'?'checked':''} onchange="QO.mode='pickup';qoRender()"> 自取</label>
+      <label><input type="radio" name="qoMode" ${QO.mode==='hmp'?'checked':''} onchange="QO.mode='hmp';QO.shipFee=null;qoRender()"> 好賣+店到店</label>
+      <label><input type="radio" name="qoMode" ${QO.mode==='myship'?'checked':''} onchange="QO.mode='myship';QO.shipFee=null;qoRender()"> 賣貨便店到店</label></div>
     ${QO.mode==='pickup'?`<div class="qo-row"><label>取貨日<input class="fi" type="date" id="qoPickDate" value="${esc(QO.pickDate)}" onchange="QO.pickDate=this.value;qoRender()"></label>
       <span style="align-self:flex-end;padding-bottom:8px;color:#8a6d4e;">${qoMD(QO.pickDate)}</span></div>`:''}
-    <label class="qo-wide">${QO.mode==='pickup'?'取貨時間（例：下午 3 點，可不填）':'地址'}<input class="fi" id="qoAddr" value="${esc(QO.address)}" oninput="QO.address=this.value"></label>
+    <label class="qo-wide">${QO.mode==='pickup'?'取貨時間（例：下午 3 點，可不填）':qoIsStore(QO.mode)?'取件門市（例：全家 新德勝店）':'地址'}<input class="fi" id="qoAddr" value="${esc(QO.address)}" oninput="QO.address=this.value"></label>
     <div class="qo-items">
       ${QO.items.map((it,i)=>{ const p=qoProd(it.id); return `<div class="qo-item">
         <select class="fi" onchange="QO.items[${i}].id=this.value;QO.items[${i}].v=1;qoRender()">${prodOpts(it.id)}</select>
@@ -1293,6 +1333,8 @@ function qoRender(){
     <div class="qo-row qo-radios">付款
       ${payOpts.map(([k,n])=>`<label><input type="radio" name="qoPay" ${QO.payment===k?'checked':''} onchange="QO.payment='${k}';qoRender()"> ${n}</label>`).join('')}</div>
     <label class="qo-wide">備註<input class="fi" id="qoNote" value="${esc(QO.note)}" oninput="QO.note=this.value"></label>
+    ${qoIsStore(QO.mode)?`<div class="qo-row"><label style="flex:none;min-width:0">客人付的運費<span style="display:flex;align-items:center;gap:6px;font-weight:400"><input class="fi fi-num" type="number" min="0" value="${t.ship}" onchange="QO.shipFee=this.value;qoRender()"> 元</span></label>
+      <span style="align-self:flex-end;padding-bottom:8px;color:#8a6d4e;font-weight:400;font-size:.85rem">${QO_STORE[QO.mode]}預設 $${(SHIP[QO.mode]||{}).fee||0}${t.free?`，滿 $${t.free.toLocaleString()} 免運`:''}；可以改。實際寄出的運費成本，寄貨後到訂單明細填</span></div>`:''}
     <div class="qo-total">小計 $${t.sub.toLocaleString()}　運費 ${t.ship?'$'+t.ship.toLocaleString():'免運'}${t.codFee?`　貨到付款 +$${t.codFee}`:''}　<b>總計 $${t.total.toLocaleString()}</b></div>
     ${warns.length?`<div class="qo-warn">${warns.map(w=>'⚠️ '+esc(w)).join('<br>')}</div>`:''}
     <div class="qo-actions"><button class="qo-submit" id="qoSubmit" onclick="qoSubmit()">✅ 確認下單</button><span id="qoMsg"></span></div>
@@ -1304,12 +1346,14 @@ function qoRecognize(){
   qoRender();
 }
 
+
 async function qoSubmit(){
   const btn=document.getElementById('qoSubmit'), msg=document.getElementById('qoMsg');
   if(!QO.name.trim()) { msg.textContent='請填姓名'; return; }
   const phoneDigits=QO.phone.replace(/\D/g,'');
   if(!(QO.mode==='pickup'&&!phoneDigits) && !/^09\d{8}$/.test(phoneDigits)) { msg.textContent=QO.mode==='pickup'?'手機號碼不對（自取可以空著）':'請填 10 碼手機號碼'; return; }
   if(QO.mode==='delivery'&&!QO.address.trim()) { msg.textContent='請填地址'; return; }
+  if(qoIsStore(QO.mode)&&!QO.address.trim()) { msg.textContent='請填取件門市'; return; }
   if(!QO.items.length) { msg.textContent='還沒有品項'; return; }
   if(btn.dataset.armed!=='1'){ btn.dataset.armed='1'; btn.textContent='再按一次確定送出'; msg.textContent='送出後會寫進訂單並發通知'; return; }
   btn.disabled=true; btn.textContent='送出中…';
@@ -1318,7 +1362,7 @@ async function qoSubmit(){
   const payText={bank:'銀行匯款',cod:'貨到付款',cash:'付現金',digital:'數位支付'}[QO.payment];
   // 自取沒留電話送「未留」（GAS 一定要有電話才寫入）；取貨日寫進地址，彙整後台工作台會讀
   const params=new URLSearchParams({ action:'submitOrder', name:QO.name.trim(), phone:phoneDigits||'未留',
-    address: QO.mode==='pickup' ? `【自取${QO.pickDate?' '+qoMD(QO.pickDate):''}】`+QO.address.trim() : QO.address.trim(),
+    address: QO.mode==='pickup' ? `【自取${QO.pickDate?' '+qoMD(QO.pickDate):''}】`+QO.address.trim() : qoIsStore(QO.mode) ? `【${QO_STORE[QO.mode]}】`+QO.address.trim() : QO.address.trim(),
     items: QO.items.map(it=>{ const p=qoProd(it.id); return `${qoLabel(p,it.v)}×${it.qty}`; }).join('、'),
     total:t.total, shipping:t.ship+t.codFee, payment:payText,
     note: '【LINE代客下單】'+(QO.note.trim()?' '+QO.note.trim():''),
