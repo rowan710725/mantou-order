@@ -1285,6 +1285,21 @@ let PRODUCTS = [
 ];
 const SCRIPT_URL          = 'https://script.google.com/macros/s/AKfycbzdlmcAg8DkY8YmE9KNYO75HLB-WPrZmC2RX0mWhB40dyDNrQmPRw2kwmvSmj4XrS2A2w/exec';
 const LINE_ID             = '@a22255663';
+// 推薦連結：網址帶 ?ref=代號 → 記 30 天，下單時備註加【推薦：名字】
+// 只認老闆同意過的代號（代號: 備註顯示的名字）；不在名單內的一律不記
+const REFS = { jason: 'Jason' };
+(function () {
+    try {
+        const r = (new URLSearchParams(location.search).get('ref') || '').toLowerCase();
+        if (Object.prototype.hasOwnProperty.call(REFS, r)) localStorage.setItem('fwRef', JSON.stringify({ ref: r, t: Date.now() }));
+    } catch (e) {}
+})();
+function getRef() {
+    try {
+        const o = JSON.parse(localStorage.getItem('fwRef') || 'null');
+        return o && REFS[o.ref] && Date.now() - o.t < 30 * 86400000 ? REFS[o.ref] : '';
+    } catch (e) { return ''; }
+}
 let FREE_SHIPPING_LIMIT = 3500;   // 預設值；實際以 shipping.json（後台「運費設定」）為準
 let SHIPPING_FEE        = 200;
 let qty = {};
@@ -1565,7 +1580,8 @@ async function submitOrder() {
     const address = deliveryMode === 'pickup' ? '【自取】' + (document.getElementById('fPickupTime').value.trim() || '') : document.getElementById('fAddress').value.trim();
     const miniLines = getSelected().filter(p => p.flavorText);
     const miniNote = miniLines.length ? '【迷你口味】' + miniLines.map(p => p.flavorText + (miniLines.length > 1 || qty[p.id] > 1 ? `×${qty[p.id]}組` : '')).join('；') : '';
-    const note = [miniNote, document.getElementById('fNote').value.trim()].filter(Boolean).join(' ');
+    const ref = getRef();
+    const note = [miniNote, document.getElementById('fNote').value.trim(), ref ? `【推薦：${ref}】` : ''].filter(Boolean).join(' ');
     if (!name) { alert('請填寫姓名！'); return; }
     if (deliveryMode === 'delivery' && !document.getElementById('fAddress').value.trim()) { alert('請填寫收件地址！'); return; }
     if (deliveryMode === 'pickup' && !document.getElementById('fPickupTime').value.trim()) { alert('請填寫希望取貨時間！'); return; }
