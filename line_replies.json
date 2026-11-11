@@ -12,7 +12,7 @@
       "when": "問商品價錢、價目、多少錢、有哪些口味/商品"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "fixed": false,
       "id": "ship",
       "images": [
@@ -23,7 +23,7 @@
       "when": "問運費、免運、寄送方式、多久會到貨、宅配或超商店到店怎麼運作"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "fixed": true,
       "id": "pay",
       "images": [
@@ -34,7 +34,7 @@
       "when": "問怎麼付款、可以用什麼付款、匯款帳號、數位支付、街口、全支付、LINE Pay、刷卡"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "fixed": false,
       "id": "store",
       "images": [],
@@ -43,7 +43,7 @@
       "when": "問門市地址、營業時間、哪天公休、能不能自取、現場有沒有賣"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "fixed": false,
       "id": "keep",
       "images": [
@@ -55,7 +55,7 @@
       "when": "問保存方式、能放多久、冷凍冷藏、怎麼加熱、怎麼吃"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "fixed": false,
       "id": "howto",
       "images": [],
@@ -64,7 +64,7 @@
       "when": "問要怎麼訂購、怎麼下單、哪裡買"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "fixed": false,
       "id": "f031a6e",
       "images": [],
@@ -91,7 +91,7 @@
       "when": "問素食、全素、奶素、不吃乳酪、不能喝奶、乳糖不耐"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "fixed": false,
       "id": "f231a6e",
       "images": [],
@@ -100,7 +100,7 @@
       "when": "問哪一款乳酪最多、愛吃乳酪推薦哪款、乳酪口味差別"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "fixed": false,
       "id": "f331a6e",
       "images": [],
@@ -109,7 +109,7 @@
       "when": "問堅果過敏、不能吃堅果、不吃堅果可以吃哪款"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "fixed": false,
       "id": "f431a6e",
       "images": [],
@@ -217,6 +217,6 @@
       "when": "問過敏原、麩質、小麥、大豆、牛奶過敏"
     }
   ],
-  "updated": "2026/11/11 11:43",
+  "updated": "2026/11/11 17:41",
   "version": 1
 }
