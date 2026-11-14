@@ -1821,10 +1821,18 @@ updateBar = function () {
     document.getElementById('cbShip').textContent = shipping === 0 ? '🎉 已達免運' : `再買 $${remain.toLocaleString()} 免運`;
 };
 renderProducts();
+// 讀 repo 裡的 json：先讀 GitHub（後台存完馬上看得到），GitHub 偶爾 503 時改讀本站同一份檔案
+async function fetchRepoJson(name) {
+    try {
+        const r = await fetch('https://raw.githubusercontent.com/rowan710725/mantou-order/main/' + name);
+        if (r.ok) return r;
+    } catch (e) { console.log(name + ' GitHub 讀取失敗，改讀本站', e); }
+    return fetch(name + '?t=' + Date.now());
+}
 // 運費設定：讀 GitHub 上的 shipping.json（後台「🚚 運費設定」儲存），讀不到就沿用預設值
 async function loadShipping() {
     try {
-        const r = await fetch('https://raw.githubusercontent.com/rowan710725/mantou-order/main/shipping.json');
+        const r = await fetchRepoJson('shipping.json');
         if (!r.ok) return;
         const cfg = await r.json();
         if (cfg.home) {
@@ -1844,8 +1852,7 @@ loadShipping();
 async function loadProducts() {
   try {
     // 從 GitHub 讀取 products.json
-    const prodUrl = 'https://raw.githubusercontent.com/rowan710725/mantou-order/main/products.json';
-    const r = await fetch(prodUrl);
+    const r = await fetchRepoJson('products.json');
     if (r.ok) {
       const productsData = await r.json();
       if (Array.isArray(productsData) && productsData.length > 0) {
@@ -1871,8 +1878,7 @@ async function loadProducts() {
 }
 async function loadStoreInfo() {
   try {
-    const url = 'https://raw.githubusercontent.com/rowan710725/mantou-order/main/store_info.json';
-    const r = await fetch(url);
+    const r = await fetchRepoJson('store_info.json');
     if (!r.ok) return;
     const si = await r.json();
     if (si.address) document.getElementById('storeAddressText').textContent = si.address;
