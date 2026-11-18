@@ -59,6 +59,14 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 .panel.active{display:block;}
 
 /* ── 運費設定 ── */
+.th-mode{display:block;font-size:1.05rem;padding:8px 0;cursor:pointer;}
+.th-mode select,.th-row select{padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:1rem;}
+.th-row{border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:var(--cream-card);font-size:1rem;}
+.th-row h4{font-size:1.1rem;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.th-row h4 label{font-size:.95rem;font-weight:400;cursor:pointer;}
+.th-row h4 a{font-size:.9rem;font-weight:400;margin-left:auto;}
+.th-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.th-line input[type=text]{flex:1;min-width:220px;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:1rem;}
 .slide-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--border);font-size:1.05rem;}
 .crop{position:relative;width:300px;max-width:60vw;overflow:hidden;border-radius:6px;border:1px solid var(--border);background:var(--cream-card);line-height:0;touch-action:none;}
 .crop img{width:100%;display:block;user-select:none;-webkit-user-drag:none;}
@@ -225,6 +233,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
         <button class="tab" data-tab="media" onclick="switchTab('media')">📰 媒體報導<span class="dot">●</span></button>
         <button class="tab" data-tab="shipping" onclick="switchTab('shipping')">🚚 運費設定<span class="dot">●</span></button>
         <button class="tab" data-tab="slides" onclick="switchTab('slides')">🖼️ 首頁輪播<span class="dot">●</span></button>
+        <button class="tab" data-tab="theme" onclick="switchTab('theme')">🎄 節慶主題<span class="dot">●</span></button>
       </div>
       <div class="tab-actions">
         <button class="hdr-btn hdr-save" id="saveBtn" onclick="saveCurrent()">💾 儲存變更</button>
@@ -308,6 +317,22 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
           <label class="hdr-btn hdr-add" style="color:var(--brown-dark);border-color:var(--border);background:var(--cream-card);cursor:pointer;font-size:1rem;padding:10px 18px;">＋ 新增圖片
             <input type="file" accept="image/*" multiple style="display:none" onchange="addSlides(this.files); this.value=''"></label>
         </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="panel" id="panel-theme">
+    <div class="products-table">
+      <div class="table-header" style="grid-template-columns:1fr;">
+        <div>🎄 節慶主題</div>
+      </div>
+      <div style="padding:18px;">
+        <div class="ro-tip" style="font-size:1rem;line-height:1.7;">📌 節慶主題會讓官網最上面多一條公告、換上節日顏色、飄雪花／花瓣。平常的日子官網跟現在一樣。</div>
+        <label class="th-mode"><input type="radio" name="thMode" value="auto" onchange="setTabDirty('theme',true)"> <b>自動切換</b>：照下面的日期自動換，時間過了自動換回平常</label>
+        <label class="th-mode"><input type="radio" name="thMode" value="manual" onchange="setTabDirty('theme',true)"> <b>手動切換</b>：現在就用
+          <select id="thManual" onchange="document.querySelector('input[name=thMode][value=manual]').checked=true; setTabDirty('theme',true)"></select></label>
+        <label class="th-mode"><input type="radio" name="thMode" value="off" onchange="setTabDirty('theme',true)"> <b>關閉</b>：不用任何節慶主題</label>
+        <div id="themeList" style="margin-top:16px;"></div>
       </div>
     </div>
     </div>
@@ -492,7 +517,7 @@ function imgSrc(img){ return (img&&img.startsWith('http'))?img:(img||''); }
 function getPAT(){ return localStorage.getItem('gh_pat')||''; }
 
 // ── 分頁 ──────────────────────────────────────────────────────────────────────
-const TAB_DIRTY = { products:false, store:false, media:false, shipping:false, slides:false };
+const TAB_DIRTY = { products:false, store:false, media:false, shipping:false, slides:false, theme:false };
 let currentTab = 'products';
 function anyDirty(){ return Object.values(TAB_DIRTY).some(Boolean); }
 function setTabDirty(tab,v){
@@ -523,6 +548,7 @@ async function saveCurrent(){
     else if(currentTab==='media') await saveMedia();
     else if(currentTab==='shipping') await saveShipping();
     else if(currentTab==='slides') await saveSlides();
+    else if(currentTab==='theme') await saveTheme();
   } finally { btn.disabled=false; }
 }
 function setDirty(v){ dirty=v; setTabDirty('products',v); }
@@ -602,6 +628,11 @@ async function login(){
     renderMediaVideos();
     renderMediaPress();
     renderSlides();
+    try{
+      const tr = await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/theme.json?t=${Date.now()}`);
+      if(tr.ok) themeCfg = await tr.json();
+    } catch(e){}
+    renderTheme();
     let lastTab='products';
     try{ lastTab=localStorage.getItem('admin_tab')||'products'; }catch(e){}
     switchTab(TAB_DIRTY.hasOwnProperty(lastTab)?lastTab:'products');
@@ -1018,6 +1049,60 @@ async function saveSlides(){
     showStatus('✅ 首頁輪播儲存成功！官網約 1～5 分鐘內更新','success');
   } catch(ex){
     renderSlides();
+    showStatus('❌ ' + ex.message,'error');
+  }
+}
+
+// ── 節慶主題（theme.json；官網 index.html 的 THEMES 決定顏色和飄落的東西） ──
+const THEME_NAMES = { cny:'🧧 農曆新年', mom:'💐 母親節', duan:'🐉 端午節', moon:'🌕 中秋節', hall:'🎃 萬聖節', xmas:'🎄 聖誕節' };   // 照一年的順序
+let themeCfg = { mode:'auto', themes:{} };
+function mdSelects(id, v){
+  const [m,d] = (v||'01-01').split('-');
+  const opt = (n,cur)=>Array.from({length:n},(_,k)=>String(k+1).padStart(2,'0')).map(x=>`<option ${x===cur?'selected':''}>${x}</option>`).join('');
+  return `<select id="${id}-m" onchange="setTabDirty('theme',true)">${opt(12,m)}</select> 月
+          <select id="${id}-d" onchange="setTabDirty('theme',true)">${opt(31,d)}</select> 日`;
+}
+function renderTheme(){
+  const mode = themeCfg.mode==='off' ? 'off' : (THEME_NAMES[themeCfg.mode] ? 'manual' : 'auto');
+  document.querySelector(`input[name=thMode][value=${mode}]`).checked = true;
+  document.getElementById('thManual').innerHTML = Object.entries(THEME_NAMES).map(([k,n])=>`<option value="${k}" ${themeCfg.mode===k?'selected':''}>${n}</option>`).join('');
+  document.getElementById('themeList').innerHTML = Object.entries(THEME_NAMES).map(([k,n])=>{
+    const t = (themeCfg.themes||{})[k] || {};
+    return `<div class="th-row">
+      <h4>${n}<label><input type="checkbox" id="th-${k}-on" ${t.on!==false?'checked':''} onchange="setTabDirty('theme',true)"> 自動切換時要用</label>
+        <a href="/?theme=${k}" target="_blank">👀 預覽官網</a></h4>
+      <div class="th-line">日期：${mdSelects('th-'+k+'-s', t.start||'12-01')} ～ ${mdSelects('th-'+k+'-e', t.end||'12-26')}</div>
+      <div class="th-line">公告條：<input type="text" id="th-${k}-bar" value="${esc(t.bar||'')}" oninput="setTabDirty('theme',true)" placeholder="空白＝不顯示公告條"></div>
+    </div>`;
+  }).join('');
+}
+async function saveTheme(){
+  const pat = getPAT();
+  if(!pat){
+    showStatus('❌ 尚未設定 GitHub Token，請點右上角「⚙️ 設定」完成設定','error');
+    return;
+  }
+  const v = id => document.getElementById(id).value;
+  const mode = document.querySelector('input[name=thMode]:checked').value;
+  const cfg = { mode: mode==='manual' ? v('thManual') : mode, themes:{} };
+  for(const k of Object.keys(THEME_NAMES)){
+    cfg.themes[k] = { on: document.getElementById(`th-${k}-on`).checked,
+      start: v(`th-${k}-s-m`)+'-'+v(`th-${k}-s-d`), end: v(`th-${k}-e-m`)+'-'+v(`th-${k}-e-d`),
+      bar: v(`th-${k}-bar`).trim() };
+  }
+  showStatus('儲存節慶主題中，請稍候…','loading');
+  try{
+    const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/theme.json`;
+    let sha = null;
+    try{ const ex = await fetch(apiUrl, { headers:{ Authorization:`Bearer ${pat}` } }); if(ex.ok) sha = (await ex.json()).sha; } catch(e){}
+    const body = { message:`更新節慶主題 (${new Date().toLocaleString('zh-TW')})`, content: btoa(unescape(encodeURIComponent(JSON.stringify(cfg,null,2)))) };
+    if(sha) body.sha = sha;
+    const res = await fetch(apiUrl, { method:'PUT', headers:{ Authorization:`Bearer ${pat}`, 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+    if(!res.ok){ const err = await res.json().catch(()=>({})); throw new Error(err.message || '保存失敗'); }
+    themeCfg = cfg;
+    setTabDirty('theme',false);
+    showStatus('✅ 節慶主題儲存成功！官網約 1～5 分鐘內更新','success');
+  } catch(ex){
     showStatus('❌ ' + ex.message,'error');
   }
 }

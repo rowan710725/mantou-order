@@ -125,6 +125,24 @@
         .hs-dots { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 8px; line-height: 1; }
         .hs-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.65); box-shadow: 0 0 2px rgba(0,0,0,.35); cursor: pointer; }
         .hs-dots span.on { background: #8B5A2B; }
+        /* ── 節慶主題（theme.json；body 加 th-on th-xmas 這類 class） ── */
+        .th-bar { display: none; text-align: center; padding: 8px 14px; font-size: .95rem; font-weight: 700; letter-spacing: 1px; color: #fff; line-height: 1.5; }
+        body.th-on .th-bar { display: block; background: linear-gradient(90deg, var(--th1), var(--th2)); }
+        body.th-on .topnav { border-bottom: 3px solid var(--th1); box-shadow: 0 3px 0 var(--th2); }
+        body.th-on .nav-logo span::after { content: ' ' var(--th-ic); }
+        body.th-on .leaf-title::before, body.th-on .leaf-title::after { content: var(--th-ic); transform: none; }
+        body.th-on .feature-ic { background: var(--th-soft); color: var(--th1); }
+        body.th-on .hs-dots span.on { background: var(--th1); }
+        body.th-xmas { --th1: #B3261E; --th2: #1E6B3A; --th-soft: #F6E3DF; --th-ic: '🎄'; }
+        body.th-cny  { --th1: #C62828; --th2: #D4A017; --th-soft: #FBE7D3; --th-ic: '🧧'; }
+        body.th-moon { --th1: #C8641E; --th2: #E2A93B; --th-soft: #FBEBD3; --th-ic: '🌕'; }
+        body.th-mom  { --th1: #D45A85; --th2: #F09DB8; --th-soft: #FBE4EC; --th-ic: '💐'; }
+        body.th-duan { --th1: #2E7D32; --th2: #C9A227; --th-soft: #E3F0DC; --th-ic: '🐉'; }
+        body.th-hall { --th1: #E0691C; --th2: #5B2A86; --th-soft: #FBE3D0; --th-ic: '🎃'; }
+        .th-fx { position: fixed; inset: 0; pointer-events: none; z-index: 250; overflow: hidden; }
+        .th-fx i { position: absolute; top: -40px; font-style: normal; opacity: .75; animation: thFall linear infinite; }
+        @keyframes thFall { to { transform: translate(var(--dx), 110vh) rotate(var(--rot)); } }
+        @media (prefers-reduced-motion: reduce) { .th-fx { display: none; } }
         .feature-band { background: #FAF5EC; border-bottom: 1px solid #EADFCB; }
         .feature-row { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 1100px; margin: 0 auto; padding: 16px 10px; }
         .feature { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 4px 16px; }
@@ -858,6 +876,7 @@
     <button class="co-back" id="coBack" onclick="coGoBack()">← 返回繼續購物</button>
     <div class="co-title" id="coTitle">結帳</div>
 </div>
+<div class="th-bar pd-keep" id="thBar"></div>
 <nav class="topnav pd-keep">
     <div class="topnav-inner">
         <a class="nav-logo" href="#" onclick="if (document.body.classList.contains('detail-mode')) { event.preventDefault(); closeDetail(true); window.scrollTo(0, 0); }"><b>方王媽媽</b><span>堅果饅頭</span></a>
@@ -2053,6 +2072,49 @@ async function loadBanners() {
     } catch (e) { console.log('輪播載入失敗', e); }
 }
 loadBanners();
+
+// ── 節慶主題：讀 theme.json（後台「🎄 節慶主題」），照日期自動換；網址加 ?theme=xmas 可以先預覽 ──
+const THEMES = {
+    xmas: { fx: ['❄', '❅', '❆'], color: '#9CC3E6', shadow: '0 0 2px #fff' },
+    cny:  { fx: ['🌸', '✿'], color: '#E57373' },
+    moon: { fx: ['🍂', '✦'], color: '#E2A93B' },
+    mom:  { fx: ['❤', '✿'], color: '#EC8FAE' },
+    duan: { fx: ['🍃', '✦'], color: '#7CB342' },
+    hall: { fx: ['🦇', '✦'], color: '#E0691C' },
+};
+function mmdd(d) { return String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function inRange(today, a, b) { return a <= b ? today >= a && today <= b : today >= a || today <= b; }   // 12-20～01-05 這種跨年也可以
+function applyTheme(key, bar) {
+    const t = THEMES[key]; if (!t) return;
+    document.body.classList.add('th-on', 'th-' + key);
+    const el = document.getElementById('thBar');
+    if (bar) el.textContent = bar; else el.remove();
+    const n = window.innerWidth < 700 ? 12 : 26, fx = document.createElement('div');
+    fx.className = 'th-fx';
+    fx.innerHTML = Array.from({ length: n }, () => {
+        const size = 10 + Math.random() * 12, dur = 9 + Math.random() * 10;
+        return `<i style="left:${Math.random() * 100}%;font-size:${size}px;color:${t.color};${t.shadow ? `text-shadow:${t.shadow};` : ''}`
+            + `animation-duration:${dur}s;animation-delay:-${Math.random() * dur}s;--dx:${Math.random() * 80 - 40}px;--rot:${Math.random() * 360}deg">`
+            + t.fx[Math.floor(Math.random() * t.fx.length)] + '</i>';
+    }).join('');
+    document.body.appendChild(fx);
+}
+async function loadTheme() {
+    try {
+        const force = new URLSearchParams(location.search).get('theme');
+        let cfg = {};
+        const r = await fetchRepoJson('theme.json');
+        if (r.ok) cfg = await r.json();
+        const list = cfg.themes || {};
+        if (force) return applyTheme(force, (list[force] || {}).bar);
+        if (cfg.mode === 'off') return;
+        if (THEMES[cfg.mode]) return applyTheme(cfg.mode, (list[cfg.mode] || {}).bar);
+        const today = mmdd(new Date());
+        const hit = Object.keys(list).find(k => THEMES[k] && list[k].on !== false && list[k].start && list[k].end && inRange(today, list[k].start, list[k].end));
+        if (hit) applyTheme(hit, list[hit].bar);
+    } catch (e) { console.log('節慶主題載入失敗', e); }
+}
+loadTheme();
 
 // 把 < > & " ' 轉成安全文字，避免資料被當成程式執行
 function esc(s) {
