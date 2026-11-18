@@ -2035,7 +2035,7 @@ async function loadBanners() {
         if (!slides.length) return;
         hsCount = slides.length;
         const track = document.getElementById('hsTrack');
-        track.innerHTML = slides.map(x => `<div class="hs-slide${x.link ? ' link' : ''}"${x.link ? ` onclick="hsClick('${esc(x.link)}')"` : ''}><img src="${esc(x.img)}" alt="方王媽媽堅果饅頭"></div>`).join('');
+        track.innerHTML = slides.map(x => `<div class="hs-slide${x.link ? ' link' : ''}"${x.link ? ` onclick="hsClick('${esc(x.link)}')"` : ''}><img src="${esc(x.img)}" alt="方王媽媽堅果饅頭"${Number.isFinite(x.pos) ? ` style="object-position:${x.pos}% ${x.pos}%"` : ''}></div>`).join('');   // pos＝後台框選的位置
         const first = track.querySelector('img');   // 整個輪播的高度照第一張圖的比例
         const fit = () => { if (first.naturalWidth) document.getElementById('heroSlides').style.aspectRatio = first.naturalWidth + ' / ' + first.naturalHeight; };
         first.complete ? fit() : first.addEventListener('load', fit);

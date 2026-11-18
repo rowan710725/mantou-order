@@ -60,7 +60,11 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 
 /* ── 運費設定 ── */
 .slide-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--border);font-size:1.05rem;}
-.slide-row img{width:260px;max-width:45vw;aspect-ratio:2.4/1;object-fit:cover;border-radius:6px;border:1px solid var(--border);background:var(--cream-card);}
+.crop{position:relative;width:300px;max-width:60vw;overflow:hidden;border-radius:6px;border:1px solid var(--border);background:var(--cream-card);line-height:0;touch-action:none;}
+.crop img{width:100%;display:block;user-select:none;-webkit-user-drag:none;}
+.crop-frame{position:absolute;left:0;top:0;width:100%;height:100%;border:3px solid #FFD54F;box-sizing:border-box;box-shadow:0 0 0 2000px rgba(0,0,0,.55);cursor:grab;}
+.crop-frame:active{cursor:grabbing;}
+.crop-tip{font-size:.85rem;color:var(--text-muted,#8a7560);margin-top:4px;}
 .slide-row select{padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:1rem;max-width:240px;}
 .slide-acts{display:flex;gap:6px;margin-left:auto;}
 .slide-acts button{padding:8px 14px;border:1.5px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:1.1rem;}
@@ -506,6 +510,7 @@ function switchTab(tab){
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+tab));
   refreshSaveBtn();
+  if(tab==='slides') slides.forEach((_,i)=>layoutCrop(i));   // 分頁藏著時量不到大小
   try{ localStorage.setItem('admin_tab',tab); }catch(e){}
 }
 async function saveCurrent(){
@@ -935,7 +940,8 @@ function renderSlides(){
   document.getElementById('slideList').innerHTML = slides.length ? slides.map((x,i)=>`
     <div class="slide-row">
       <b>${i+1}</b>
-      <img src="${esc(slideSrc(x))}" alt="">
+      <div><div class="crop" id="crop-${i}"><img src="${esc(slideSrc(x))}" alt="" onload="layoutCrop(${i})"><div class="crop-frame" onpointerdown="cropDown(event,${i})"></div></div>
+        <div class="crop-tip">框內＝官網會顯示的，拖框選位置</div></div>
       <label>點了要去哪 <select onchange="slides[${i}].link=this.value; setTabDirty('slides',true)">
         <option value="">不用連結</option>
         ${opts.map(p=>`<option value="${esc(p.id)}" ${x.link===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}
@@ -947,6 +953,32 @@ function renderSlides(){
       </span>
     </div>`).join('') : '<div class="loading-row">還沒有圖片，首頁會顯示原本那張大圖</div>';
 }
+// 框選：框的比例＝官網大圖（2164:727）；pos 0～100＝object-position 的百分比（直的圖上下拖、更扁的圖左右拖）
+const HERO_RATIO = 2164/727;
+function layoutCrop(i){
+  const box=document.getElementById('crop-'+i); if(!box) return;
+  const img=box.querySelector('img'), fr=box.querySelector('.crop-frame');
+  if(!img.naturalWidth) return;
+  const W=box.clientWidth, H=img.clientHeight, pos=Number.isFinite(slides[i].pos)?slides[i].pos:50;
+  if(W/H < HERO_RATIO){ const fh=W/HERO_RATIO; fr.style.cssText=`width:${W}px;height:${fh}px;left:0;top:${(H-fh)*pos/100}px`; box.dataset.axis='y'; }
+  else { const fw=H*HERO_RATIO; fr.style.cssText=`width:${fw}px;height:${H}px;top:0;left:${(W-fw)*pos/100}px`; box.dataset.axis='x'; }
+}
+function cropDown(e,i){
+  e.preventDefault();
+  const box=document.getElementById('crop-'+i), fr=box.querySelector('.crop-frame'), y=box.dataset.axis==='y';
+  const free = y ? box.querySelector('img').clientHeight-fr.offsetHeight : box.clientWidth-fr.offsetWidth;
+  if(free<=1) return;   // 比例剛好，不用拖
+  const start = y ? e.clientY : e.clientX, startPos = Number.isFinite(slides[i].pos)?slides[i].pos:50;
+  fr.setPointerCapture(e.pointerId);
+  const move=ev=>{
+    const d=(y?ev.clientY:ev.clientX)-start;
+    slides[i].pos=Math.round(Math.min(100,Math.max(0,startPos+d/free*100)));
+    layoutCrop(i);
+  };
+  const up=()=>{ fr.removeEventListener('pointermove',move); fr.removeEventListener('pointerup',up); fr.removeEventListener('pointercancel',up); setTabDirty('slides',true); };
+  fr.addEventListener('pointermove',move); fr.addEventListener('pointerup',up); fr.addEventListener('pointercancel',up);
+}
+window.addEventListener('resize',()=>slides.forEach((_,i)=>layoutCrop(i)));
 async function addSlides(files){
   for(const f of files){
     if(!f.type.startsWith('image/')) continue;
@@ -980,7 +1012,7 @@ async function saveSlides(){
     showStatus('儲存首頁輪播中，請稍候…','loading');
     let sha = null;
     try{ const ex = await fetch(api('banners.json'), { headers:{ Authorization:`Bearer ${pat}` } }); if(ex.ok) sha = (await ex.json()).sha; } catch(e){}
-    const content = JSON.stringify({ slides: slides.map(x=>({ img:x.img, link:x.link||'' })) }, null, 2);
+    const content = JSON.stringify({ slides: slides.map(x=>{ const o={ img:x.img, link:x.link||'' }; if(Number.isFinite(x.pos)) o.pos=x.pos; return o; }) }, null, 2);
     await put('banners.json', btoa(unescape(encodeURIComponent(content))), `更新首頁輪播 (${new Date().toLocaleString('zh-TW')})`, sha);
     setTabDirty('slides',false); renderSlides();
     showStatus('✅ 首頁輪播儲存成功！官網約 1～5 分鐘內更新','success');
