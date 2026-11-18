@@ -59,11 +59,11 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 .panel.active{display:block;}
 
 /* ── 運費設定 ── */
-.slide-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--border);}
-.slide-row img{width:200px;max-width:45vw;aspect-ratio:2.4/1;object-fit:cover;border-radius:6px;border:1px solid var(--border);background:var(--cream-card);}
-.slide-row select{padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:14px;max-width:220px;}
+.slide-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--border);font-size:1.05rem;}
+.slide-row img{width:260px;max-width:45vw;aspect-ratio:2.4/1;object-fit:cover;border-radius:6px;border:1px solid var(--border);background:var(--cream-card);}
+.slide-row select{padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:1rem;max-width:240px;}
 .slide-acts{display:flex;gap:6px;margin-left:auto;}
-.slide-acts button{padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:14px;}
+.slide-acts button{padding:8px 14px;border:1.5px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:1.1rem;}
 .slide-acts button:disabled{opacity:.35;cursor:default;}
 .ship-group{border:1.5px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;background:var(--cream-card);}
 .ship-group h4{font-size:0.95rem;color:var(--brown-dark);margin-bottom:12px;}
@@ -85,7 +85,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 
 /* ── 商品表格 ── */
 .products-table{background:white;border-radius:10px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 2px 16px rgba(90,60,20,0.07);}
-.table-header{display:grid;grid-template-columns:60px 1.2fr 1.6fr 96px 70px;gap:8px;padding:12px 12px;background:var(--brown-dark);color:white;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
+.table-header{display:grid;grid-template-columns:60px 1.2fr 1.6fr 96px 70px;gap:8px;padding:12px 12px;background:var(--brown-dark);color:white;font-size:0.95rem;font-weight:700;letter-spacing:0.5px;align-items:center;}
 .product-row{display:grid;grid-template-columns:60px 1.2fr 1.6fr 96px 70px;gap:8px;padding:12px 12px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.15s;}
 .product-row:last-child{border-bottom:none;}
 .product-row:hover{background:var(--cream);}
@@ -295,12 +295,13 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
     <div class="panel" id="panel-slides">
     <div class="products-table">
       <div class="table-header" style="grid-template-columns:1fr;">
-        <div>🖼️ 首頁輪播<small style="font-weight:400;margin-left:8px;">圖要跟現在的大圖一樣是橫長形（約 3:1，例如 1600×540），比例不同會被裁掉上下；第一張就是首頁一打開看到的，2 張以上會每 5 秒自動換</small></div>
+        <div>🖼️ 首頁輪播</div>
       </div>
       <div style="padding:18px;">
+        <div class="ro-tip" style="font-size:1rem;line-height:1.7;">📌 圖要跟現在的大圖一樣是<b>橫長形</b>（約 3:1，例如 1600×540），比例不同會被裁掉上下。<br>第一張就是首頁一打開看到的；2 張以上會每 5 秒自動換。</div>
         <div id="slideList"></div>
         <div style="display:flex;justify-content:flex-start;margin-top:10px;">
-          <label class="hdr-btn hdr-add" style="color:var(--brown-dark);border-color:var(--border);background:var(--cream-card);cursor:pointer;">＋ 新增圖片
+          <label class="hdr-btn hdr-add" style="color:var(--brown-dark);border-color:var(--border);background:var(--cream-card);cursor:pointer;font-size:1rem;padding:10px 18px;">＋ 新增圖片
             <input type="file" accept="image/*" multiple style="display:none" onchange="addSlides(this.files); this.value=''"></label>
         </div>
       </div>
