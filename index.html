@@ -140,8 +140,10 @@
         body.th-duan { --th1: #2E7D32; --th2: #C9A227; --th-soft: #E3F0DC; --th-ic: '🐉'; }
         body.th-hall { --th1: #E0691C; --th2: #5B2A86; --th-soft: #FBE3D0; --th-ic: '🎃'; }
         .th-fx { position: fixed; inset: 0; pointer-events: none; z-index: 250; overflow: hidden; }
-        .th-fx i { position: absolute; top: -40px; font-style: normal; opacity: .75; animation: thFall linear infinite; }
-        @keyframes thFall { to { transform: translate(var(--dx), 110vh) rotate(var(--rot)); } }
+        .th-fx i { position: absolute; top: -40px; font-style: normal; animation: thFall linear infinite; }   /* 外層往下掉 */
+        .th-fx b { display: inline-block; font-weight: normal; animation: thSway ease-in-out infinite alternate; }   /* 內層左右輕輕擺 */
+        @keyframes thFall { to { transform: translateY(110vh); } }
+        @keyframes thSway { from { transform: translateX(calc(var(--sw) * -1)) rotate(calc(var(--rot) * -1)); } to { transform: translateX(var(--sw)) rotate(var(--rot)); } }
         @media (prefers-reduced-motion: reduce) { .th-fx { display: none; } }
         .feature-band { background: #FAF5EC; border-bottom: 1px solid #EADFCB; }
         .feature-row { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 1100px; margin: 0 auto; padding: 16px 10px; }
@@ -2092,10 +2094,12 @@ function applyTheme(key, bar) {
     const n = window.innerWidth < 700 ? 12 : 26, fx = document.createElement('div');
     fx.className = 'th-fx';
     fx.innerHTML = Array.from({ length: n }, () => {
-        const size = 10 + Math.random() * 12, dur = 9 + Math.random() * 10;
-        return `<i style="left:${Math.random() * 100}%;font-size:${size}px;color:${t.color};${t.shadow ? `text-shadow:${t.shadow};` : ''}`
-            + `animation-duration:${dur}s;animation-delay:-${Math.random() * dur}s;--dx:${Math.random() * 80 - 40}px;--rot:${Math.random() * 360}deg">`
-            + t.fx[Math.floor(Math.random() * t.fx.length)] + '</i>';
+        // 遠近感：近的大、快、清楚；遠的小、慢、淡、有點糊
+        const near = Math.random(), size = 8 + near * 14, dur = 20 - near * 10, sway = 2.5 + Math.random() * 3;
+        return `<i style="left:${Math.random() * 100}%;animation-duration:${dur}s;animation-delay:-${Math.random() * dur}s">`
+            + `<b style="font-size:${size}px;color:${t.color};opacity:${.35 + near * .55};${near < .35 ? 'filter:blur(.6px);' : ''}${t.shadow ? `text-shadow:${t.shadow};` : ''}`
+            + `animation-duration:${sway}s;animation-delay:-${Math.random() * sway}s;--sw:${10 + Math.random() * 25}px;--rot:${15 + Math.random() * 40}deg">`
+            + t.fx[Math.floor(Math.random() * t.fx.length)] + '</b></i>';
     }).join('');
     document.body.appendChild(fx);
 }
