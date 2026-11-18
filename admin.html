@@ -59,6 +59,12 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
 .panel.active{display:block;}
 
 /* ── 運費設定 ── */
+.slide-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--border);}
+.slide-row img{width:200px;max-width:45vw;aspect-ratio:2.4/1;object-fit:cover;border-radius:6px;border:1px solid var(--border);background:var(--cream-card);}
+.slide-row select{padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:14px;max-width:220px;}
+.slide-acts{display:flex;gap:6px;margin-left:auto;}
+.slide-acts button{padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:14px;}
+.slide-acts button:disabled{opacity:.35;cursor:default;}
 .ship-group{border:1.5px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;background:var(--cream-card);}
 .ship-group h4{font-size:0.95rem;color:var(--brown-dark);margin-bottom:12px;}
 .ship-group h4 small{font-weight:500;color:var(--text-muted);margin-left:6px;}
@@ -214,6 +220,7 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
         <button class="tab" data-tab="store" onclick="switchTab('store')">🏠 門市資訊<span class="dot">●</span></button>
         <button class="tab" data-tab="media" onclick="switchTab('media')">📰 媒體報導<span class="dot">●</span></button>
         <button class="tab" data-tab="shipping" onclick="switchTab('shipping')">🚚 運費設定<span class="dot">●</span></button>
+        <button class="tab" data-tab="slides" onclick="switchTab('slides')">🖼️ 首頁輪播<span class="dot">●</span></button>
       </div>
       <div class="tab-actions">
         <button class="hdr-btn hdr-save" id="saveBtn" onclick="saveCurrent()">💾 儲存變更</button>
@@ -280,6 +287,21 @@ header{background:var(--brown-dark);color:white;padding:0 24px;height:64px;displ
         <div id="pressList"></div>
         <div style="display:flex;justify-content:flex-start;margin-top:10px;">
           <button class="hdr-btn hdr-add" style="color:var(--brown-dark);border-color:var(--border);background:var(--cream-card);" onclick="addMediaPress()">＋ 新增報導</button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="panel" id="panel-slides">
+    <div class="products-table">
+      <div class="table-header" style="grid-template-columns:1fr;">
+        <div>🖼️ 首頁輪播<small style="font-weight:400;margin-left:8px;">圖要跟現在的大圖一樣是橫長形（約 3:1，例如 1600×540），比例不同會被裁掉上下；第一張就是首頁一打開看到的，2 張以上會每 5 秒自動換</small></div>
+      </div>
+      <div style="padding:18px;">
+        <div id="slideList"></div>
+        <div style="display:flex;justify-content:flex-start;margin-top:10px;">
+          <label class="hdr-btn hdr-add" style="color:var(--brown-dark);border-color:var(--border);background:var(--cream-card);cursor:pointer;">＋ 新增圖片
+            <input type="file" accept="image/*" multiple style="display:none" onchange="addSlides(this.files); this.value=''"></label>
         </div>
       </div>
     </div>
@@ -465,7 +487,7 @@ function imgSrc(img){ return (img&&img.startsWith('http'))?img:(img||''); }
 function getPAT(){ return localStorage.getItem('gh_pat')||''; }
 
 // ── 分頁 ──────────────────────────────────────────────────────────────────────
-const TAB_DIRTY = { products:false, store:false, media:false, shipping:false };
+const TAB_DIRTY = { products:false, store:false, media:false, shipping:false, slides:false };
 let currentTab = 'products';
 function anyDirty(){ return Object.values(TAB_DIRTY).some(Boolean); }
 function setTabDirty(tab,v){
@@ -494,6 +516,7 @@ async function saveCurrent(){
     else if(currentTab==='store') await saveStoreInfo();
     else if(currentTab==='media') await saveMedia();
     else if(currentTab==='shipping') await saveShipping();
+    else if(currentTab==='slides') await saveSlides();
   } finally { btn.disabled=false; }
 }
 function setDirty(v){ dirty=v; setTabDirty('products',v); }
@@ -558,6 +581,13 @@ async function login(){
     } catch(e){}
     fillShipping(ship);
 
+    // 從 GitHub 讀取 banners.json（首頁輪播，找不到就用現在的大圖）
+    slides = [{ img: 'line_oa_chat_260423_170052.jpg', link: '' }];
+    try{
+      const br = await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/banners.json?t=${Date.now()}`);
+      if(br.ok){ const bj = await br.json(); if(Array.isArray(bj.slides)) slides = bj.slides; }
+    } catch(e){}
+
     PASS = pass;
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminUI').style.display = '';
@@ -565,6 +595,7 @@ async function login(){
     renderProducts();
     renderMediaVideos();
     renderMediaPress();
+    renderSlides();
     let lastTab='products';
     try{ lastTab=localStorage.getItem('admin_tab')||'products'; }catch(e){}
     switchTab(TAB_DIRTY.hasOwnProperty(lastTab)?lastTab:'products');
@@ -891,6 +922,69 @@ async function saveShipping(){
       showStatus('❌ ' + (err.message || '保存失敗'),'error');
     }
   } catch(ex){
+    showStatus('❌ ' + ex.message,'error');
+  }
+}
+
+// ── 首頁輪播（banners.json；新圖先放在 data，按儲存才上傳到 banners/） ──
+let slides = [];
+function slideSrc(x){ return x.data || (x.img.startsWith('http') ? x.img : `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/${x.img}`); }
+function renderSlides(){
+  const opts = products.filter(p=>p.active!==false);
+  document.getElementById('slideList').innerHTML = slides.length ? slides.map((x,i)=>`
+    <div class="slide-row">
+      <b>${i+1}</b>
+      <img src="${esc(slideSrc(x))}" alt="">
+      <label>點了要去哪 <select onchange="slides[${i}].link=this.value; setTabDirty('slides',true)">
+        <option value="">不用連結</option>
+        ${opts.map(p=>`<option value="${esc(p.id)}" ${x.link===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}
+      </select></label>
+      <span class="slide-acts">
+        <button onclick="moveSlide(${i},-1)" ${i===0?'disabled':''} title="往前">↑</button>
+        <button onclick="moveSlide(${i},1)" ${i===slides.length-1?'disabled':''} title="往後">↓</button>
+        <button onclick="delSlide(${i})" title="拿掉這張">🗑</button>
+      </span>
+    </div>`).join('') : '<div class="loading-row">還沒有圖片，首頁會顯示原本那張大圖</div>';
+}
+async function addSlides(files){
+  for(const f of files){
+    if(!f.type.startsWith('image/')) continue;
+    slides.push({ img:'', link:'', data: await compressImage(f,1600,0.85) });   // 太大的圖自動縮到 1600
+  }
+  setTabDirty('slides',true); renderSlides();
+}
+function moveSlide(i,d){ const t=slides[i]; slides[i]=slides[i+d]; slides[i+d]=t; setTabDirty('slides',true); renderSlides(); }
+function delSlide(i){ if(!confirm('確定拿掉第 '+(i+1)+' 張？')) return; slides.splice(i,1); setTabDirty('slides',true); renderSlides(); }
+async function saveSlides(){
+  const pat = getPAT();
+  if(!pat){
+    showStatus('❌ 尚未設定 GitHub Token，請點右上角「⚙️ 設定」完成設定','error');
+    return;
+  }
+  const api = path => `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`;
+  const put = async (path, base64, message, sha) => {
+    const body = { message, content: base64 };
+    if(sha) body.sha = sha;
+    const res = await fetch(api(path), { method:'PUT', headers:{ Authorization:`Bearer ${pat}`, 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+    if(!res.ok){ const err = await res.json().catch(()=>({})); throw new Error(err.message || '上傳失敗（HTTP '+res.status+'）'); }
+  };
+  try{
+    const news = slides.filter(x=>x.data);
+    for(const [k,x] of news.entries()){
+      showStatus(`上傳圖片 ${k+1}／${news.length}，請稍候…`,'loading');
+      const path = `banners/b${Date.now()}_${k}.jpg`;
+      await put(path, x.data.split(',')[1], `上傳首頁輪播圖：${path}`);
+      x.img = path; delete x.data;
+    }
+    showStatus('儲存首頁輪播中，請稍候…','loading');
+    let sha = null;
+    try{ const ex = await fetch(api('banners.json'), { headers:{ Authorization:`Bearer ${pat}` } }); if(ex.ok) sha = (await ex.json()).sha; } catch(e){}
+    const content = JSON.stringify({ slides: slides.map(x=>({ img:x.img, link:x.link||'' })) }, null, 2);
+    await put('banners.json', btoa(unescape(encodeURIComponent(content))), `更新首頁輪播 (${new Date().toLocaleString('zh-TW')})`, sha);
+    setTabDirty('slides',false); renderSlides();
+    showStatus('✅ 首頁輪播儲存成功！官網約 1～5 分鐘內更新','success');
+  } catch(ex){
+    renderSlides();
     showStatus('❌ ' + ex.message,'error');
   }
 }

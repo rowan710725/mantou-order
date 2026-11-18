@@ -117,6 +117,14 @@
         .hero-note { position: absolute; right: 60px; top: 30px; font-family: 'Noto Serif TC', serif; font-style: italic; font-size: 1.3rem; color: white;
             text-shadow: 0 2px 6px rgba(0,0,0,.45); transform: rotate(-8deg); line-height: 1.4; text-align: center; }
         /* 保證列 */
+        .hs { position: relative; overflow: hidden; line-height: 0; touch-action: pan-y; aspect-ratio: 2164 / 727; }   /* 高度照第一張圖的比例 */
+        .hs-track { position: absolute; inset: 0; display: flex; transition: transform .5s ease; }
+        .hs-slide { flex: 0 0 100%; height: 100%; }
+        .hs-slide img { width: 100%; height: 100%; display: block; object-fit: cover; }
+        .hs-slide.link { cursor: pointer; }
+        .hs-dots { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 8px; line-height: 1; }
+        .hs-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.65); box-shadow: 0 0 2px rgba(0,0,0,.35); cursor: pointer; }
+        .hs-dots span.on { background: #8B5A2B; }
         .feature-band { background: #FAF5EC; border-bottom: 1px solid #EADFCB; }
         .feature-row { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 1100px; margin: 0 auto; padding: 16px 10px; }
         .feature { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 4px 16px; }
@@ -878,9 +886,10 @@
 <!-- 商品詳情頁（openDetail 產生內容） -->
 <div class="pd-keep" id="pdView"></div>
 
-<!-- Banner -->
-<div style="line-height:0;">
-    <img src="line_oa_chat_260423_170052.jpg" alt="方王媽媽堅果饅頭" style="width:100%; display:block;">
+<!-- Banner：後台「🖼️ 首頁輪播」設定（banners.json），2 張以上自動輪播 -->
+<div class="hs" id="heroSlides">
+    <div class="hs-track" id="hsTrack"><div class="hs-slide"><img src="line_oa_chat_260423_170052.jpg" alt="方王媽媽堅果饅頭"></div></div>
+    <div class="hs-dots" id="hsDots"></div>
 </div>
 
 <!-- Trust Section -->
@@ -2008,6 +2017,42 @@ function pdAddCart() {
 }
 loadProducts();
 loadStoreInfo();
+
+// ── 首頁輪播：讀 banners.json（後台「🖼️ 首頁輪播」），只有 1 張就固定不動 ──
+let hsIdx = 0, hsTimer = null, hsCount = 1;
+function hsGo(i) {
+    hsIdx = (i + hsCount) % hsCount;
+    document.getElementById('hsTrack').style.transform = `translateX(-${hsIdx * 100}%)`;
+    document.querySelectorAll('#hsDots span').forEach((d, k) => d.classList.toggle('on', k === hsIdx));
+}
+function hsRestart() { clearInterval(hsTimer); if (hsCount > 1) hsTimer = setInterval(() => hsGo(hsIdx + 1), 5000); }
+function hsClick(id) { if (id && PRODUCTS.some(p => p.id === id)) openDetail(id); }
+async function loadBanners() {
+    try {
+        const r = await fetchRepoJson('banners.json');
+        if (!r.ok) return;
+        const slides = ((await r.json()).slides || []).filter(x => x && x.img);
+        if (!slides.length) return;
+        hsCount = slides.length;
+        const track = document.getElementById('hsTrack');
+        track.innerHTML = slides.map(x => `<div class="hs-slide${x.link ? ' link' : ''}"${x.link ? ` onclick="hsClick('${esc(x.link)}')"` : ''}><img src="${esc(x.img)}" alt="方王媽媽堅果饅頭"></div>`).join('');
+        const first = track.querySelector('img');   // 整個輪播的高度照第一張圖的比例
+        const fit = () => { if (first.naturalWidth) document.getElementById('heroSlides').style.aspectRatio = first.naturalWidth + ' / ' + first.naturalHeight; };
+        first.complete ? fit() : first.addEventListener('load', fit);
+        if (hsCount < 2) return;
+        document.getElementById('hsDots').innerHTML = slides.map((_, k) => `<span onclick="hsGo(${k}); hsRestart()"></span>`).join('');
+        hsGo(0); hsRestart();
+        let x0 = null;   // 手機左右滑
+        const box = document.getElementById('heroSlides');
+        box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+        box.addEventListener('touchend', e => {
+            if (x0 === null) return;
+            const dx = e.changedTouches[0].clientX - x0; x0 = null;
+            if (Math.abs(dx) > 40) { hsGo(hsIdx + (dx < 0 ? 1 : -1)); hsRestart(); }
+        });
+    } catch (e) { console.log('輪播載入失敗', e); }
+}
+loadBanners();
 
 // 把 < > & " ' 轉成安全文字，避免資料被當成程式執行
 function esc(s) {
