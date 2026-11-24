@@ -84,6 +84,14 @@
         .topnav .nav-icon.line { width: 44px; height: 44px; background: none; border-radius: 0; padding: 0; }
         .topnav .nav-icon.line:hover { background: none; transform: scale(1.06); }
         .topnav .nav-icon.line img { width: 40px; height: 40px; display: block; margin: auto; }
+        /* 11-24 FB 粉絲團 */
+        .nav-icon.fb { width: 34px; height: 34px; margin: 0 3px; padding: 0; }
+        .nav-icon.fb svg { width: 100%; height: 100%; display: block; }
+        .nav-icon.fb:hover { background: none; transform: scale(1.06); }
+        .topnav .nav-icon.fb { width: 40px; height: 40px; }
+        .topnav .nav-icon.fb svg { width: 40px; height: 40px; }
+        .f-fb { display: inline-flex; align-items: center; gap: 6px; color: #1877F2; font-weight: 700; text-decoration: none; }
+        .f-fb svg { width: 24px; height: 24px; }
         .topnav .nav-cart { width: 54px; height: 54px; }
         .topnav .nav-cart svg { width: 36px; height: 36px; }
         .topnav .nav-cart .cart-badge { top: 3px; right: 2px; }
@@ -895,6 +903,9 @@
             <a class="nav-icon line" id="navLine" href="#" target="_blank" aria-label="加入官方 LINE">
                 <img src="line-icon.png" alt="LINE">
             </a>
+            <a class="nav-icon fb" href="https://www.facebook.com/a22255663" target="_blank" rel="noopener" aria-label="Facebook 粉絲團">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path d="M15.1 7.6h-1.6c-.6 0-.9.3-.9 1v1.5h2.5l-.4 2.6h-2.1V19H9.9v-6.3H8v-2.6h1.9V8.3c0-2 1.2-3.1 3-3.1.9 0 1.8.1 2.2.2v2.2z" fill="#fff"/></svg>
+            </a>
             <button class="nav-icon nav-cart" type="button" onclick="openCart()" aria-label="購物車">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.2a1.5 1.5 0 0 0 1.5 1.2h8.7a1.5 1.5 0 0 0 1.5-1.2L21 7H6"/></svg>
                 <span class="cart-badge" id="cartBadge">0</span>
@@ -1215,6 +1226,7 @@
     <div class="f-logo">🥟 方王媽媽堅果饅頭</div>
     <p style="font-size:1.2rem;">官方 LINE：@a22255663　　訂購電話：02-2225-5663</p>
     <p style="font-size:1.2rem;">地址：新北市中和區立德街 98 巷 72 號</p>
+    <p style="font-size:1.2rem;"><a class="f-fb" href="https://www.facebook.com/a22255663" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path d="M15.1 7.6h-1.6c-.6 0-.9.3-.9 1v1.5h2.5l-.4 2.6h-2.1V19H9.9v-6.3H8v-2.6h1.9V8.3c0-2 1.2-3.1 3-3.1.9 0 1.8.1 2.2.2v2.2z" fill="#fff"/></svg> Facebook 粉絲團</a></p>
     <p>天然食材・手工製作・新鮮直送<br>© 2026 方王媽媽堅果饅頭 版權所有<br><span style="font-size:0.75rem;color:#999;margin-top:8px;display:block;">v2.0.1 (2026.09.01 - 規格選擇系統)</span></p>
 </footer>
 
