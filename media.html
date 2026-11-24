@@ -123,6 +123,7 @@
         .yt-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.35)); }
         .yt-play { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 64px; height: 44px; z-index: 1; }
         .yt-card iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+        .yt-player { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 16px 16px 0 0; overflow: hidden; }
         .yt-body { display: flex; align-items: center; gap: 12px; padding: 12px 14px 14px; }
         .yt-logo { width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             color: white; font-weight: 900; font-size: 0.85rem; letter-spacing: 0; }
@@ -249,8 +250,11 @@ function renderVideos(videos) {
         <span class="yt-tag">${kind === 'news' ? '電視新聞' : '節目專訪'}</span>
       </div>`;
     // 點了才載入 YouTube 播放器，頁面不會一次載 12 個影片而變慢
+    // 11-24 換成沒有遮罩的 div 再放播放器（以前 iframe 在按鈕裡、被漸層蓋住，按不到暫停）
     card.querySelector('.yt-thumb').addEventListener('click', e => {
-      const box = e.currentTarget;
+      const box = document.createElement('div');
+      box.className = 'yt-player';
+      e.currentTarget.replaceWith(box);
       box.innerHTML = `<iframe src="https://www.youtube.com/embed/${encodeURIComponent(v.id)}?autoplay=1" title="${esc(v.title)}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     });
     ytGrid.appendChild(card);
