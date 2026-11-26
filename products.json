@@ -583,5 +583,18 @@
       "ingredients": "乳酪原絲（台灣分裝）。",
       "allergens": "本產品含有牛奶。"
     }
+  },
+  {
+    "id": "p30",
+    "name": "帕馬森紅莓饅頭",
+    "code": "PM",
+    "desc": "帕馬森乳酪與蔓越莓結合",
+    "variant1_name": "原味",
+    "variant1_price": 300,
+    "variant2_name": "無糖４包組",
+    "variant2_price": 1200,
+    "img": "p30_2f1d3e.jpeg",
+    "active": true,
+    "ori": 325
   }
 ]
